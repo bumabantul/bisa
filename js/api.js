@@ -1,5 +1,5 @@
 // GANTI DENGAN URL APPS SCRIPT ANDA
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxEmNN0wWYnW3kUksPcg2mqA7daO3kZsL6oHUEVYYoDRV8E5gDWdipnya09eVfgaUVFCQ/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyD1IpbE4LX2VrS2LP760laTlOiCFWD9uJ0Pz-L5__ndrDvqe2-sKnolTIR-QMf0jaiGQ/exec';
 
 /**
  * Memanggil API Apps Script menggunakan JSONP
