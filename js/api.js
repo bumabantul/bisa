@@ -1,8 +1,8 @@
 // GANTI DENGAN URL APPS SCRIPT ANDA
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyD1IpbE4LX2VrS2LP760laTlOiCFWD9uJ0Pz-L5__ndrDvqe2-sKnolTIR-QMf0jaiGQ/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwgnptXcCiAUKqkPHJWGL80xLNi-tSNm4C8MvHpIGxFJDgYylb9GtYzRdzOlmTOohMI3A/exec';
 
 /**
- * Memanggil API Apps Script menggunakan JSONP
+ * Memanggil API Apps Script menggunakan JSONP (untuk data kecil, backward compatibility)
  * @param {string} path - Nama action (login, register, dll)
  * @param {object} data - Data yang dikirim
  * @returns {Promise} - Promise dengan response
@@ -33,5 +33,26 @@ function apiCall(path, data) {
       reject(new Error('JSONP request failed'));
     };
     document.body.appendChild(script);
+  });
+}
+
+/**
+ * Mengirim data dengan POST request ke Apps Script (untuk data besar seperti base64 gambar)
+ * TIDAK menyertakan header Content-Type agar tidak memicu preflight CORS.
+ * @param {string} path - Nama action
+ * @param {object} data - Data yang dikirim
+ * @returns {Promise} - Promise dengan response JSON
+ */
+function apiCallPost(path, data) {
+  return fetch(APPS_SCRIPT_URL + '?path=' + encodeURIComponent(path), {
+    method: 'POST',
+    mode: 'cors',
+    // Tidak ada header Content-Type -> browser mengirim text/plain (simple request)
+    body: JSON.stringify(data)
+  })
+  .then(response => response.json())
+  .catch(err => {
+    console.error('POST request failed', err);
+    throw err;
   });
 }
