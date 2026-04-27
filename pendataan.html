@@ -381,23 +381,12 @@
                 <label class="form-label">Asal PAC GP Ansor <span class="text-danger">*</span></label>
                 <select class="form-select" id="asalPac" required>
                   <option value="">Pilih Kapanewon</option>
-                  <option value="Bambanglipuro">Bambanglipuro</option>
-                  <option value="Banguntapan">Banguntapan</option>
-                  <option value="Bantul">Bantul</option>
-                  <option value="Dlingo">Dlingo</option>
-                  <option value="Imogiri">Imogiri</option>
-                  <option value="Jetis">Jetis</option>
-                  <option value="Kasihan">Kasihan</option>
-                  <option value="Kretek">Kretek</option>
-                  <option value="Pajangan">Pajangan</option>
-                  <option value="Pandak">Pandak</option>
-                  <option value="Piyungan">Piyungan</option>
-                  <option value="Pleret">Pleret</option>
-                  <option value="Pundong">Pundong</option>
-                  <option value="Sanden">Sanden</option>
-                  <option value="Sedayu">Sedayu</option>
-                  <option value="Sewon">Sewon</option>
-                  <option value="Srandakan">Srandakan</option>
+                  <option>Bambanglipuro</option><option>Banguntapan</option><option>Bantul</option>
+                  <option>Dlingo</option><option>Imogiri</option><option>Jetis</option>
+                  <option>Kasihan</option><option>Kretek</option><option>Pajangan</option>
+                  <option>Pandak</option><option>Piyungan</option><option>Pleret</option>
+                  <option>Pundong</option><option>Sanden</option><option>Sedayu</option>
+                  <option>Sewon</option><option>Srandakan</option>
                 </select>
               </div>
 
@@ -448,24 +437,15 @@
                 </div>
               </div>
 
-              <!-- Peta -->
+              <!-- Peta dan Lokasi -->
               <div class="mb-3">
                 <label class="form-label">Lokasi Usaha <span class="text-danger">*</span></label>
                 <button type="button" class="btn btn-outline-primary current-location-btn" id="getLocationBtn">
                   <i class="bi bi-crosshair"></i> Dapatkan Lokasi Saya
                 </button>
                 <div id="map"></div>
-                <div class="row mt-2 g-2">
-                  <div class="col-md-6">
-                    <label class="form-label small">Latitude</label>
-                    <input type="text" class="form-control" id="lat" readonly required>
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label small">Longitude</label>
-                    <input type="text" class="form-control" id="lng" readonly required>
-                  </div>
-                </div>
-                <small class="text-muted">Klik atau geser marker pada peta untuk menentukan lokasi tepat usaha Anda.</small>
+                <input type="text" class="form-control mt-2" id="lokasiUsaha" placeholder="Klik peta atau gunakan tombol di atas" required>
+                <small class="text-muted">Format: Latitude: -7.8511338094615395, Longitude: 110.35994724060245</small>
               </div>
 
               <hr>
@@ -535,7 +515,7 @@
       setupJenisListener();
     });
 
-    // ---------- PETA ----------
+    // ---------- PETA (FORMAT DIPAKSA) ----------
     const defaultLat = -7.885;
     const defaultLng = 110.363;
     let map, marker;
@@ -549,23 +529,23 @@
       }).addTo(map);
 
       marker = L.marker([lat, lng], { draggable: true }).addTo(map);
-      updateLatLng(lat, lng);
+      updateMapInput(lat, lng);
 
       map.on('click', function(e) {
         const { lat, lng } = e.latlng;
         marker.setLatLng([lat, lng]);
-        updateLatLng(lat, lng);
+        updateMapInput(lat, lng);
       });
 
       marker.on('dragend', function(e) {
         const { lat, lng } = e.target.getLatLng();
-        updateLatLng(lat, lng);
+        updateMapInput(lat, lng);
       });
     }
 
-    function updateLatLng(lat, lng) {
-      document.getElementById('lat').value = lat.toFixed(6);
-      document.getElementById('lng').value = lng.toFixed(6);
+    function updateMapInput(lat, lng) {
+      // PAKSA format sesuai keinginan
+      document.getElementById('lokasiUsaha').value = `Latitude: ${lat}, Longitude: ${lng}`;
     }
 
     document.getElementById('getLocationBtn').addEventListener('click', function() {
@@ -576,11 +556,12 @@
             const lng = position.coords.longitude;
             map.setView([lat, lng], 15);
             marker.setLatLng([lat, lng]);
-            updateLatLng(lat, lng);
+            updateMapInput(lat, lng);
           },
           function(error) {
             alert('Tidak dapat mengambil lokasi: ' + error.message);
-          }
+          },
+          { enableHighAccuracy: true }
         );
       } else {
         alert('Browser tidak mendukung geolokasi.');
@@ -636,8 +617,8 @@
     document.getElementById('usahaForm').addEventListener('submit', async function(e) {
       e.preventDefault();
 
-      if (!document.getElementById('lat').value || !document.getElementById('lng').value) {
-        showAlert('danger', 'Lokasi usaha harus dipilih pada peta.');
+      if (!document.getElementById('lokasiUsaha').value) {
+        showAlert('danger', 'Lokasi usaha harus dipilih pada peta atau diketik manual.');
         return;
       }
 
@@ -665,13 +646,12 @@
       const data = {
         namaUsaha: document.getElementById('namaUsaha').value,
         pemilik: document.getElementById('pemilik').value,
-        asalPac: document.getElementById('asalPac').value,   // <-- field baru
+        asalPac: document.getElementById('asalPac').value,
         jenisUsaha: jenisUsaha,
         alamat: document.getElementById('alamat').value,
         telepon: document.getElementById('telepon').value,
         deskripsi: document.getElementById('deskripsi').value,
-        lat: document.getElementById('lat').value,
-        lng: document.getElementById('lng').value,
+        lokasiMap: document.getElementById('lokasiUsaha').value,   // <-- string dengan format khusus
         foto: fotoBase64
       };
 
