@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - BUMA Bantul</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;       /* Membuat konten vertikal tengah */
+      align-items: center;           /* Membuat konten horizontal tengah */
+      margin: 0;
+      padding: 1rem;
+    }
+    .card {
+      border: none;
+      border-radius: 1rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      overflow: hidden;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      width: 100%;
+      max-width: 450px;              /* Batas lebar card */
+    }
+    .card-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-align: center;
+      padding: 1.5rem;
+      border-bottom: none;
+    }
+    .card-header h3 {
+      margin: 0;
+      font-weight: 600;
+    }
+    .card-body {
+      padding: 2rem;
+    }
+    .form-control {
+      border-radius: 0.5rem;
+      padding: 0.75rem 1rem;
+      border: 1px solid #e0e0e0;
+      transition: all 0.3s;
+    }
+    .form-control:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 0.2rem rgba(102,126,234,0.25);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      font-weight: 600;
+      transition: transform 0.2s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+    }
+    .btn-primary:disabled {
+      background: #b0b0b0;
+      transform: none;
+    }
+    .btn-success {
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      font-weight: 600;
+    }
+    a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .spinner-border-sm {
+      width: 1rem;
+      height: 1rem;
+      border-width: 0.15em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Card Login -->
+  <div class="card">
+    <div class="card-header">
+      <h3>Selamat Datang Kembali</h3>
+      <p class="mb-0">Silakan login ke akun Anda</p>
+    </div>
+    <div class="card-body">
+      <div id="loginAlert" class="alert alert-danger d-none"></div>
+      <form id="loginForm">
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" id="email" placeholder="nama@email.com" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-control" id="password" placeholder="******" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100" id="loginBtn">
+          <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true" id="loginSpinner"></span>
+          <span id="loginText">Login</span>
+        </button>
+      </form>
+      <hr class="my-4">
+      <p class="text-center mb-0">
+        Belum punya akun? <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Daftar sebagai Member</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Modal Register (tetap tersedia) -->
+  <div class="modal fade" id="registerModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Registrasi Member</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="registerForm">
+            <div class="mb-3">
+              <label>Nama Lengkap</label>
+              <input type="text" class="form-control" id="regNama" required>
+            </div>
+            <div class="mb-3">
+              <label>Email</label>
+              <input type="email" class="form-control" id="regEmail" required>
+            </div>
+            <div class="mb-3">
+              <label>Password</label>
+              <input type="password" class="form-control" id="regPassword" required>
+            </div>
+            <button type="submit" class="btn btn-success w-100" id="registerBtn">
+              <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true" id="registerSpinner"></span>
+              <span id="registerText">Daftar</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    // Login form handler dengan loading spinner
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      const loginBtn = document.getElementById('loginBtn');
+      const loginSpinner = document.getElementById('loginSpinner');
+      const loginText = document.getElementById('loginText');
+
+      loginBtn.disabled = true;
+      loginSpinner.classList.remove('d-none');
+      loginText.textContent = 'Memproses...';
+
+      try {
+        const res = await apiCall('login', { email, password });
+        if (res.success) {
+          sessionStorage.setItem('token', res.token);
+          sessionStorage.setItem('role', res.role);
+          sessionStorage.setItem('nama', res.nama);
+          sessionStorage.setItem('userId', res.userId);
+          window.location.href = res.role === 'admin' ? 'dashboard-admin.html' : 'dashboard-member.html';
+        } else {
+          const alertBox = document.getElementById('loginAlert');
+          alertBox.classList.remove('d-none');
+          alertBox.textContent = res.message;
+          loginBtn.disabled = false;
+          loginSpinner.classList.add('d-none');
+          loginText.textContent = 'Login';
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+        loginBtn.disabled = false;
+        loginSpinner.classList.add('d-none');
+        loginText.textContent = 'Login';
+      }
+    });
+
+    // Register form handler dengan loading spinner
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = {
+        nama: document.getElementById('regNama').value,
+        email: document.getElementById('regEmail').value,
+        password: document.getElementById('regPassword').value
+      };
+
+      const registerBtn = document.getElementById('registerBtn');
+      const registerSpinner = document.getElementById('registerSpinner');
+      const registerText = document.getElementById('registerText');
+
+      registerBtn.disabled = true;
+      registerSpinner.classList.remove('d-none');
+      registerText.textContent = 'Mendaftar...';
+
+      try {
+        const res = await apiCall('register', data);
+        if (res.success) {
+          alert('Registrasi berhasil, silakan login');
+          const modalEl = document.getElementById('registerModal');
+          const modal = bootstrap.Modal.getInstance(modalEl);
+          modal.hide();
+          // Reset form
+          document.getElementById('registerForm').reset();
+        } else {
+          alert('Gagal: ' + res.message);
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+      } finally {
+        registerBtn.disabled = false;
+        registerSpinner.classList.add('d-none');
+        registerText.textContent = 'Daftar';
+      }
+    });
+
+    // Reset form saat modal ditutup
+    document.getElementById('registerModal').addEventListener('hidden.bs.modal', function () {
+      document.getElementById('registerForm').reset();
+    });
+  </script>
+</body>
+</html>

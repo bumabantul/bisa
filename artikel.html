@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artikel - BUMA Bantul</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+    /* Navbar dengan efek glass */
+    .navbar {
+      background: rgba(255, 255, 255, 0.8) !important;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .navbar-brand {
+      font-weight: 700;
+      color: #4a3f6b !important;
+    }
+    .nav-link {
+      font-weight: 500;
+      color: #4a3f6b !important;
+      transition: color 0.3s;
+    }
+    .nav-link:hover {
+      color: #667eea !important;
+    }
+    .nav-link.active {
+      color: #667eea !important;
+      font-weight: 600;
+    }
+    /* Dropdown menu */
+    .dropdown-menu {
+      border: none;
+      border-radius: 1rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      padding: 0.5rem 0;
+    }
+    .dropdown-item {
+      font-weight: 500;
+      color: #4a3f6b;
+      padding: 0.5rem 1.5rem;
+      transition: background 0.3s;
+    }
+    .dropdown-item:hover {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    .dropdown-divider {
+      margin: 0.25rem 0;
+    }
+
+    /* Hero Artikel */
+    .hero-article {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 60px 0;
+      margin-bottom: 2rem;
+      text-align: center;
+      border-radius: 0 0 50px 50px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .hero-article h1 {
+      font-weight: 700;
+      font-size: 2.5rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    /* Kartu artikel */
+    .card {
+      border: none;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(102,126,234,0.2);
+    }
+    .card-img-top {
+      height: 200px;
+      object-fit: cover;
+    }
+    .btn-outline-primary {
+      border-radius: 50px;
+      border-width: 2px;
+      color: #667eea;
+      border-color: #667eea;
+      font-weight: 600;
+    }
+    .btn-outline-primary:hover {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-color: transparent;
+      color: white;
+    }
+
+    /* Footer */
+    footer {
+      background: white;
+      border-top: 1px solid rgba(0,0,0,0.05);
+      box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+    }
+    footer h5 {
+      color: #4a3f6b;
+      font-weight: 600;
+    }
+    footer a {
+      color: #6c757d;
+      transition: color 0.3s;
+    }
+    footer a:hover {
+      color: #667eea;
+    }
+    .footer-bottom {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar dengan dropdown untuk user yang sudah login -->
+  <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">
+        <i class="bi bi-building"></i> BUMA Bantul
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item"><a class="nav-link" href="index.html">Beranda</a></li>
+          <li class="nav-item"><a class="nav-link" href="pendataan.html">Pendataan Usaha</a></li>
+          <li class="nav-item"><a class="nav-link active" href="artikel.html">Artikel</a></li>
+          <li class="nav-item"><a class="nav-link" href="kontak.html">Kontak</a></li>
+
+          <!-- Dropdown untuk user yang sudah login (disembunyikan default) -->
+          <li class="nav-item dropdown" id="userDropdown" style="display: none;">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-circle me-1"></i><span id="userName"></span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="#" id="dashboardLink">Dashboard</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" onclick="logout(); return false;">Logout</a></li>
+            </ul>
+          </li>
+
+          <!-- Link login untuk user yang belum login -->
+          <li class="nav-item" id="loginLink"><a class="nav-link" href="login.html">Login</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Artikel -->
+  <div class="hero-article">
+    <div class="container">
+      <h1>Artikel & Berita BUMA</h1>
+      <p class="lead mb-0">Informasi terbaru seputar kegiatan dan pengembangan usaha anggota</p>
+    </div>
+  </div>
+
+  <!-- Daftar Artikel -->
+  <div class="container my-5">
+    <div id="artikelList" class="row g-4"></div>
+    <div id="loading" class="text-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Lihat Artikel -->
+  <div class="modal fade" id="viewArtikelModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewTitle"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p id="viewMeta" class="text-muted small"></p>
+          <img id="viewImage" class="img-fluid mb-3" style="max-height: 300px; width: auto; display: none;" alt="">
+          <div id="viewContent" style="line-height: 1.7;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center text-lg-start">
+    <div class="container p-4">
+      <div class="row">
+        <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+          <h5 class="text-uppercase">BUMA Bantul</h5>
+          <p>Badan Usaha Milik Ansor Kabupaten Bantul. Memberdayakan ekonomi anggota melalui pendataan dan pemetaan usaha.</p>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <h5 class="text-uppercase">Tautan</h5>
+          <ul class="list-unstyled">
+            <li><a href="index.html" class="text-decoration-none">Beranda</a></li>
+            <li><a href="pendataan.html" class="text-decoration-none">Pendataan</a></li>
+            <li><a href="artikel.html" class="text-decoration-none">Artikel</a></li>
+            <li><a href="kontak.html" class="text-decoration-none">Kontak</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <h5 class="text-uppercase">Ikuti Kami</h5>
+          <a href="#" class="text-dark me-2"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="text-dark me-2"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="text-dark me-2"><i class="bi bi-twitter"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom text-center p-3">
+      © 2026 BUMA Bantul. All rights reserved.
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- API dan Auth -->
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Update navbar sesuai status login
+      updateNavbar();
+
+      // Load artikel dengan cache
+      loadArtikelWithCache();
+    });
+
+    // ================== FUNGSI CACHE ==================
+    async function loadWithCache(key, fetchFn, renderFn) {
+      const cached = sessionStorage.getItem(key);
+      if (cached) {
+        try {
+          renderFn(JSON.parse(cached));
+        } catch (e) {}
+      } else {
+        // spinner sudah tampil
+      }
+
+      try {
+        const fresh = await fetchFn();
+        const freshStr = JSON.stringify(fresh);
+        if (cached !== freshStr) {
+          sessionStorage.setItem(key, freshStr);
+          renderFn(fresh);
+        }
+      } catch (err) {
+        console.error('Gagal fetch data terbaru:', err);
+      } finally {
+        document.getElementById('loading').style.display = 'none';
+      }
+    }
+
+    async function loadArtikelWithCache() {
+      await loadWithCache('artikel_semua', async () => {
+        const res = await apiCall('getAllArtikel', {});
+        return res.success ? res.data : [];
+      }, renderArtikelList);
+    }
+
+    function renderArtikelList(data) {
+      const container = document.getElementById('artikelList');
+      if (!data || data.length === 0) {
+        container.innerHTML = '<p class="text-center">Belum ada artikel.</p>';
+        return;
+      }
+      // Urutkan dari terbaru
+      data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      container.innerHTML = '';
+      data.forEach(item => {
+        const col = document.createElement('div');
+        col.className = 'col-md-4 mb-4';
+        const imageHtml = item.imageUrl ? `<img src="${item.imageUrl}" class="card-img-top" alt="...">` : '';
+        col.innerHTML = `
+          <div class="card h-100">
+            ${imageHtml}
+            <div class="card-body">
+              <h5 class="card-title">${item.title}</h5>
+              <p class="card-text text-muted small">${new Date(item.createdAt).toLocaleDateString('id-ID')} oleh ${item.authorName}</p>
+              <p class="card-text">${item.content.substring(0, 100)}...</p>
+              <button class="btn btn-outline-primary btn-sm" onclick="viewArtikel('${item.id}')">Baca Selengkapnya</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(col);
+      });
+    }
+
+    async function viewArtikel(id) {
+      try {
+        const res = await apiCall('getArtikelById', { id: id });
+        if (res.success) {
+          const item = res.data;
+          document.getElementById('viewTitle').innerText = item.title;
+          document.getElementById('viewMeta').innerText = `Diposting pada ${new Date(item.createdAt).toLocaleDateString('id-ID')} oleh ${item.authorName}`;
+          const img = document.getElementById('viewImage');
+          if (item.imageUrl) {
+            img.src = item.imageUrl;
+            img.style.display = 'block';
+          } else {
+            img.style.display = 'none';
+          }
+          document.getElementById('viewContent').innerHTML = item.content.replace(/\n/g, '<br>');
+          new bootstrap.Modal(document.getElementById('viewArtikelModal')).show();
+        } else {
+          alert('Gagal memuat artikel: ' + res.message);
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Form pendataan usaha anggota BUMA (Badan Usaha Milik Ansor) se-Kabupaten Bantul. Isi data usaha Anda untuk bergabung dalam pemetaan ekonomi anggota.">
+  <title>Pendataan Usaha - BUMA Bantul</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/webp" href="assets/logo buma.webp">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+    /* Navbar dengan efek glass */
+    .navbar {
+      background: rgba(255, 255, 255, 0.8) !important;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .navbar-brand {
+      font-weight: 700;
+      color: #4a3f6b !important;
+      display: flex;
+      align-items: center;
+    }
+    .navbar-brand img {
+      margin-right: 10px;
+    }
+    .brand-text {
+      line-height: 1.2;
+    }
+    .nav-link {
+      font-weight: 500;
+      color: #4a3f6b !important;
+      transition: color 0.3s;
+    }
+    .nav-link:hover {
+      color: #667eea !important;
+    }
+    .nav-link.active {
+      color: #667eea !important;
+      font-weight: 600;
+    }
+    /* Dropdown menu */
+    .dropdown-menu {
+      border: none;
+      border-radius: 1rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      padding: 0.5rem 0;
+    }
+    .dropdown-item {
+      font-weight: 500;
+      color: #4a3f6b;
+      padding: 0.5rem 1.5rem;
+      transition: background 0.3s;
+    }
+    .dropdown-item:hover {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    .dropdown-divider {
+      margin: 0.25rem 0;
+    }
+
+    /* Peta */
+    #map {
+      height: 400px;
+      border-radius: 20px;
+      margin-bottom: 15px;
+    }
+    .photo-preview {
+      max-width: 200px;
+      max-height: 200px;
+      margin-top: 10px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 5px;
+    }
+    .deskripsi {
+      background: rgba(102,126,234,0.1);
+      border-left: 4px solid #667eea;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      border-radius: 1rem;
+    }
+
+    /* Kartu form */
+    .card {
+      border: none;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    .card-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-bottom: none;
+      padding: 1.5rem;
+    }
+    .card-header h4 {
+      margin: 0;
+      font-weight: 600;
+    }
+    .card-body {
+      padding: 2rem;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 50px;
+      padding: 10px 25px;
+      font-weight: 600;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102,126,234,0.4);
+    }
+    .btn-outline-primary {
+      border-color: #667eea;
+      color: #667eea;
+      border-radius: 50px;
+    }
+    .btn-outline-primary:hover {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-color: transparent;
+      color: white;
+    }
+    .form-control, .form-select {
+      border-radius: 50px;
+      padding: 0.75rem 1.25rem;
+      border: 1px solid #e0e0e0;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 0.2rem rgba(102,126,234,0.25);
+    }
+    textarea.form-control {
+      border-radius: 20px;
+    }
+    /* Field tambahan untuk "Lainnya" */
+    #customJenisContainer {
+      margin-top: 10px;
+    }
+
+    /* Footer */
+    footer {
+      background: white;
+      border-top: 1px solid rgba(0,0,0,0.05);
+      box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+    }
+    footer h5 {
+      color: #4a3f6b;
+      font-weight: 600;
+    }
+    footer a {
+      color: #6c757d;
+      transition: color 0.3s;
+    }
+    footer a:hover {
+      color: #667eea;
+    }
+    .footer-bottom {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar dengan dropdown -->
+  <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html">
+        <img src="assets/logo buma.webp" alt="BUMA Bantul" height="40">
+        <span class="brand-text">BUMA PC GP Ansor<br>Kabupaten Bantul</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item"><a class="nav-link" href="index.html">Beranda</a></li>
+          <li class="nav-item"><a class="nav-link active" href="pendataan.html">Pendataan Usaha</a></li>
+          <li class="nav-item"><a class="nav-link" href="artikel.html">Artikel</a></li>
+          <li class="nav-item"><a class="nav-link" href="kontak.html">Kontak</a></li>
+
+          <!-- Dropdown untuk user yang sudah login -->
+          <li class="nav-item dropdown" id="userDropdown" style="display: none;">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-circle me-1"></i><span id="userName"></span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="#" id="dashboardLink">Dashboard</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" onclick="logout(); return false;">Logout</a></li>
+            </ul>
+          </li>
+
+          <!-- Link login untuk yang belum login -->
+          <li class="nav-item" id="loginLink"><a class="nav-link" href="login.html">Login</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Konten Utama -->
+  <div class="container my-5">
+    <!-- Deskripsi halaman -->
+    <div class="deskripsi">
+      <h5 class="mb-2"><i class="bi bi-info-circle-fill text-primary me-2"></i> Tentang Pendataan Usaha</h5>
+      <p class="mb-0">Formulir ini diperuntukkan bagi anggota Ansor atau masyarakat umum yang ingin mendaftarkan usaha mereka ke dalam database BUMA. Data yang terkumpul akan digunakan untuk pemetaan potensi ekonomi dan pengembangan program pemberdayaan usaha di Kabupaten Bantul. <strong>Tidak perlu login</strong>, cukup isi data dengan lengkap dan akurat. Semua field bertanda <span class="text-danger">*</span> wajib diisi.</p>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-header text-center">
+            <h4>Form Pendataan Usaha</h4>
+          </div>
+          <div class="card-body">
+            <div id="alertMessage" class="alert d-none"></div>
+
+            <form id="usahaForm">
+              <!-- Data Usaha -->
+              <div class="mb-3">
+                <label class="form-label">Nama Usaha <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="namaUsaha" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Nama Pemilik <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="pemilik" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Jenis Usaha <span class="text-danger">*</span></label>
+                <select class="form-select" id="jenisUsaha" required>
+                  <option value="">Pilih jenis usaha</option>
+                  <option value="Toko Sembako">Toko Sembako</option>
+                  <option value="Kuliner">Kuliner</option>
+                  <option value="Peternakan">Peternakan</option>
+                  <option value="Pertanian">Pertanian</option>
+                  <option value="Kerajinan">Kerajinan</option>
+                  <option value="Jasa">Jasa</option>
+                  <option value="Bengkel">Bengkel</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+                <!-- Input untuk jenis usaha lainnya (muncul jika memilih Lainnya) -->
+                <div id="customJenisContainer" style="display: none;">
+                  <input type="text" class="form-control mt-2" id="customJenis" placeholder="Sebutkan jenis usaha Anda" required>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Alamat Lengkap <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="alamat" rows="2" required></textarea>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Telepon/WhatsApp <span class="text-danger">*</span></label>
+                <input type="tel" class="form-control" id="telepon" required>
+              </div>
+
+              <!-- Deskripsi Usaha (tetap wajib) -->
+              <div class="mb-3">
+                <label class="form-label">Deskripsi Usaha <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="deskripsi" rows="3" placeholder="Jelaskan secara singkat tentang usaha Anda (produk, layanan, keunggulan, dll.)" required></textarea>
+              </div>
+
+              <!-- Upload Foto (opsional) -->
+              <div class="mb-3">
+                <label class="form-label">Foto Usaha (opsional)</label>
+                <input type="file" class="form-control" id="fotoInput" accept="image/*">
+                <div id="photoPreviewContainer" style="display: none;">
+                  <img id="photoPreview" class="photo-preview" src="#" alt="Preview">
+                  <button type="button" class="btn btn-sm btn-danger mt-2" id="removePhoto">Hapus</button>
+                </div>
+              </div>
+
+              <!-- Peta dan Lokasi -->
+              <div class="mb-3">
+                <label class="form-label">Lokasi Usaha (klik peta untuk menandai) <span class="text-danger">*</span></label>
+                <button type="button" class="btn btn-outline-primary btn-sm current-location-btn" id="getLocationBtn">
+                  <i class="bi bi-crosshair"></i> Dapatkan Lokasi Saya
+                </button>
+                <div id="map"></div>
+                <div class="row mt-2">
+                  <div class="col-md-6">
+                    <label class="form-label">Latitude</label>
+                    <input type="text" class="form-control" id="lat" readonly required>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Longitude</label>
+                    <input type="text" class="form-control" id="lng" readonly required>
+                  </div>
+                </div>
+                <small class="text-muted">Klik pada peta untuk memilih titik lokasi usaha. Koordinat harus terisi.</small>
+              </div>
+
+              <hr>
+              <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> Data yang Anda masukkan akan menjadi bagian dari database BUMA dan membantu pemetaan usaha anggota Ansor se-Kabupaten Bantul.
+              </div>
+
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg">Simpan Data Usaha</button>
+                <button type="button" class="btn btn-outline-secondary" id="resetBtn">Reset Form</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center text-lg-start">
+    <div class="container p-4">
+      <div class="row">
+        <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+          <h5 class="text-uppercase">BUMA Bantul</h5>
+          <p>Badan Usaha Milik Ansor Kabupaten Bantul. Memberdayakan ekonomi anggota melalui pendataan dan pemetaan usaha.</p>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <h5 class="text-uppercase">Tautan</h5>
+          <ul class="list-unstyled">
+            <li><a href="index.html" class="text-decoration-none">Beranda</a></li>
+            <li><a href="pendataan.html" class="text-decoration-none">Pendataan</a></li>
+            <li><a href="artikel.html" class="text-decoration-none">Artikel</a></li>
+            <li><a href="kontak.html" class="text-decoration-none">Kontak</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+          <h5 class="text-uppercase">Ikuti Kami</h5>
+          <a href="#" class="text-dark me-2"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="text-dark me-2"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="text-dark me-2"><i class="bi bi-twitter"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom text-center p-3">
+      © 2026 BUMA Bantul. All rights reserved.
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      updateNavbar();
+      initMap();
+      setupJenisListener();
+    });
+
+    // Inisialisasi peta
+    const defaultLat = -7.885;
+    const defaultLng = 110.363;
+    let map, marker;
+
+    function initMap(lat = defaultLat, lng = defaultLng) {
+      if (map) map.remove();
+      map = L.map('map').setView([lat, lng], 13);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+      }).addTo(map);
+
+      marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+      updateLatLng(lat, lng);
+
+      map.on('click', function(e) {
+        const { lat, lng } = e.latlng;
+        marker.setLatLng([lat, lng]);
+        updateLatLng(lat, lng);
+      });
+
+      marker.on('dragend', function(e) {
+        const { lat, lng } = e.target.getLatLng();
+        updateLatLng(lat, lng);
+      });
+    }
+
+    function updateLatLng(lat, lng) {
+      document.getElementById('lat').value = lat.toFixed(6);
+      document.getElementById('lng').value = lng.toFixed(6);
+    }
+
+    document.getElementById('getLocationBtn').addEventListener('click', function() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          function(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            map.setView([lat, lng], 15);
+            marker.setLatLng([lat, lng]);
+            updateLatLng(lat, lng);
+          },
+          function(error) {
+            alert('Tidak dapat mengambil lokasi: ' + error.message);
+          }
+        );
+      } else {
+        alert('Browser tidak mendukung geolokasi.');
+      }
+    });
+
+    // Preview foto
+    document.getElementById('fotoInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          document.getElementById('photoPreview').src = event.target.result;
+          document.getElementById('photoPreviewContainer').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    document.getElementById('removePhoto').addEventListener('click', function() {
+      document.getElementById('fotoInput').value = '';
+      document.getElementById('photoPreviewContainer').style.display = 'none';
+      document.getElementById('photoPreview').src = '#';
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', function() {
+      document.getElementById('usahaForm').reset();
+      document.getElementById('photoPreviewContainer').style.display = 'none';
+      document.getElementById('customJenisContainer').style.display = 'none';
+      document.getElementById('customJenis').removeAttribute('required');
+      initMap(defaultLat, defaultLng);
+    });
+
+    // Listener untuk opsi "Lainnya" pada jenis usaha
+    function setupJenisListener() {
+      const jenisSelect = document.getElementById('jenisUsaha');
+      const customContainer = document.getElementById('customJenisContainer');
+      const customInput = document.getElementById('customJenis');
+
+      jenisSelect.addEventListener('change', function() {
+        if (this.value === 'Lainnya') {
+          customContainer.style.display = 'block';
+          customInput.setAttribute('required', true);
+        } else {
+          customContainer.style.display = 'none';
+          customInput.removeAttribute('required');
+          customInput.value = ''; // kosongkan jika tidak dipakai
+        }
+      });
+    }
+
+    // Submit form
+    document.getElementById('usahaForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      // Validasi manual untuk memastikan koordinat terisi
+      if (!document.getElementById('lat').value || !document.getElementById('lng').value) {
+        showAlert('danger', 'Lokasi usaha harus dipilih pada peta.');
+        return;
+      }
+
+      // Tentukan jenis usaha final
+      let jenisUsaha = document.getElementById('jenisUsaha').value;
+      if (jenisUsaha === 'Lainnya') {
+        const customJenis = document.getElementById('customJenis').value.trim();
+        if (!customJenis) {
+          showAlert('danger', 'Harap isi jenis usaha Anda.');
+          return;
+        }
+        jenisUsaha = customJenis;
+      }
+
+      const submitBtn = this.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
+      submitBtn.disabled = true;
+
+      const fotoInput = document.getElementById('fotoInput');
+      let fotoBase64 = '';
+      if (fotoInput.files.length > 0) {
+        fotoBase64 = await toBase64(fotoInput.files[0]);
+      }
+
+      const data = {
+        namaUsaha: document.getElementById('namaUsaha').value,
+        pemilik: document.getElementById('pemilik').value,
+        jenisUsaha: jenisUsaha, // nilai final (bisa custom)
+        alamat: document.getElementById('alamat').value,
+        telepon: document.getElementById('telepon').value,
+        deskripsi: document.getElementById('deskripsi').value,
+        lat: document.getElementById('lat').value,
+        lng: document.getElementById('lng').value,
+        foto: fotoBase64
+      };
+
+      try {
+        const res = await apiCall('addDataUsahaGuest', data);
+        if (res.success) {
+          showAlert('success', 'Data berhasil disimpan! Terima kasih telah berpartisipasi.');
+          document.getElementById('usahaForm').reset();
+          document.getElementById('photoPreviewContainer').style.display = 'none';
+          document.getElementById('customJenisContainer').style.display = 'none';
+          document.getElementById('customJenis').removeAttribute('required');
+          initMap(defaultLat, defaultLng);
+        } else {
+          showAlert('danger', 'Gagal: ' + res.message);
+        }
+      } catch (err) {
+        showAlert('danger', 'Error: ' + err.message);
+      } finally {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+
+    function toBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    }
+
+    function showAlert(type, message) {
+      const alertDiv = document.getElementById('alertMessage');
+      alertDiv.className = `alert alert-${type}`;
+      alertDiv.innerHTML = message;
+      alertDiv.classList.remove('d-none');
+      setTimeout(() => alertDiv.classList.add('d-none'), 5000);
+    }
+  </script>
+</body>
+</html>
