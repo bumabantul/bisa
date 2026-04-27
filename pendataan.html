@@ -376,6 +376,31 @@
                 <input type="text" class="form-control" id="pemilik" placeholder="Nama lengkap pemilik" required>
               </div>
 
+              <!-- Asal PAC GP Ansor -->
+              <div class="mb-3">
+                <label class="form-label">Asal PAC GP Ansor <span class="text-danger">*</span></label>
+                <select class="form-select" id="asalPac" required>
+                  <option value="">Pilih Kapanewon</option>
+                  <option value="Bambanglipuro">Bambanglipuro</option>
+                  <option value="Banguntapan">Banguntapan</option>
+                  <option value="Bantul">Bantul</option>
+                  <option value="Dlingo">Dlingo</option>
+                  <option value="Imogiri">Imogiri</option>
+                  <option value="Jetis">Jetis</option>
+                  <option value="Kasihan">Kasihan</option>
+                  <option value="Kretek">Kretek</option>
+                  <option value="Pajangan">Pajangan</option>
+                  <option value="Pandak">Pandak</option>
+                  <option value="Piyungan">Piyungan</option>
+                  <option value="Pleret">Pleret</option>
+                  <option value="Pundong">Pundong</option>
+                  <option value="Sanden">Sanden</option>
+                  <option value="Sedayu">Sedayu</option>
+                  <option value="Sewon">Sewon</option>
+                  <option value="Srandakan">Srandakan</option>
+                </select>
+              </div>
+
               <!-- Jenis Usaha -->
               <div class="mb-3">
                 <label class="form-label">Jenis Usaha <span class="text-danger">*</span></label>
@@ -607,7 +632,7 @@
       });
     }
 
-    // ---------- SUBMIT FORM (MENGGUNAKAN apiCallPost UNTUK KIRIM DATA BESAR) ----------
+    // ---------- SUBMIT FORM ----------
     document.getElementById('usahaForm').addEventListener('submit', async function(e) {
       e.preventDefault();
 
@@ -640,6 +665,7 @@
       const data = {
         namaUsaha: document.getElementById('namaUsaha').value,
         pemilik: document.getElementById('pemilik').value,
+        asalPac: document.getElementById('asalPac').value,   // <-- field baru
         jenisUsaha: jenisUsaha,
         alamat: document.getElementById('alamat').value,
         telepon: document.getElementById('telepon').value,
@@ -650,10 +676,9 @@
       };
 
       try {
-        // GUNAKAN apiCallPost untuk menghindari batasan URL
         const res = await apiCallPost('addDataUsahaGuest', data);
         if (res.success) {
-          showAlert('success', 'Data berhasil disimpan! Terima kasih telah berpartisipasi.');
+          showAlert('success', 'Data berhasil disimpan! Terima kasih telah berpartisipasi Sahabat Ansor Bantul.');
           document.getElementById('usahaForm').reset();
           document.getElementById('photoPreviewContainer').style.display = 'none';
           document.getElementById('customJenisContainer').style.display = 'none';
@@ -685,7 +710,7 @@
       alertDiv.innerHTML = message;
       alertDiv.classList.remove('d-none');
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      setTimeout(() => alertDiv.classList.add('d-none'), 5000);
+      setTimeout(() => alertDiv.classList.add('d-none'), 6000);
     }
   </script>
 </body>
