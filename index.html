@@ -1,574 +1,1368 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BUMA PC GP Ansor Kabupaten Bantul - Beranda</title>
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    * { font-family: 'Inter', sans-serif; }
-    html { scroll-behavior: smooth; }
-    body { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); }
-    .navbar {
-      background: rgba(255, 255, 255, 0.9) !important;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    }
-    .navbar-brand {
-      font-weight: 700;
-      color: #1e2b3c !important;
-      display: flex;
-      align-items: center;
-    }
-    .navbar-brand img {
-      margin-right: 10px;
-    }
-    .brand-text {
-      line-height: 1.2;
-    }
-    .nav-link { font-weight: 500; color: #1e2b3c !important; transition: color 0.3s; }
-    .nav-link:hover { color: #4361ee !important; }
-    .nav-link.active { color: #4361ee !important; font-weight: 600; }
-    .dropdown-menu { border: none; border-radius: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-    .dropdown-item:hover { background: linear-gradient(135deg, #4361ee, #3f37c9); color: white; }
-    .hero {
-      background: linear-gradient(135deg, rgba(67,97,238,0.9) 0%, rgba(63,55,201,0.9) 100%), url('https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') center/cover no-repeat;
-      color: white;
-      padding: 120px 0;
-      margin-bottom: 3rem;
-      border-radius: 0 0 50px 50px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    }
-    .hero h1 { font-weight: 700; font-size: 3.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-    .hero .btn-primary {
-      background: white; color: #4361ee; border: none; border-radius: 50px; padding: 12px 30px;
-      font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: transform 0.3s;
-    }
-    .hero .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
-    .hero .btn-outline-light {
-      border-radius: 50px; padding: 12px 30px; font-weight: 600; border-width: 2px; transition: transform 0.3s;
-    }
-    .hero .btn-outline-light:hover { transform: translateY(-3px); background: white; color: #4361ee; }
-    section { padding: 80px 0; }
-    .section-title {
-      font-weight: 700; color: #1e2b3c; margin-bottom: 50px; position: relative;
-    }
-    .section-title:after {
-      content: ''; display: block; width: 80px; height: 4px;
-      background: linear-gradient(135deg, #4361ee, #3f37c9); margin: 15px auto 0; border-radius: 2px;
-    }
-    .card-feature {
-      background: white; border: none; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      transition: transform 0.3s, box-shadow 0.3s; overflow: hidden;
-    }
-    .card-feature:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(67,97,238,0.2); }
-    .feature-icon {
-      font-size: 3rem; background: linear-gradient(135deg, #4361ee, #3f37c9);
-      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-      margin-bottom: 1rem;
-    }
-    .stat-item {
-      text-align: center; padding: 2rem 1rem; background: white; border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: transform 0.3s;
-    }
-    .stat-item:hover { transform: scale(1.05); }
-    .stat-number {
-      font-size: 2.5rem; font-weight: 700;
-      background: linear-gradient(135deg, #4361ee, #3f37c9);
-      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .stat-label { font-size: 1rem; color: #6c757d; font-weight: 500; }
-    .card {
-      border: none; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(67,97,238,0.2); }
-    .card-img-top { height: 200px; object-fit: cover; }
-    .btn-outline-primary {
-      border-radius: 50px; border-width: 2px; color: #4361ee; border-color: #4361ee; font-weight: 600;
-    }
-    .btn-outline-primary:hover {
-      background: linear-gradient(135deg, #4361ee, #3f37c9); border-color: transparent; color: white;
-    }
-    .cta-section {
-      background: linear-gradient(135deg, #4361ee, #3f37c9); color: white; padding: 80px 0;
-      border-radius: 50px; margin: 3rem auto; box-shadow: 0 20px 40px rgba(67,97,238,0.3);
-    }
-    .cta-section .btn-light {
-      border-radius: 50px; padding: 12px 40px; font-weight: 600; color: #4361ee; border: none;
-      transition: transform 0.3s;
-    }
-    .cta-section .btn-light:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
-    .kontak-card {
-      background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 2rem;
-    }
-    .info-contact {
-      background: white; border-radius: 20px; padding: 2rem; text-align: center;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.05); transition: transform 0.3s;
-    }
-    .info-contact:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(67,97,238,0.2); }
-    .info-contact i {
-      font-size: 3rem;
-      background: linear-gradient(135deg, #4361ee, #3f37c9);
-      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    footer {
-      background: white; border-top: 1px solid rgba(0,0,0,0.05); box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
-    }
-    footer h5 { color: #1e2b3c; font-weight: 600; }
-    footer a { color: #6c757d; transition: color 0.3s; }
-    footer a:hover { color: #4361ee; }
-    .toast-faq {
-      border: none; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-radius: 1rem; width: 300px;
-      max-width: 90vw; background: transparent; position: relative;
-    }
-    .toast-faq .toast-header {
-      background: linear-gradient(135deg, #4361ee, #3f37c9); color: white; border-bottom: none;
-      border-radius: 1rem 1rem 0 0; padding: 0.75rem 1rem;
-    }
-    .toast-faq .toast-header .btn-close { filter: brightness(0) invert(1); font-size: 0.8rem; }
-    .toast-faq .toast-body { background-color: #ffffff; border-radius: 0 0 1rem 1rem; padding: 1.25rem; }
-    .toast-faq .toast-body h6 { color: #4361ee; font-weight: 600; margin-top: 0.75rem; font-size: 1rem; }
-    .toast-faq .toast-body h6:first-of-type { margin-top: 0; }
-    .toast-faq .toast-body p { margin-bottom: 0.75rem; font-size: 0.9rem; color: #4a4a4a; }
-    .toast-faq::after {
-      content: ''; position: absolute; bottom: 20px; right: -12px; width: 0; height: 0;
-      border-left: 12px solid #ffffff; border-top: 10px solid transparent; border-bottom: 10px solid transparent;
-      filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.1));
-    }
-    .toast-container-custom { position: absolute; bottom: 0; right: 70px; margin-bottom: 0; z-index: 12; }
-    @media (max-width: 576px) {
-      .toast-container-custom { right: 0; bottom: 70px; }
-      .toast-faq::after {
-        bottom: -12px; right: 20px; border-left: 10px solid transparent;
-        border-right: 10px solid transparent; border-top: 12px solid #ffffff; border-bottom: none;
-      }
-    }
-    .btn-faq {
-      width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;
-      background: linear-gradient(135deg, #4361ee, #3f37c9); border: none;
-      box-shadow: 0 5px 15px rgba(67,97,238,0.4); transition: transform 0.2s;
-    }
-    .btn-faq:hover { transform: scale(1.1); }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUMA PC GP Ansor Kabupaten Bantul - Beranda</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/webp" href="assets/logo buma.webp">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --card-bg: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 15px rgba(0, 0, 0, 0.03);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 20px rgba(0, 0, 0, 0.04);
+            --shadow-xl: 0 25px 50px rgba(0, 0, 0, 0.12);
+            --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.2), 0 20px 40px rgba(99, 102, 241, 0.1);
+            --radius-sm: 12px;
+            --radius: 20px;
+            --radius-lg: 28px;
+            --radius-xl: 36px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+        body {
+            background: var(--light);
+            color: var(--text);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ============ NAVBAR ============ */
+        .navbar {
+            background: var(--glass-bg) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            padding: 12px 0;
+            z-index: 1030;
+        }
+        .navbar.scrolled {
+            box-shadow: var(--shadow-lg);
+            padding: 8px 0;
+            background: rgba(255, 255, 255, 0.92) !important;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--dark) !important;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+            letter-spacing: -0.3px;
+        }
+        .navbar-brand img {
+            height: 42px;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+        .navbar-brand:hover img {
+            transform: scale(1.05);
+        }
+        .brand-text {
+            line-height: 1.25;
+            font-size: 0.85rem;
+        }
+        .brand-text strong {
+            font-size: 1rem;
+            display: block;
+            letter-spacing: -0.5px;
+        }
+        .nav-link {
+            font-weight: 500 !important;
+            color: var(--text) !important;
+            padding: 8px 16px !important;
+            border-radius: 30px;
+            transition: var(--transition) !important;
+            font-size: 0.9rem;
+            position: relative;
+        }
+        .nav-link:hover {
+            color: var(--primary) !important;
+            background: rgba(99, 102, 241, 0.06);
+        }
+        .nav-link.active {
+            color: var(--primary) !important;
+            font-weight: 600 !important;
+            background: rgba(99, 102, 241, 0.1);
+        }
+        .dropdown-menu {
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-xl);
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            animation: dropdownFade 0.25s ease;
+        }
+        @keyframes dropdownFade {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .dropdown-item {
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        .dropdown-item:hover {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.08));
+            color: var(--primary);
+        }
+
+        /* ============ HERO ============ */
+        .hero-wrapper {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(160deg, #1e1b4b 0%, #312e81 30%, #4338ca 60%, #6366f1 100%);
+            padding: 100px 0 120px;
+            margin-bottom: 0;
+            border-radius: 0 0 60px 60px;
+            isolation: isolate;
+        }
+        .hero-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(6, 182, 212, 0.35) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 20%, rgba(139, 92, 246, 0.4) 0%, transparent 55%),
+                radial-gradient(ellipse at 60% 80%, rgba(99, 102, 241, 0.3) 0%, transparent 55%);
+            z-index: 0;
+            animation: heroGlow 8s ease-in-out infinite alternate;
+        }
+        @keyframes heroGlow {
+            0% {
+                opacity: 0.7;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        .hero-shapes {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .hero-shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.15;
+            animation: floatShape 20s ease-in-out infinite;
+        }
+        .hero-shape:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.3);
+            top: -80px;
+            left: -60px;
+            animation-delay: 0s;
+        }
+        .hero-shape:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.2);
+            bottom: -50px;
+            right: -30px;
+            animation-delay: -7s;
+        }
+        .hero-shape:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            background: rgba(6, 182, 212, 0.4);
+            top: 40%;
+            right: 15%;
+            animation-delay: -14s;
+        }
+        .hero-shape:nth-child(4) {
+            width: 100px;
+            height: 100px;
+            background: rgba(139, 92, 246, 0.5);
+            bottom: 30%;
+            left: 10%;
+            animation-delay: -3s;
+        }
+        @keyframes floatShape {
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(30px, -40px) rotate(3deg);
+            }
+            50% {
+                transform: translate(-20px, 20px) rotate(-2deg);
+            }
+            75% {
+                transform: translate(15px, 30px) rotate(1deg);
+            }
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: #fff;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 24px;
+            animation: fadeInUp 0.6s ease;
+        }
+        .hero-content h1 {
+            font-weight: 800;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            line-height: 1.2;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+            animation: fadeInUp 0.7s ease;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+        }
+        .hero-content .lead {
+            font-size: 1.15rem;
+            opacity: 0.9;
+            margin-bottom: 32px;
+            animation: fadeInUp 0.8s ease;
+            font-weight: 400;
+            line-height: 1.7;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .btn-hero {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: var(--transition-slow);
+            letter-spacing: -0.2px;
+            animation: fadeInUp 0.9s ease;
+        }
+        .btn-hero-primary {
+            background: #fff;
+            color: var(--primary-dark);
+            border: none;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+        .btn-hero-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+            background: #f0f0ff;
+            color: var(--primary-dark);
+        }
+        .btn-hero-outline {
+            background: transparent;
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(4px);
+        }
+        .btn-hero-outline:hover {
+            background: #fff;
+            color: var(--primary-dark);
+            border-color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        /* ============ SECTIONS ============ */
+        section {
+            padding: 90px 0;
+            position: relative;
+        }
+        .section-label {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary);
+            margin-bottom: 12px;
+            background: rgba(99, 102, 241, 0.08);
+            padding: 6px 16px;
+            border-radius: 50px;
+        }
+        .section-title {
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+            font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+        }
+        .section-subtitle {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            max-width: 600px;
+            margin: 0 auto 50px;
+            line-height: 1.7;
+        }
+
+        /* ============ CARDS ============ */
+        .card-feature {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            transition: var(--transition-slow);
+            overflow: hidden;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        .card-feature::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(160deg, rgba(99, 102, 241, 0.04), rgba(139, 92, 246, 0.02));
+            z-index: -1;
+            opacity: 0;
+            transition: var(--transition-slow);
+        }
+        .card-feature:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-glow);
+            border-color: rgba(99, 102, 241, 0.2);
+        }
+        .card-feature:hover::before {
+            opacity: 1;
+        }
+        .feature-icon-wrap {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.08));
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+        .card-feature:hover .feature-icon-wrap {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        .feature-icon-wrap i {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: var(--transition);
+        }
+        .card-feature:hover .feature-icon-wrap i {
+            -webkit-text-fill-color: #fff;
+            background: none;
+            color: #fff;
+        }
+        .card-feature h4 {
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: -0.3px;
+        }
+        .card-feature p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+
+        /* ============ STATS ============ */
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 2rem 1rem;
+            text-align: center;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            box-shadow: var(--shadow);
+            transition: var(--transition-slow);
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 3px 3px 0 0;
+            transition: var(--transition-slow);
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        .stat-card:hover::after {
+            width: 60%;
+        }
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+        }
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .stat-icon {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            opacity: 0.6;
+        }
+
+        /* ============ ARTIKEL CARDS ============ */
+        .card-artikel {
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition-slow);
+            background: var(--card-bg);
+            height: 100%;
+        }
+        .card-artikel:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-xl);
+        }
+        .card-artikel .card-img-top {
+            height: 200px;
+            object-fit: cover;
+            transition: var(--transition-slow);
+        }
+        .card-artikel:hover .card-img-top {
+            transform: scale(1.04);
+        }
+        .card-artikel .card-body {
+            padding: 1.5rem;
+        }
+        .card-artikel .card-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: -0.3px;
+            margin-bottom: 8px;
+        }
+        .card-artikel .card-text {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            line-height: 1.6;
+        }
+        .badge-date {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            background: rgba(0, 0, 0, 0.03);
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        /* ============ CTA ============ */
+        .cta-section {
+            background: linear-gradient(150deg, #312e81 0%, #4338ca 40%, #6366f1 100%);
+            color: #fff;
+            padding: 70px 0;
+            border-radius: var(--radius-xl);
+            margin: 3rem auto;
+            box-shadow: var(--shadow-glow);
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 30% 50%, rgba(6, 182, 212, 0.3) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .cta-section h3 {
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        .btn-cta {
+            background: #fff;
+            color: var(--primary-dark);
+            border-radius: 50px;
+            padding: 14px 36px;
+            font-weight: 700;
+            border: none;
+            transition: var(--transition-slow);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            font-size: 1rem;
+        }
+        .btn-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+            background: #f0f0ff;
+        }
+
+        /* ============ CONTACT ============ */
+        .info-contact-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            box-shadow: var(--shadow);
+            transition: var(--transition-slow);
+            height: 100%;
+        }
+        .info-contact-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        .info-contact-card .icon-circle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.06));
+            margin-bottom: 16px;
+            transition: var(--transition);
+        }
+        .info-contact-card:hover .icon-circle {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        .info-contact-card .icon-circle i {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: var(--transition);
+        }
+        .info-contact-card:hover .icon-circle i {
+            -webkit-text-fill-color: #fff;
+            background: none;
+            color: #fff;
+        }
+        .kontak-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            padding: 2.5rem;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+        .kontak-card .form-control {
+            border-radius: 14px;
+            padding: 12px 18px;
+            border: 2px solid #e8ecf1;
+            transition: var(--transition);
+            font-size: 0.95rem;
+            background: #fafbfc;
+        }
+        .kontak-card .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.08);
+            background: #fff;
+        }
+        .btn-submit {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 50px;
+            padding: 14px;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: -0.2px;
+            transition: var(--transition-slow);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.45);
+        }
+
+        /* ============ FAQ BUTTON ============ */
+        .btn-faq-float {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.45);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .btn-faq-float:hover {
+            transform: scale(1.08);
+            box-shadow: 0 14px 35px rgba(99, 102, 241, 0.55);
+        }
+        .btn-faq-float::after {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 2px solid rgba(99, 102, 241, 0.3);
+            animation: pulseRing 2s ease-out infinite;
+        }
+        @keyframes pulseRing {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+        .toast-faq {
+            border: none;
+            box-shadow: var(--shadow-xl);
+            border-radius: var(--radius);
+            width: 320px;
+            max-width: 90vw;
+            background: transparent;
+            position: relative;
+        }
+        .toast-faq .toast-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff;
+            border-bottom: none;
+            border-radius: var(--radius) var(--radius) 0 0;
+            padding: 0.85rem 1.2rem;
+        }
+        .toast-faq .toast-body {
+            background: #fff;
+            border-radius: 0 0 var(--radius) var(--radius);
+            padding: 1.25rem;
+        }
+        .toast-faq .toast-body h6 {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-top: 0.75rem;
+        }
+        .toast-faq .toast-body p {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+        .toast-faq::after {
+            content: '';
+            position: absolute;
+            bottom: 20px;
+            right: -12px;
+            width: 0;
+            height: 0;
+            border-left: 12px solid #fff;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.08));
+        }
+        @media (max-width: 576px) {
+            .toast-faq::after {
+                bottom: -12px;
+                right: 20px;
+                border-left: 10px solid transparent;
+                border-right: 10px solid transparent;
+                border-top: 12px solid #fff;
+                border-bottom: none;
+            }
+        }
+
+        /* ============ FOOTER ============ */
+        footer {
+            background: #fff;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.03);
+        }
+        footer h5 {
+            color: var(--dark);
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+        footer a {
+            color: var(--text-muted);
+            transition: var(--transition);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        footer a:hover {
+            color: var(--primary);
+        }
+        footer .social-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(99, 102, 241, 0.06);
+            color: var(--primary);
+            transition: var(--transition);
+            font-size: 1.2rem;
+        }
+        footer .social-icon:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+        .footer-bottom {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* ============ MODAL ============ */
+        .modal-content {
+            border-radius: var(--radius-lg);
+            border: none;
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+        }
+        .modal-header {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1.25rem 1.5rem;
+        }
+        .modal-title {
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        /* ============ LOADING SKELETON ============ */
+        .skeleton {
+            background: linear-gradient(90deg, #e8ecf1 25%, #f0f3f6 50%, #e8ecf1 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        /* ============ SCROLLBAR ============ */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 768px) {
+            .hero-wrapper {
+                border-radius: 0 0 30px 30px;
+                padding: 70px 0 80px;
+            }
+            section {
+                padding: 50px 0;
+            }
+            .cta-section {
+                border-radius: var(--radius-lg);
+                margin: 2rem 1rem;
+                padding: 40px 0;
+                text-align: center;
+            }
+            .navbar-brand img {
+                height: 34px;
+            }
+            .brand-text {
+                font-size: 0.75rem;
+            }
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
 <body data-bs-spy="scroll" data-bs-target="#navbarNav" data-bs-offset="70">
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-light sticky-top" id="navbarNav">
-    <div class="container">
-      <a class="navbar-brand fw-bold" href="index.html">
-        <img src="assets/logo buma.webp" alt="BUMA Bantul" height="40">
-        <span class="brand-text">BUMA PC GP Ansor<br>Kabupaten Bantul</span>
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav ms-auto align-items-center">
-          <li class="nav-item"><a class="nav-link" href="#hero">Beranda</a></li>
-          <li class="nav-item"><a class="nav-link" href="#tentang">Tentang</a></li>
-          <li class="nav-item"><a class="nav-link" href="#layanan">Layanan</a></li>
-          <li class="nav-item"><a class="nav-link" href="pendataan.html">Pendataan Usaha</a></li>
-          <li class="nav-item"><a class="nav-link" href="#artikel">Artikel</a></li>
-          <li class="nav-item"><a class="nav-link" href="#kontak">Kontak</a></li>
-          <!-- Dropdown user -->
-          <li class="nav-item dropdown" id="userDropdown" style="display: none;">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-              <i class="bi bi-person-circle me-1"></i><span id="userName"></span>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top" id="navbarNav">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="assets/logo buma.webp" alt="BUMA Bantul" height="40">
+                <span class="brand-text"><strong>BUMA</strong> PC GP Ansor<br>Kabupaten Bantul</span>
             </a>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="#" id="dashboardLink">Dashboard</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#" onclick="logout(); return false;">Logout</a></li>
-            </ul>
-          </li>
-          <li class="nav-item" id="loginLink"><a class="nav-link" href="login.html">Login</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Hero -->
-  <section id="hero" class="hero text-center">
-    <div class="container">
-      <h1 class="display-4 fw-bold">Selamat Datang di BUMA PC GP Ansor Kabupaten Bantul</h1>
-      <p class="lead mb-4">Badan Usaha Milik Ansor Kabupaten Bantul<br>Mendorong kemandirian ekonomi anggota melalui pendataan dan pengembangan usaha yang terintegrasi.</p>
-      <a href="pendataan.html" class="btn btn-primary btn-lg px-4 me-2">Isi Data Usaha</a>
-      <a id="heroLoginBtn" href="login.html" class="btn btn-outline-light btn-lg px-4">Login Admin/Member</a>
-    </div>
-  </section>
-
-  <!-- Tentang -->
-  <section id="tentang" class="py-5">
-    <div class="container">
-      <div class="row align-items-center">
-        <div class="col-lg-6 mb-4 mb-lg-0">
-          <h2 class="section-title text-start">Tentang BUMA Bantul</h2>
-          <p class="lead">BUMA adalah wadah usaha yang didirikan oleh Gerakan Pemuda Ansor Kabupaten Bantul untuk memberdayakan potensi ekonomi anggota.</p>
-          <p>Kami hadir untuk memetakan, mendampingi, dan mengembangkan usaha anggota agar lebih maju dan berdaya saing. Dengan sistem pendataan modern, BUMA menjadi pusat informasi usaha anggota yang akurat dan terpercaya.</p>
-          <ul class="list-unstyled">
-            <li><i class="bi bi-check-circle-fill text-primary me-2"></i> Pendataan usaha secara digital</li>
-            <li><i class="bi bi-check-circle-fill text-primary me-2"></i> Pendampingan manajemen dan pemasaran</li>
-            <li><i class="bi bi-check-circle-fill text-primary me-2"></i> Akses permodalan dan jaringan bisnis</li>
-          </ul>
-        </div>
-        <div class="col-lg-6">
-          <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Tentang BUMA" class="img-fluid rounded-4 shadow">
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Layanan -->
-  <section id="layanan" class="py-5 bg-light">
-    <div class="container">
-      <h2 class="section-title text-center">Layanan Unggulan BUMA</h2>
-      <div class="row g-4">
-        <div class="col-md-4">
-          <div class="card card-feature text-center p-4 h-100">
-            <i class="bi bi-database feature-icon"></i>
-            <h4>Pendataan Usaha</h4>
-            <p class="text-muted">Registrasi dan pendataan usaha anggota secara online, terintegrasi dalam satu sistem.</p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card card-feature text-center p-4 h-100">
-            <i class="bi bi-graph-up-arrow feature-icon"></i>
-            <h4>Pembinaan & Pelatihan</h4>
-            <p class="text-muted">Program pelatihan manajemen, keuangan, dan digital marketing untuk anggota.</p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card card-feature text-center p-4 h-100">
-            <i class="bi bi-shop feature-icon"></i>
-            <h4>Pemasaran & Jaringan</h4>
-            <p class="text-muted">Fasilitasi promosi produk dan koneksi dengan mitra bisnis potensial.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Statistik Real-time -->
-  <section class="py-5">
-    <div class="container">
-      <div class="row g-4">
-        <div class="col-md-3 col-6">
-          <div class="stat-item">
-            <div class="stat-number" id="totalUsahaStat">0</div>
-            <div class="stat-label">Usaha Terdata</div>
-          </div>
-        </div>
-        <div class="col-md-3 col-6">
-          <div class="stat-item">
-            <div class="stat-number" id="totalKategoriStat">0</div>
-            <div class="stat-label">Kategori Usaha</div>
-          </div>
-        </div>
-        <div class="col-md-3 col-6">
-          <div class="stat-item">
-            <div class="stat-number" id="totalAnggotaStat">0</div>
-            <div class="stat-label">Anggota Aktif</div>
-          </div>
-        </div>
-        <div class="col-md-3 col-6">
-          <div class="stat-item">
-            <div class="stat-number" id="totalArtikelStat">0</div>
-            <div class="stat-label">Total Artikel</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Artikel Terbaru -->
-  <section id="artikel" class="py-5 bg-light">
-    <div class="container">
-      <h2 class="section-title text-center">Artikel & Berita Terbaru</h2>
-      <div id="artikelContainer" class="row g-4"></div>
-      <div id="loadingArtikel" class="text-center">
-        <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
-      </div>
-      <div class="text-center mt-4">
-        <a href="artikel.html" class="btn btn-outline-primary btn-lg">Lihat Semua Berita <i class="bi bi-arrow-right"></i></a>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section class="cta-section container">
-    <div class="row align-items-center">
-      <div class="col-lg-8 text-center text-lg-start">
-        <h3 class="fw-bold mb-2">Siap Memajukan Usaha Anda?</h3>
-        <p class="mb-4 mb-lg-0">Bergabunglah dengan BUMA dan dapatkan berbagai manfaat untuk usaha Anda.</p>
-      </div>
-      <div class="col-lg-4 text-center">
-        <a href="pendataan.html" class="btn btn-light btn-lg">Daftar Sekarang</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Kontak -->
-  <section id="kontak" class="py-5">
-    <div class="container">
-      <h2 class="section-title text-center">Hubungi Kami</h2>
-      <div class="row g-4 mb-5">
-        <div class="col-md-4">
-          <div class="info-contact">
-            <i class="bi bi-geo-alt"></i>
-            <h5 class="mt-3">Alamat</h5>
-            <p class="text-muted">Jl. Parangtritis No. 123, Bantul, DIY</p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="info-contact">
-            <i class="bi bi-telephone"></i>
-            <h5 class="mt-3">Telepon</h5>
-            <p class="text-muted">(0274) 123456<br>+62 812 3456 7890</p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="info-contact">
-            <i class="bi bi-envelope"></i>
-            <h5 class="mt-3">Email</h5>
-            <p class="text-muted">info@buma-bantul.or.id<br>buma@ansor.or.id</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="row justify-content-center">
-        <div class="col-md-8">
-          <div class="kontak-card">
-            <h4 class="text-center mb-4">Kirim Pesan</h4>
-            <div id="kontakAlert" class="alert d-none"></div>
-            <form id="kontakForm">
-              <div class="mb-3"><label class="form-label">Nama Lengkap</label><input type="text" class="form-control" id="nama" required></div>
-              <div class="mb-3"><label class="form-label">Email</label><input type="email" class="form-control" id="email" required></div>
-              <div class="mb-3"><label class="form-label">Pesan</label><textarea class="form-control" id="pesan" rows="4" required></textarea></div>
-              <div class="mb-3"><label class="form-label">Verifikasi: Berapa 2 + 3 ?</label><input type="number" class="form-control" id="verifikasi" required min="0" max="10"></div>
-              <button type="submit" class="btn btn-primary w-100" id="btnKirim">Kirim Pesan</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Modal Detail Artikel -->
-  <div class="modal fade" id="artikelModal" tabindex="-1" aria-labelledby="artikelModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="artikelModalLabel">Judul Artikel</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <p id="artikelMeta" class="text-muted small"></p>
-          <img id="artikelGambar" class="img-fluid mb-3" style="max-height:300px; width:auto; display:none;" alt="">
-          <div id="artikelKontenLengkap" style="line-height:1.7;"></div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Floating FAQ Toast -->
-  <div class="position-fixed bottom-0 end-0 p-3" style="z-index:11">
-    <button class="btn btn-primary rounded-circle btn-faq" type="button" onclick="toggleFaqToast()" title="Bantuan"><i class="bi bi-question-lg fs-3"></i></button>
-    <div class="toast-container-custom" id="faqToastContainer">
-      <div id="faqToast" class="toast toast-faq" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
-        <div class="toast-header"><i class="bi bi-info-circle-fill me-2"></i><strong class="me-auto">Pusat Bantuan</strong><button type="button" class="btn-close" data-bs-dismiss="toast"></button></div>
-        <div class="toast-body">
-          <h6><i class="bi bi-question-circle-fill me-1 text-primary"></i> Bagaimana cara mendata usaha?</h6>
-          <p>Klik menu "Pendataan Usaha" lalu isi form. Anda perlu login sebagai member terlebih dahulu.</p>
-          <h6><i class="bi bi-question-circle-fill me-1 text-primary"></i> Lupa password?</h6>
-          <p>Hubungi admin BUMA melalui kontak yang tersedia.</p>
-          <h6><i class="bi bi-question-circle-fill me-1 text-primary"></i> Ingin menjadi member?</h6>
-          <p>Silakan registrasi di halaman login, pilih "Daftar".</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <footer class="text-center text-lg-start">
-    <div class="container p-4">
-      <div class="row">
-        <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
-          <h5 class="text-uppercase">BUMA Bantul</h5>
-          <p>Badan Usaha Milik Ansor Kabupaten Bantul. Memberdayakan ekonomi anggota melalui pendataan dan pemetaan usaha.</p>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-          <h5 class="text-uppercase">Tautan</h5>
-          <ul class="list-unstyled">
-            <li><a href="#hero" class="text-decoration-none">Beranda</a></li>
-            <li><a href="pendataan.html" class="text-decoration-none">Pendataan</a></li>
-            <li><a href="#artikel" class="text-decoration-none">Artikel</a></li>
-            <li><a href="#kontak" class="text-decoration-none">Kontak</a></li>
-          </ul>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-          <h5 class="text-uppercase">Ikuti Kami</h5>
-          <a href="#" class="text-dark me-2"><i class="bi bi-facebook"></i></a>
-          <a href="#" class="text-dark me-2"><i class="bi bi-instagram"></i></a>
-          <a href="#" class="text-dark me-2"><i class="bi bi-twitter"></i></a>
-        </div>
-      </div>
-    </div>
-    <div class="text-center p-3" style="background: linear-gradient(135deg, #4361ee, #3f37c9); color: white;">© 2026 BUMA Bantul</div>
-  </footer>
-
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- API dan Auth -->
-  <script src="js/api.js"></script>
-  <script src="js/auth.js"></script>
-  <script>
-    // ================== FUNGSI CACHE ==================
-    async function loadWithCache(key, fetchFn, renderFn) {
-      const cached = sessionStorage.getItem(key);
-      if (cached) { try { renderFn(JSON.parse(cached)); } catch (e) {} }
-      try {
-        const fresh = await fetchFn();
-        const freshStr = JSON.stringify(fresh);
-        if (cached !== freshStr) {
-          sessionStorage.setItem(key, freshStr);
-          renderFn(fresh);
-        }
-      } catch (err) { console.error(err); }
-      finally { const loading = document.getElementById('loadingArtikel'); if (loading) loading.style.display = 'none'; }
-    }
-
-    // ================== STATISTIK ==================
-    async function fetchStatistik() {
-      const [usahaRes, artikelRes] = await Promise.all([
-        apiCall('getAllDataUsahaPublik', {}),
-        apiCall('getAllArtikel', {})
-      ]);
-      let totalUsaha=0, totalKategori=0, totalAnggota=0, totalArtikel=0;
-      if (usahaRes.success) {
-        totalUsaha = usahaRes.data.length;
-        const kategoriSet = new Set(usahaRes.data.map(u => u.jenisUsaha).filter(Boolean));
-        totalKategori = kategoriSet.size;
-        const anggotaSet = new Set(usahaRes.data.map(u => u.userId).filter(id => id && id !== 0));
-        totalAnggota = anggotaSet.size;
-      }
-      if (artikelRes.success) totalArtikel = artikelRes.data.length;
-      return { totalUsaha, totalKategori, totalAnggota, totalArtikel };
-    }
-    function renderStatistik(data) {
-      document.getElementById('totalUsahaStat').innerText = data.totalUsaha;
-      document.getElementById('totalKategoriStat').innerText = data.totalKategori;
-      document.getElementById('totalAnggotaStat').innerText = data.totalAnggota;
-      document.getElementById('totalArtikelStat').innerText = data.totalArtikel;
-    }
-
-    // ================== ARTIKEL ==================
-    function renderArtikel(data) {
-      const container = document.getElementById('artikelContainer');
-      if (!data || data.length===0) { container.innerHTML='<p class="text-center">Belum ada artikel.</p>'; return; }
-      const sorted = data.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
-      const latest = sorted.slice(0,3);
-      container.innerHTML = '';
-      latest.forEach(item => {
-        const col = document.createElement('div'); col.className = 'col-md-4';
-        const img = item.imageUrl ? `<img src="${item.imageUrl}" class="card-img-top" style="height:200px;object-fit:cover;" alt="">` : '';
-        col.innerHTML = `
-          <div class="card h-100 shadow-sm">
-            ${img}
-            <div class="card-body">
-              <h5 class="card-title">${item.title}</h5>
-              <p class="card-text text-muted small">${new Date(item.createdAt).toLocaleDateString('id-ID')} oleh ${item.authorName}</p>
-              <p class="card-text">${item.content.substring(0,100)}...</p>
-              <button class="btn btn-outline-primary btn-sm" onclick="viewArtikel('${item.id}')">Baca Selengkapnya</button>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto align-items-center gap-1">
+                    <li class="nav-item"><a class="nav-link" href="#hero">Beranda</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#tentang">Tentang</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#layanan">Layanan</a></li>
+                    <li class="nav-item"><a class="nav-link" href="pendataan.html">Pendataan Usaha</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#artikel">Artikel</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#kontak">Kontak</a></li>
+                    <li class="nav-item dropdown" id="userDropdown" style="display:none;">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle me-1"></i><span id="userName"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#" id="dashboardLink"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" onclick="logout(); return false;"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item" id="loginLink"><a class="nav-link" href="login.html"><i class="bi bi-person me-1"></i>Login</a></li>
+                </ul>
             </div>
-          </div>`;
-        container.appendChild(col);
-      });
-    }
-    async function fetchArtikel() { const res = await apiCall('getAllArtikel', {}); return res.success ? res.data : []; }
+        </div>
+    </nav>
 
-    // ================== LIHAT ARTIKEL MODAL ==================
-    async function viewArtikel(id) {
-      try {
-        const res = await apiCall('getArtikelById', { id });
-        if (res.success) {
-          const item = res.data;
-          document.getElementById('artikelModalLabel').innerText = item.title;
-          document.getElementById('artikelMeta').innerText = `Diposting pada ${new Date(item.createdAt).toLocaleDateString('id-ID')} oleh ${item.authorName}`;
-          const img = document.getElementById('artikelGambar');
-          if (item.imageUrl) { img.src = item.imageUrl; img.style.display = 'block'; } else img.style.display = 'none';
-          document.getElementById('artikelKontenLengkap').innerHTML = item.content.replace(/\n/g,'<br>');
-          new bootstrap.Modal(document.getElementById('artikelModal')).show();
-        } else alert('Gagal memuat artikel: ' + res.message);
-      } catch (err) { alert(err.message); }
-    }
+    <!-- Hero -->
+    <section id="hero" class="hero-wrapper">
+        <div class="hero-shapes">
+            <div class="hero-shape"></div>
+            <div class="hero-shape"></div>
+            <div class="hero-shape"></div>
+            <div class="hero-shape"></div>
+        </div>
+        <div class="container hero-content">
+            <span class="hero-badge"><i class="bi bi-star-fill me-1"></i> BUMA PC GP Ansor Kabupaten Bantul</span>
+            <h1>Mendorong Kemandirian<br>Ekonomi Anggota</h1>
+            <p class="lead mx-auto" style="max-width:650px;">Badan Usaha Milik Ansor Kabupaten Bantul hadir untuk memetakan, mendampingi, dan mengembangkan usaha anggota agar lebih maju dan berdaya saing.</p>
+            <div class="d-flex flex-wrap justify-content-center gap-3">
+                <a href="pendataan.html" class="btn btn-hero btn-hero-primary">Isi Data Usaha <i class="bi bi-arrow-right"></i></a>
+                <a id="heroLoginBtn" href="login.html" class="btn btn-hero btn-hero-outline">Login Admin/Member</a>
+            </div>
+        </div>
+    </section>
 
-    // ================== TOAST FAQ ==================
-    var faqToast;
-    function toggleFaqToast() { if (!faqToast) return; const t = document.getElementById('faqToast'); t.classList.contains('show') ? faqToast.hide() : faqToast.show(); }
+    <!-- Tentang -->
+    <section id="tentang">
+        <div class="container">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <span class="section-label">Tentang Kami</span>
+                    <h2 class="section-title">Mengenal BUMA Bantul</h2>
+                    <p class="lead" style="font-weight:500;">Wadah usaha yang didirikan oleh Gerakan Pemuda Ansor Kabupaten Bantul untuk memberdayakan potensi ekonomi anggota.</p>
+                    <p style="color:var(--text-muted); line-height:1.8;">Kami hadir untuk memetakan, mendampingi, dan mengembangkan usaha anggota agar lebih maju dan berdaya saing. Dengan sistem pendataan modern, BUMA menjadi pusat informasi usaha anggota yang akurat dan terpercaya.</p>
+                    <ul class="list-unstyled mt-3">
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Pendataan usaha secara digital</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Pendampingan manajemen dan pemasaran</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Akses permodalan dan jaringan bisnis</li>
+                    </ul>
+                </div>
+                <div class="col-lg-6">
+                    <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Tentang BUMA" class="img-fluid rounded-4 shadow-lg" style="border-radius:var(--radius-lg) !important;">
+                </div>
+            </div>
+        </div>
+    </section>
 
-    // ================== KONTAK FORM ==================
-    document.getElementById('kontakForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (parseInt(document.getElementById('verifikasi').value) !== 5) { alert('Jawaban verifikasi salah!'); return; }
-      const btn = document.getElementById('btnKirim');
-      btn.disabled = true; btn.innerHTML = 'Mengirim...';
-      try {
-        const res = await apiCall('simpanPesan', { nama:document.getElementById('nama').value, email:document.getElementById('email').value, pesan:document.getElementById('pesan').value });
-        const alertBox = document.getElementById('kontakAlert');
-        if (res.success) {
-          alertBox.className = 'alert alert-success'; alertBox.textContent = 'Pesan berhasil dikirim. Terima kasih!';
-          document.getElementById('kontakForm').reset();
-        } else { alertBox.className = 'alert alert-danger'; alertBox.textContent = 'Gagal: ' + res.message; }
-        alertBox.classList.remove('d-none');
-        setTimeout(() => alertBox.classList.add('d-none'), 5000);
-      } catch (err) { alert(err.message); } finally { btn.disabled = false; btn.innerHTML = 'Kirim Pesan'; }
-    });
+    <!-- Layanan -->
+    <section id="layanan" style="background:#fafbfd;">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="section-label">Layanan</span>
+                <h2 class="section-title">Layanan Unggulan BUMA</h2>
+                <p class="section-subtitle">Kami menyediakan berbagai layanan untuk mendukung pertumbuhan usaha anggota.</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card-feature">
+                        <div class="feature-icon-wrap"><i class="bi bi-database"></i></div>
+                        <h4>Pendataan Usaha</h4>
+                        <p>Registrasi dan pendataan usaha anggota secara online, terintegrasi dalam satu sistem modern.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-feature">
+                        <div class="feature-icon-wrap"><i class="bi bi-graph-up-arrow"></i></div>
+                        <h4>Pembinaan & Pelatihan</h4>
+                        <p>Program pelatihan manajemen, keuangan, dan digital marketing untuk anggota.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-feature">
+                        <div class="feature-icon-wrap"><i class="bi bi-shop"></i></div>
+                        <h4>Pemasaran & Jaringan</h4>
+                        <p>Fasilitasi promosi produk dan koneksi dengan mitra bisnis potensial.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    // ================== LOGOUT ==================
-    window.logout = async function() {
-      const token = sessionStorage.getItem('token');
-      if (token) { try { await apiCall('logout', { token }); } catch (e) { console.error(e); } }
-      sessionStorage.clear();
-      window.location.href = 'index.html';
-    };
+    <!-- Statistik -->
+    <section style="padding:50px 0;">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="bi bi-building"></i></div>
+                        <div class="stat-number" id="totalUsahaStat" data-target="0">0</div>
+                        <div class="stat-label">Usaha Terdata</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="bi bi-grid"></i></div>
+                        <div class="stat-number" id="totalKategoriStat" data-target="0">0</div>
+                        <div class="stat-label">Kategori Usaha</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="bi bi-people"></i></div>
+                        <div class="stat-number" id="totalAnggotaStat" data-target="0">0</div>
+                        <div class="stat-label">Anggota Aktif</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="bi bi-newspaper"></i></div>
+                        <div class="stat-number" id="totalArtikelStat" data-target="0">0</div>
+                        <div class="stat-label">Total Artikel</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    // ================== UPDATE NAVBAR DAN TOMBOL HERO ==================
-    function updateHeroButton() {
-      const token = sessionStorage.getItem('token');
-      const role = sessionStorage.getItem('role');
-      const heroBtn = document.getElementById('heroLoginBtn');
-      if (token && role) {
-        // Ubah teks dan href tombol hero
-        heroBtn.innerText = 'Dashboard';
-        if (role === 'admin') {
-          heroBtn.href = 'dashboard-admin.html';
-        } else if (role === 'member') {
-          heroBtn.href = 'dashboard-member.html';
+    <!-- Artikel -->
+    <section id="artikel" style="background:#fafbfd;">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="section-label">Berita & Artikel</span>
+                <h2 class="section-title">Artikel Terbaru</h2>
+                <p class="section-subtitle">Informasi dan berita terkini seputar BUMA dan kegiatan anggota.</p>
+            </div>
+            <div id="artikelContainer" class="row g-4"></div>
+            <div id="loadingArtikel" class="text-center py-4">
+                <div class="spinner-border text-primary" role="status" style="width:3rem;height:3rem;"><span class="visually-hidden">Loading...</span></div>
+            </div>
+            <div class="text-center mt-4">
+                <a href="artikel.html" class="btn btn-outline-primary btn-lg rounded-pill px-5 fw-semibold">Lihat Semua Berita <i class="bi bi-arrow-right ms-1"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section container">
+        <div class="row align-items-center text-center text-lg-start px-4">
+            <div class="col-lg-8 mb-3 mb-lg-0">
+                <h3 class="fw-bold mb-2">Siap Memajukan Usaha Anda?</h3>
+                <p class="mb-0 opacity-90">Bergabunglah dengan BUMA dan dapatkan berbagai manfaat untuk usaha Anda.</p>
+            </div>
+            <div class="col-lg-4 text-center">
+                <a href="pendataan.html" class="btn btn-cta">Daftar Sekarang <i class="bi bi-arrow-right ms-1"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Kontak -->
+    <section id="kontak">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="section-label">Kontak</span>
+                <h2 class="section-title">Hubungi Kami</h2>
+                <p class="section-subtitle">Jangan ragu untuk menghubungi kami melalui informasi di bawah ini.</p>
+            </div>
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="info-contact-card">
+                        <div class="icon-circle"><i class="bi bi-geo-alt"></i></div>
+                        <h5 class="fw-bold">Alamat</h5>
+                        <p class="text-muted mb-0">Jalan Marsda Adisucipto No. 45,<br>Karangbayam, Bantul, DIY</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="info-contact-card">
+                        <div class="icon-circle"><i class="bi bi-telephone"></i></div>
+                        <h5 class="fw-bold">Telepon</h5>
+                        <p class="text-muted mb-0">(0274) 123456<br>+62 812 3456 7890</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="info-contact-card">
+                        <div class="icon-circle"><i class="bi bi-envelope"></i></div>
+                        <h5 class="fw-bold">Email</h5>
+                        <p class="text-muted mb-0">bumabantul@gmail.com</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="kontak-card">
+                        <h4 class="text-center fw-bold mb-4">Kirim Pesan</h4>
+                        <div id="kontakAlert" class="alert d-none"></div>
+                        <form id="kontakForm">
+                            <div class="mb-3"><label class="form-label fw-semibold">Nama Lengkap</label><input type="text" class="form-control" id="nama" required></div>
+                            <div class="mb-3"><label class="form-label fw-semibold">Email</label><input type="email" class="form-control" id="email" required></div>
+                            <div class="mb-3"><label class="form-label fw-semibold">Pesan</label><textarea class="form-control" id="pesan" rows="4" required></textarea></div>
+                            <div class="mb-3"><label class="form-label fw-semibold">Verifikasi: Berapa 2 + 3 ?</label><input type="number" class="form-control" id="verifikasi" required min="0" max="10"></div>
+                            <button type="submit" class="btn btn-submit w-100 text-white" id="btnKirim">Kirim Pesan <i class="bi bi-send ms-1"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Detail Artikel -->
+    <div class="modal fade" id="artikelModal" tabindex="-1" aria-labelledby="artikelModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="artikelModalLabel">Judul Artikel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="artikelMeta" class="text-muted small"></p>
+                    <img id="artikelGambar" class="img-fluid mb-3 rounded-3" style="max-height:350px;width:100%;object-fit:cover;display:none;" alt="">
+                    <div id="artikelKontenLengkap" style="line-height:1.8;"></div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating FAQ -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index:11">
+        <button class="btn-faq-float" type="button" onclick="toggleFaqToast()" title="Bantuan"><i class="bi bi-question-lg"></i></button>
+        <div class="toast-container-custom" id="faqToastContainer" style="position:absolute;bottom:0;right:70px;">
+            <div id="faqToast" class="toast toast-faq" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+                <div class="toast-header"><i class="bi bi-info-circle-fill me-2"></i><strong class="me-auto">Pusat Bantuan</strong><button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button></div>
+                <div class="toast-body">
+                    <h6><i class="bi bi-question-circle-fill me-1 text-primary"></i> Bagaimana cara mendata usaha?</h6>
+                    <p>Klik menu "Pendataan Usaha" lalu isi form. Anda perlu login sebagai member terlebih dahulu.</p>
+                    <h6><i class="bi bi-question-circle-fill me-1 text-primary"></i> Lupa password?</h6>
+                    <p>Hubungi admin BUMA melalui kontak yang tersedia.</p>
+                    <h6><i class="bi bi-question-circle-fill me-1 text-primary"></i> Ingin menjadi member?</h6>
+                    <p>Silakan registrasi di halaman login, pilih "Daftar".</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-lg-start">
+        <div class="container p-4">
+            <div class="row align-items-start">
+                <div class="col-lg-5 col-md-12 mb-4 mb-md-0">
+                    <h5 class="text-uppercase fw-bold">BUMA Bantul</h5>
+                    <p class="text-muted" style="line-height:1.7;">Badan Usaha Milik Ansor Kabupaten Bantul. Memberdayakan ekonomi anggota melalui pendataan dan pemetaan usaha.</p>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase fw-bold">Tautan</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#hero">Beranda</a></li>
+                        <li><a href="pendataan.html">Pendataan</a></li>
+                        <li><a href="#artikel">Artikel</a></li>
+                        <li><a href="#kontak">Kontak</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase fw-bold">Ikuti Kami</h5>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom text-center p-3">
+            © 2026 BUMA Bantul. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+    </script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // ================== FUNGSI CACHE ==================
+        async function loadWithCache(key, fetchFn, renderFn) {
+            const cached = sessionStorage.getItem(key);
+            if (cached) { try { renderFn(JSON.parse(cached));
+                } catch (e) {} }
+            try {
+                const fresh = await fetchFn();
+                const freshStr = JSON.stringify(fresh);
+                if (cached !== freshStr) {
+                    sessionStorage.setItem(key, freshStr);
+                    renderFn(fresh);
+                }
+            } catch (err) { console.error(err); } finally {
+                const loading = document.getElementById('loadingArtikel');
+                if (loading) loading.style.display = 'none';
+            }
         }
-      } else {
-        heroBtn.innerText = 'Login Admin/Member';
-        heroBtn.href = 'login.html';
-      }
-    }
 
-    // ================== INISIALISASI ==================
-    document.addEventListener('DOMContentLoaded', function() {
-      if (typeof updateNavbar === 'function') updateNavbar(); // dari auth.js
-      updateHeroButton(); // update tombol hero
-      const toastEl = document.getElementById('faqToast');
-      if (toastEl) faqToast = new bootstrap.Toast(toastEl, { autohide: false });
-      loadWithCache('statistik', fetchStatistik, renderStatistik);
-      loadWithCache('artikel_beranda', fetchArtikel, renderArtikel);
-    });
-  </script>
+        // ================== STATISTIK ==================
+        async function fetchStatistik() {
+            const [usahaRes, artikelRes] = await Promise.all([
+                apiCall('getAllDataUsahaPublik', {}),
+                apiCall('getAllArtikel', {})
+            ]);
+            let totalUsaha = 0,
+                totalKategori = 0,
+                totalAnggota = 0,
+                totalArtikel = 0;
+            if (usahaRes.success) {
+                totalUsaha = usahaRes.data.length;
+                const kategoriSet = new Set(usahaRes.data.map(u => u.jenisUsaha).filter(Boolean));
+                totalKategori = kategoriSet.size;
+                const anggotaSet = new Set(usahaRes.data.map(u => u.userId).filter(id => id && id !== 0));
+                totalAnggota = anggotaSet.size;
+            }
+            if (artikelRes.success) totalArtikel = artikelRes.data.length;
+            return { totalUsaha, totalKategori, totalAnggota, totalArtikel };
+        }
+
+        function animateCounter(el, target) {
+            const start = 0;
+            const duration = 1200;
+            const startTime = performance.now();
+
+            function update(now) {
+                const elapsed = now - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                const current = Math.round(start + (target - start) * eased);
+                el.innerText = current;
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    el.innerText = target;
+                }
+            }
+            requestAnimationFrame(update);
+        }
+
+        function renderStatistik(data) {
+            const elUsaha = document.getElementById('totalUsahaStat');
+            const elKategori = document.getElementById('totalKategoriStat');
+            const elAnggota = document.getElementById('totalAnggotaStat');
+            const elArtikel = document.getElementById('totalArtikelStat');
+            const prevUsaha = parseInt(elUsaha.innerText) || 0;
+            const prevKategori = parseInt(elKategori.innerText) || 0;
+            const prevAnggota = parseInt(elAnggota.innerText) || 0;
+            const prevArtikel = parseInt(elArtikel.innerText) || 0;
+            if (prevUsaha !== data.totalUsaha) animateCounter(elUsaha, data.totalUsaha);
+            if (prevKategori !== data.totalKategori) animateCounter(elKategori, data.totalKategori);
+            if (prevAnggota !== data.totalAnggota) animateCounter(elAnggota, data.totalAnggota);
+            if (prevArtikel !== data.totalArtikel) animateCounter(elArtikel, data.totalArtikel);
+            elUsaha.setAttribute('data-target', data.totalUsaha);
+            elKategori.setAttribute('data-target', data.totalKategori);
+            elAnggota.setAttribute('data-target', data.totalAnggota);
+            elArtikel.setAttribute('data-target', data.totalArtikel);
+        }
+
+        // ================== ARTIKEL ==================
+        function renderArtikel(data) {
+            const container = document.getElementById('artikelContainer');
+            if (!data || data.length === 0) {
+                container.innerHTML =
+                    '<div class="col-12 text-center"><div class="p-5 text-muted"><i class="bi bi-newspaper" style="font-size:3rem;"></i><p class="mt-3">Belum ada artikel.</p></div></div>';
+                return;
+            }
+            const sorted = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            const latest = sorted.slice(0, 3);
+            container.innerHTML = '';
+            latest.forEach(item => {
+                const col = document.createElement('div');
+                col.className = 'col-md-4';
+                const img = item.imageUrl ?
+                    `<img src="${item.imageUrl}" class="card-img-top" alt="">` :
+                    `<div class="card-img-top d-flex align-items-center justify-content-center" style="height:200px;background:linear-gradient(135deg,#e8ecf1,#f0f3f6);"><i class="bi bi-image" style="font-size:3rem;color:#cbd5e1;"></i></div>`;
+                col.innerHTML = `
+              <div class="card-artikel">
+                ${img}
+                <div class="card-body">
+                  <span class="badge-date mb-2 d-inline-block"><i class="bi bi-calendar3 me-1"></i>${new Date(item.createdAt).toLocaleDateString('id-ID')}</span>
+                  <h5 class="card-title">${item.title}</h5>
+                  <p class="card-text">${item.content.substring(0,100)}...</p>
+                  <button class="btn btn-outline-primary btn-sm rounded-pill px-3 mt-2" onclick="viewArtikel('${item.id}')">Baca Selengkapnya <i class="bi bi-arrow-right ms-1"></i></button>
+                </div>
+              </div>`;
+                container.appendChild(col);
+            });
+        }
+        async function fetchArtikel() { const res = await apiCall('getAllArtikel', {}); return res.success ? res.data :
+            []; }
+
+        // ================== LIHAT ARTIKEL MODAL ==================
+        async function viewArtikel(id) {
+            try {
+                const res = await apiCall('getArtikelById', { id });
+                if (res.success) {
+                    const item = res.data;
+                    document.getElementById('artikelModalLabel').innerText = item.title;
+                    document.getElementById('artikelMeta').innerText =
+                        `Diposting pada ${new Date(item.createdAt).toLocaleDateString('id-ID')} oleh ${item.authorName}`;
+                    const img = document.getElementById('artikelGambar');
+                    if (item.imageUrl) { img.src = item.imageUrl;
+                        img.style.display = 'block'; } else img.style.display = 'none';
+                    document.getElementById('artikelKontenLengkap').innerHTML = item.content.replace(/\n/g, '<br>');
+                    new bootstrap.Modal(document.getElementById('artikelModal')).show();
+                } else alert('Gagal memuat artikel: ' + res.message);
+            } catch (err) { alert(err.message); }
+        }
+
+        // ================== TOAST FAQ ==================
+        var faqToast;
+
+        function toggleFaqToast() { if (!faqToast) return;
+            const t = document.getElementById('faqToast');
+            t.classList.contains('show') ? faqToast.hide() : faqToast.show(); }
+
+        // ================== KONTAK FORM ==================
+        document.getElementById('kontakForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (parseInt(document.getElementById('verifikasi').value) !== 5) { alert(
+                    'Jawaban verifikasi salah!'); return; }
+            const btn = document.getElementById('btnKirim');
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Mengirim...';
+            try {
+                const res = await apiCall('simpanPesan', {
+                    nama: document.getElementById('nama').value,
+                    email: document.getElementById('email').value,
+                    pesan: document.getElementById('pesan').value
+                });
+                const alertBox = document.getElementById('kontakAlert');
+                if (res.success) {
+                    alertBox.className = 'alert alert-success';
+                    alertBox.textContent = 'Pesan berhasil dikirim. Terima kasih!';
+                    document.getElementById('kontakForm').reset();
+                } else {
+                    alertBox.className = 'alert alert-danger';
+                    alertBox.textContent = 'Gagal: ' + res.message;
+                }
+                alertBox.classList.remove('d-none');
+                setTimeout(() => alertBox.classList.add('d-none'), 5000);
+            } catch (err) { alert(err.message); } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+            }
+        });
+
+        // ================== LOGOUT ==================
+        window.logout = async function() {
+            const token = sessionStorage.getItem('token');
+            if (token) { try { await apiCall('logout', { token }); } catch (e) { console.error(e); } }
+            sessionStorage.clear();
+            window.location.href = 'index.html';
+        };
+
+        // ================== UPDATE NAVBAR & HERO BUTTON ==================
+        function updateHeroButton() {
+            const token = sessionStorage.getItem('token');
+            const role = sessionStorage.getItem('role');
+            const heroBtn = document.getElementById('heroLoginBtn');
+            if (token && role) {
+                heroBtn.innerText = 'Dashboard';
+                heroBtn.classList.remove('btn-hero-outline');
+                heroBtn.classList.add('btn-hero-primary');
+                if (role === 'admin') heroBtn.href = 'dashboard-admin.html';
+                else if (role === 'member') heroBtn.href = 'dashboard-member.html';
+            } else {
+                heroBtn.innerText = 'Login Admin/Member';
+                heroBtn.classList.remove('btn-hero-primary');
+                heroBtn.classList.add('btn-hero-outline');
+                heroBtn.href = 'login.html';
+            }
+        }
+
+        // ================== NAVBAR SCROLL EFFECT ==================
+        function handleNavbarScroll() {
+            const navbar = document.getElementById('navbarNav');
+            if (window.scrollY > 50) navbar.classList.add('scrolled');
+            else navbar.classList.remove('scrolled');
+        }
+
+        // ================== INISIALISASI ==================
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof updateNavbar === 'function') updateNavbar();
+            updateHeroButton();
+            const toastEl = document.getElementById('faqToast');
+            if (toastEl) faqToast = new bootstrap.Toast(toastEl, { autohide: false });
+            loadWithCache('statistik', fetchStatistik, renderStatistik);
+            loadWithCache('artikel_beranda', fetchArtikel, renderArtikel);
+            window.addEventListener('scroll', handleNavbarScroll);
+            handleNavbarScroll();
+        });
+    </script>
 </body>
 </html>

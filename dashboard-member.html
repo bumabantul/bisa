@@ -10,288 +10,142 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Leaflet JS (defer: dimuat lebih awal, dijalankan setelah HTML) -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #4361ee;
-      --secondary: #3f37c9;
-      --success: #4cc9f0;
-      --info: #4895ef;
-      --warning: #f8961e;
-      --danger: #f72585;
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #8b5cf6;
+      --accent: #06b6d4;
+      --dark: #0f172a;
+      --light: #f8fafc;
+      --card-bg: #ffffff;
+      --glass-bg: rgba(255, 255, 255, 0.75);
+      --glass-border: rgba(255, 255, 255, 0.4);
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow: 0 4px 6px rgba(0,0,0,0.05), 0 10px 15px rgba(0,0,0,0.03);
+      --shadow-lg: 0 20px 40px rgba(0,0,0,0.08), 0 8px 20px rgba(0,0,0,0.04);
+      --shadow-xl: 0 25px 50px rgba(0,0,0,0.12);
+      --radius-sm: 12px;
+      --radius: 20px;
+      --radius-lg: 28px;
+      --radius-xl: 36px;
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       --sidebar-width: 260px;
     }
-    * {
-      font-family: 'Inter', sans-serif;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      background: #f5f7fb;
-      overflow-x: hidden;
-    }
-    /* Sidebar Modern */
+    * { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--light); overflow-x: hidden; }
+
+    /* Sidebar */
     #sidebar {
-      min-width: var(--sidebar-width);
-      max-width: var(--sidebar-width);
-      background: linear-gradient(135deg, #1e2b3c, #0f1a26);
-      color: #fff;
-      transition: all 0.3s;
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100vh;
-      z-index: 1000;
-      box-shadow: 2px 0 15px rgba(0,0,0,0.1);
+      min-width: var(--sidebar-width); max-width: var(--sidebar-width);
+      background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%);
+      color: #fff; transition: all 0.3s; position: fixed; top: 0; left: 0; height: 100vh;
+      z-index: 1000; box-shadow: var(--shadow-xl);
     }
-    #sidebar .sidebar-header {
-      padding: 30px 20px;
-      text-align: center;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
+    #sidebar .sidebar-header { padding: 30px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
     #sidebar .sidebar-header h3 {
-      font-weight: 700;
-      font-size: 1.8rem;
+      font-weight: 700; font-size: 1.8rem; margin: 0;
       background: linear-gradient(135deg, #fff, #a5b4fc);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin: 0;
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
     }
-    #sidebar .sidebar-header p {
-      color: rgba(255,255,255,0.6);
-      font-size: 0.9rem;
-      margin-top: 5px;
-    }
-    #sidebar ul.components {
-      padding: 20px 0;
-    }
+    #sidebar .sidebar-header p { color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-top: 5px; }
+    #sidebar ul.components { padding: 20px 0; }
     #sidebar ul li a {
-      padding: 12px 25px;
-      display: block;
-      color: rgba(255,255,255,0.7);
-      text-decoration: none;
-      font-weight: 500;
-      transition: all 0.3s;
-      border-left: 4px solid transparent;
-      margin: 5px 10px;
-      border-radius: 8px;
+      padding: 15px 25px; display: block; color: rgba(255,255,255,0.7); text-decoration: none;
+      font-weight: 500; transition: all 0.3s; border-left: 4px solid transparent; margin: 5px 10px; border-radius: 10px;
     }
-    #sidebar ul li a:hover {
-      background: rgba(255,255,255,0.1);
-      color: #fff;
-      border-left-color: var(--primary);
-      transform: translateX(5px);
+    #sidebar ul li a:hover, #sidebar ul li a.active {
+      background: rgba(99,102,241,0.2); color: #fff; border-left-color: var(--primary); transform: translateX(5px);
     }
-    #sidebar ul li a.active {
-      background: rgba(67,97,238,0.2);
-      color: #fff;
-      border-left-color: var(--primary);
-    }
-    #sidebar ul li a i {
-      margin-right: 12px;
-      width: 20px;
-      font-size: 1.2rem;
-    }
-    /* Konten Utama */
-    #content {
-      width: calc(100% - var(--sidebar-width));
-      margin-left: var(--sidebar-width);
-      transition: all 0.3s;
-      padding: 20px;
-    }
+    #sidebar ul li a i { margin-right: 12px; width: 20px; font-size: 1.2rem; }
+
+    /* Konten */
+    #content { width: calc(100% - var(--sidebar-width)); margin-left: var(--sidebar-width); transition: all 0.3s; padding: 20px; }
     @media (max-width: 768px) {
-      #sidebar {
-        margin-left: calc(-1 * var(--sidebar-width));
-      }
-      #sidebar.active {
-        margin-left: 0;
-      }
-      #content {
-        width: 100%;
-        margin-left: 0;
-      }
-      #content.active {
-        width: calc(100% - var(--sidebar-width));
-        margin-left: var(--sidebar-width);
-      }
+      #sidebar { margin-left: calc(-1 * var(--sidebar-width)); }
+      #sidebar.active { margin-left: 0; }
+      #content { width: 100%; margin-left: 0; }
+      #content.active { width: calc(100% - var(--sidebar-width)); margin-left: var(--sidebar-width); }
     }
-    /* Navbar */
+
+    /* Navbar glass */
     .navbar {
-      background: white;
-      box-shadow: 0 2px 15px rgba(0,0,0,0.05);
-      border-radius: 15px;
-      margin-bottom: 25px;
-      padding: 15px 20px;
+      background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border); box-shadow: var(--shadow-sm); border-radius: var(--radius);
+      margin-bottom: 25px; padding: 15px 25px;
     }
     .navbar .dropdown-menu {
-      border: none;
-      border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      border: none; border-radius: var(--radius); box-shadow: var(--shadow-xl); background: rgba(255,255,255,0.98); backdrop-filter: blur(20px);
     }
     .dropdown-item:hover {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
+      background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.08)); color: var(--primary);
     }
-    #sidebarCollapse {
-      background: transparent;
-      border: none;
-      font-size: 1.5rem;
-      display: none;
-    }
-    @media (max-width: 768px) {
-      #sidebarCollapse {
-        display: inline-block;
-      }
-    }
-    /* Kartu Statistik */
+    #sidebarCollapse { background: transparent; border: none; font-size: 1.5rem; display: none; }
+    @media (max-width: 768px) { #sidebarCollapse { display: inline-block; } }
+
+    /* Stat card */
     .stat-card {
-      background: white;
-      border-radius: 20px;
-      padding: 25px;
-      transition: all 0.3s;
-      border: 1px solid rgba(0,0,0,0.05);
-      text-align: center;
+      background: var(--card-bg); border-radius: var(--radius); padding: 25px; transition: all 0.3s;
+      border: 1px solid rgba(0,0,0,0.04); box-shadow: var(--shadow); text-align: center;
     }
-    .stat-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 30px rgba(67,97,238,0.15);
-    }
+    .stat-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(99,102,241,0.15); }
     .stat-icon {
-      width: 70px;
-      height: 70px;
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.2rem;
-      margin: 0 auto 15px;
+      width: 70px; height: 70px; border-radius: 20px; display: flex; align-items: center; justify-content: center;
+      font-size: 2.2rem; margin: 0 auto 15px;
     }
     .stat-icon.primary { background: linear-gradient(135deg, #e0e7ff, #c7d2fe); color: var(--primary); }
-    .stat-icon.success { background: linear-gradient(135deg, #e0f2fe, #bae6fd); color: var(--success); }
-    .stat-value {
-      font-size: 2.2rem;
-      font-weight: 700;
-      color: #212529;
-      line-height: 1.2;
-    }
-    .stat-label {
-      color: #6c757d;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-size: 0.9rem;
-    }
-    /* Kartu */
+    .stat-icon.success { background: linear-gradient(135deg, #e0f2fe, #bae6fd); color: #4cc9f0; }
+    .stat-value { font-size: 2.2rem; font-weight: 700; color: var(--text); line-height: 1.2; }
+    .stat-label { color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.9rem; }
+
+    /* Card umum */
     .card {
-      border: none;
-      border-radius: 20px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.03);
-      margin-bottom: 25px;
-      transition: all 0.3s;
-    }
-    .card:hover {
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      border: 1px solid rgba(0,0,0,0.04); border-radius: var(--radius); box-shadow: var(--shadow-lg);
+      margin-bottom: 25px; transition: all 0.3s; background: var(--card-bg);
     }
     .card-header {
-      background: white;
-      border-bottom: 1px solid #eee;
-      font-weight: 600;
-      padding: 18px 25px;
-      border-radius: 20px 20px 0 0 !important;
-      color: var(--dark);
+      background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff;
+      font-weight: 600; padding: 18px 25px; border-bottom: none;
+      border-radius: var(--radius) var(--radius) 0 0 !important;
     }
-    .card-header i {
-      margin-right: 10px;
-      color: var(--primary);
-    }
-    .card-body {
-      padding: 25px;
-    }
+    .card-header i { margin-right: 10px; color: #fff; }
+    .card-body { padding: 25px; }
+
     /* Tabel */
-    .table {
-      background: white;
-      border-radius: 15px;
-      overflow: hidden;
-    }
-    .table thead th {
-      background: #f8fafc;
-      border-bottom: 2px solid #e9ecef;
-      color: #495057;
-      font-weight: 600;
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .table tbody tr:hover {
-      background: #f8f9fa;
-    }
-    .foto-thumb {
-      width: 50px;
-      height: 50px;
-      object-fit: cover;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
+    .table { background: white; border-radius: 15px; overflow: hidden; }
+    .table thead th { background: #f8fafc; border-bottom: 2px solid #e9ecef; font-weight: 600; font-size: 0.9rem; text-transform: uppercase; }
+    .table tbody tr:hover { background: #f8f9fa; }
+    .foto-thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 12px; box-shadow: var(--shadow-sm); }
+
     /* Peta */
     #mapTambah, #mapEdit {
-      height: 250px;
-      border-radius: 15px;
-      margin-bottom: 10px;
-      border: 1px solid #e0e0e0;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-      z-index: 1;
+      height: 250px; border-radius: var(--radius); border: 2px solid #e8ecf1; box-shadow: var(--shadow); z-index: 1;
     }
+
     /* Tombol */
-    .btn-sm {
-      border-radius: 8px;
-      padding: 0.4rem 0.8rem;
-      font-size: 0.85rem;
-    }
     .btn-primary {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      border: none;
-      border-radius: 10px;
-      padding: 10px 20px;
-      font-weight: 600;
-      transition: all 0.3s;
+      background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none;
+      border-radius: 50px; padding: 10px 20px; font-weight: 600; transition: var(--transition);
+      box-shadow: 0 6px 18px rgba(99,102,241,0.3); color: #fff;
     }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(67,97,238,0.4);
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(99,102,241,0.4); }
+    .btn-outline-primary {
+      border: 2px solid var(--primary); color: var(--primary); border-radius: 50px; font-weight: 600;
     }
-    .btn-info {
-      background: linear-gradient(135deg, #4cc9f0, #4895ef);
-      border: none;
-      color: white;
-    }
-    .btn-info:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(72,149,239,0.3);
-    }
+    .btn-outline-primary:hover { background: linear-gradient(135deg, var(--primary), var(--secondary)); border-color: transparent; color: #fff; }
+    .btn-sm { border-radius: 50px; padding: 0.4rem 1rem; font-size: 0.85rem; }
     .form-control, .form-select {
-      border-radius: 10px;
-      border: 1px solid #e0e0e0;
-      padding: 10px 15px;
-      transition: all 0.3s;
+      border-radius: 14px; padding: 10px 15px; border: 2px solid #e8ecf1; transition: var(--transition);
+      background: #fafbfc;
     }
     .form-control:focus, .form-select:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(67,97,238,0.1);
-    }
-    /* Badge */
-    .badge {
-      font-weight: 500;
-      padding: 0.5em 1em;
-      border-radius: 30px;
-    }
-    /* Responsive */
-    @media (max-width: 992px) {
-      .col-lg-7, .col-lg-5 {
-        width: 100%;
-      }
+      border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99,102,241,0.08); background: #fff;
     }
   </style>
 </head>
@@ -314,12 +168,10 @@
     <!-- Navbar Atas -->
     <nav class="navbar navbar-expand">
       <div class="container-fluid">
-        <button type="button" id="sidebarCollapse" class="btn">
-          <i class="bi bi-list"></i>
-        </button>
+        <button type="button" id="sidebarCollapse" class="btn"><i class="bi bi-list"></i></button>
         <div class="ms-auto d-flex align-items-center">
           <div class="dropdown">
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle rounded-pill" type="button" data-bs-toggle="dropdown">
               <i class="bi bi-person-circle me-1"></i> <span id="userDisplay">Member</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
@@ -359,20 +211,12 @@
             <div class="card">
               <div class="card-header d-flex justify-content-between align-items-center">
                 <span><i class="bi bi-shop"></i> Data Usaha Saya</span>
-                <button class="btn btn-sm btn-success" onclick="refreshMyUsaha()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+                <button class="btn btn-outline-light btn-sm rounded-pill" onclick="refreshMyUsaha()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
               </div>
               <div class="card-body">
                 <div class="table-responsive">
                   <table class="table table-hover align-middle" id="myUsahaTable">
-                    <thead>
-                      <tr>
-                        <th>Foto</th>
-                        <th>Nama Usaha</th>
-                        <th>Jenis</th>
-                        <th>Alamat</th>
-                        <th>Aksi</th>
-                      </tr>
-                    </thead>
+                    <thead><tr><th>Foto</th><th>Nama Usaha</th><th>Jenis</th><th>Alamat</th><th>Aksi</th></tr></thead>
                     <tbody></tbody>
                   </table>
                 </div>
@@ -384,39 +228,19 @@
               <div class="card-header"><i class="bi bi-plus-circle"></i> Tambah Usaha Baru</div>
               <div class="card-body">
                 <form id="usahaForm">
-                  <div class="mb-3">
-                    <input type="text" class="form-control" id="namaUsaha" placeholder="Nama Usaha" required>
-                  </div>
-                  <div class="mb-3">
-                    <input type="text" class="form-control" id="pemilik" placeholder="Pemilik" required>
-                  </div>
-                  <div class="mb-3">
-                    <input type="text" class="form-control" id="jenisUsaha" placeholder="Jenis Usaha" required>
-                  </div>
-                  <div class="mb-3">
-                    <textarea class="form-control" id="alamat" placeholder="Alamat" rows="2" required></textarea>
-                  </div>
-                  <div class="mb-3">
-                    <input type="text" class="form-control" id="telepon" placeholder="Telepon">
-                  </div>
-                  <div class="mb-3">
-                    <textarea class="form-control" id="deskripsi" placeholder="Deskripsi Usaha" rows="3"></textarea>
-                  </div>
-                  <div class="mb-3">
-                    <input type="text" class="form-control" id="foto" placeholder="URL Foto (opsional)">
-                  </div>
+                  <div class="mb-3"><input type="text" class="form-control" id="namaUsaha" placeholder="Nama Usaha" required></div>
+                  <div class="mb-3"><input type="text" class="form-control" id="pemilik" placeholder="Pemilik" required></div>
+                  <div class="mb-3"><input type="text" class="form-control" id="jenisUsaha" placeholder="Jenis Usaha" required></div>
+                  <div class="mb-3"><textarea class="form-control" id="alamat" placeholder="Alamat" rows="2" required></textarea></div>
+                  <div class="mb-3"><input type="text" class="form-control" id="telepon" placeholder="Telepon"></div>
+                  <div class="mb-3"><textarea class="form-control" id="deskripsi" placeholder="Deskripsi Usaha" rows="3"></textarea></div>
+                  <div class="mb-3"><input type="text" class="form-control" id="foto" placeholder="URL Foto (opsional)"></div>
                   <label class="mb-1 fw-semibold">Lokasi Usaha (klik peta untuk pin)</label>
                   <div id="mapTambah"></div>
                   <div class="row mt-2 g-2">
-                    <div class="col">
-                      <input type="text" class="form-control form-control-sm" id="latTambah" placeholder="Latitude" readonly>
-                    </div>
-                    <div class="col">
-                      <input type="text" class="form-control form-control-sm" id="lngTambah" placeholder="Longitude" readonly>
-                    </div>
-                    <div class="col-auto">
-                      <button type="button" class="btn btn-sm btn-info" onclick="getLocationTambah()" title="Gunakan lokasi saya"><i class="bi bi-geo-alt"></i></button>
-                    </div>
+                    <div class="col"><input type="text" class="form-control form-control-sm" id="latTambah" placeholder="Latitude" readonly></div>
+                    <div class="col"><input type="text" class="form-control form-control-sm" id="lngTambah" placeholder="Longitude" readonly></div>
+                    <div class="col-auto"><button type="button" class="btn btn-sm btn-outline-primary" onclick="getLocationTambah()" title="Gunakan lokasi saya"><i class="bi bi-geo-alt"></i></button></div>
                   </div>
                   <button type="submit" class="btn btn-primary w-100 mt-3">Simpan Usaha</button>
                 </form>
@@ -439,129 +263,88 @@
         <div class="modal-body">
           <form id="editUsahaForm">
             <input type="hidden" id="editId">
-            <div class="mb-3">
-              <input type="text" class="form-control" id="editNamaUsaha" placeholder="Nama Usaha" required>
-            </div>
-            <div class="mb-3">
-              <input type="text" class="form-control" id="editPemilik" placeholder="Pemilik" required>
-            </div>
-            <div class="mb-3">
-              <input type="text" class="form-control" id="editJenisUsaha" placeholder="Jenis Usaha" required>
-            </div>
-            <div class="mb-3">
-              <textarea class="form-control" id="editAlamat" placeholder="Alamat" rows="2" required></textarea>
-            </div>
-            <div class="mb-3">
-              <input type="text" class="form-control" id="editTelepon" placeholder="Telepon">
-            </div>
-            <div class="mb-3">
-              <textarea class="form-control" id="editDeskripsi" placeholder="Deskripsi Usaha" rows="3"></textarea>
-            </div>
-            <div class="mb-3">
-              <input type="text" class="form-control" id="editFoto" placeholder="URL Foto">
-            </div>
+            <div class="mb-3"><input type="text" class="form-control" id="editNamaUsaha" placeholder="Nama Usaha" required></div>
+            <div class="mb-3"><input type="text" class="form-control" id="editPemilik" placeholder="Pemilik" required></div>
+            <div class="mb-3"><input type="text" class="form-control" id="editJenisUsaha" placeholder="Jenis Usaha" required></div>
+            <div class="mb-3"><textarea class="form-control" id="editAlamat" placeholder="Alamat" rows="2" required></textarea></div>
+            <div class="mb-3"><input type="text" class="form-control" id="editTelepon" placeholder="Telepon"></div>
+            <div class="mb-3"><textarea class="form-control" id="editDeskripsi" placeholder="Deskripsi Usaha" rows="3"></textarea></div>
+            <div class="mb-3"><input type="text" class="form-control" id="editFoto" placeholder="URL Foto"></div>
             <label class="mb-1 fw-semibold">Lokasi Usaha (klik peta untuk pin)</label>
             <div id="mapEdit"></div>
             <div class="row mt-2 g-2">
-              <div class="col">
-                <input type="text" class="form-control form-control-sm" id="editLat" placeholder="Latitude" readonly>
-              </div>
-              <div class="col">
-                <input type="text" class="form-control form-control-sm" id="editLng" placeholder="Longitude" readonly>
-              </div>
-              <div class="col-auto">
-                <button type="button" class="btn btn-sm btn-info" onclick="getLocationEdit()" title="Gunakan lokasi saya"><i class="bi bi-geo-alt"></i></button>
-              </div>
+              <div class="col"><input type="text" class="form-control form-control-sm" id="editLat" placeholder="Latitude" readonly></div>
+              <div class="col"><input type="text" class="form-control form-control-sm" id="editLng" placeholder="Longitude" readonly></div>
+              <div class="col-auto"><button type="button" class="btn btn-sm btn-outline-primary" onclick="getLocationEdit()" title="Gunakan lokasi saya"><i class="bi bi-geo-alt"></i></button></div>
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Batal</button>
           <button type="button" class="btn btn-primary" onclick="updateUsaha()">Simpan Perubahan</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Scripts -->
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- API dan Auth -->
   <script src="js/api.js"></script>
   <script src="js/auth.js"></script>
+
   <script>
     // Proteksi halaman
     if (!checkAuth('member')) window.location.href = 'login.html';
 
-    // Elemen
     const userName = sessionStorage.getItem('nama') || 'Member';
     document.getElementById('userDisplay').innerText = userName;
 
-    // Toggle sidebar di mobile
     document.getElementById('sidebarCollapse').addEventListener('click', function() {
       document.getElementById('sidebar').classList.toggle('active');
       document.getElementById('content').classList.toggle('active');
     });
 
-    // Fungsi logout
     async function logout() {
       const token = sessionStorage.getItem('token');
-      if (token) {
-        try { await apiCall('logout', { token }); } catch (e) { console.error(e); }
-      }
+      if (token) { try { await apiCall('logout', { token }); } catch (e) { console.error(e); } }
       sessionStorage.clear();
       window.location.href = 'index.html';
     }
 
-    // ================== FUNGSI CACHE ==================
+    // ================== CACHE ==================
     async function loadWithCache(key, fetchFn, renderFn) {
       const cached = sessionStorage.getItem(key);
-      if (cached) {
-        try { renderFn(JSON.parse(cached)); } catch (e) {}
-      }
+      if (cached) { try { renderFn(JSON.parse(cached)); } catch (e) {} }
       try {
         const fresh = await fetchFn();
         const freshStr = JSON.stringify(fresh);
-        if (cached !== freshStr) {
-          sessionStorage.setItem(key, freshStr);
-          renderFn(fresh);
-        }
-      } catch (err) {
-        console.error('Gagal fetch data terbaru:', err);
-      }
+        if (cached !== freshStr) { sessionStorage.setItem(key, freshStr); renderFn(fresh); }
+      } catch (err) { console.error(err); }
     }
 
-    // Fungsi menampilkan section
     function showSection(section, element) {
       document.querySelectorAll('.content-section').forEach(el => el.style.display = 'none');
       document.getElementById('section-' + section).style.display = 'block';
-      
       document.querySelectorAll('#sidebar ul li a').forEach(link => link.classList.remove('active'));
       if (element) element.classList.add('active');
 
-      if (section === 'dashboard') {
-        updateDashboard();
-      } else if (section === 'dataUsaha') {
+      if (section === 'dashboard') updateDashboard();
+      else if (section === 'dataUsaha') {
         loadMyUsaha();
-        // Inisialisasi peta tambah jika belum
-        if (!window.mapTambah) initMapTambah();
+        if (typeof L !== 'undefined' && !window.mapTambah) initMapTambah();
       }
     }
 
-    // Dashboard
     async function updateDashboard() {
       try {
         const res = await apiCall('getDataUsaha', { token: sessionStorage.getItem('token') });
-        if (res.success) {
-          document.getElementById('totalUsaha').innerText = res.data.length;
-        }
-        // Tanggal bergabung (sementara statis, bisa diambil dari data user jika ada)
+        if (res.success) document.getElementById('totalUsaha').innerText = res.data.length;
         document.getElementById('terdaftarSejak').innerText = '2026';
-      } catch (err) {
-        console.error(err);
-      }
+      } catch (err) { console.error(err); }
     }
 
-    // ================== DATA USAHA MEMBER ==================
+    // ================== DATA USAHA ==================
     async function loadMyUsaha() {
       await loadWithCache('member_data_usaha', async () => {
         const res = await apiCall('getDataUsaha', { token: sessionStorage.getItem('token') });
@@ -592,12 +375,16 @@
       loadMyUsaha();
     }
 
-    // ================== PETA TAMBAH (DEFAULT BANTUL) ==================
+    // ================== PETA TAMBAH ==================
     let mapTambah, markerTambah;
     function initMapTambah(lat = -7.885, lng = 110.363) {
+      if (typeof L === 'undefined') {
+        console.warn('Leaflet belum dimuat');
+        return;
+      }
       if (mapTambah) mapTambah.remove();
       mapTambah = L.map('mapTambah').setView([lat, lng], 13);
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapTambah);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapTambah);
       markerTambah = L.marker([lat, lng], { draggable: true }).addTo(mapTambah);
       markerTambah.on('moveend', e => {
         const p = e.target.getLatLng();
@@ -614,16 +401,15 @@
     }
 
     function getLocationTambah() {
+      if (typeof L === 'undefined' || !mapTambah) return;
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(pos => {
-          const lat = pos.coords.latitude;
-          const lng = pos.coords.longitude;
-          mapTambah.setView([lat, lng], 15);
-          markerTambah.setLatLng([lat, lng]);
-          document.getElementById('latTambah').value = lat.toFixed(6);
-          document.getElementById('lngTambah').value = lng.toFixed(6);
-        }, err => alert('Tidak dapat mengambil lokasi: ' + err.message));
-      } else alert('Geolokasi tidak didukung');
+          mapTambah.setView([pos.coords.latitude, pos.coords.longitude], 15);
+          markerTambah.setLatLng([pos.coords.latitude, pos.coords.longitude]);
+          document.getElementById('latTambah').value = pos.coords.latitude.toFixed(6);
+          document.getElementById('lngTambah').value = pos.coords.longitude.toFixed(6);
+        }, err => alert('Gagal mengambil lokasi: ' + err.message));
+      } else alert('Geolokasi tidak didukung browser ini.');
     }
 
     // ================== TAMBAH USAHA ==================
@@ -646,33 +432,23 @@
         if (res.success) {
           alert('Data tersimpan');
           document.getElementById('usahaForm').reset();
-          initMapTambah();
+          if (typeof L !== 'undefined') initMapTambah();
           sessionStorage.removeItem('member_data_usaha');
           loadMyUsaha();
         } else alert('Gagal: ' + res.message);
       } catch (err) { alert('Error: ' + err.message); }
     });
 
-    // ================== EDIT USAHA (DEFAULT BANTUL) ==================
+    // ================== EDIT USAHA ==================
     let mapEdit, markerEdit;
-    let currentEditLat = -7.885;
-    let currentEditLng = 110.363;
+    let currentEditLat = -7.885, currentEditLng = 110.363;
 
-    // Fungsi inisialisasi peta edit
     function initMapEdit(lat, lng) {
-      // Hancurkan peta lama jika ada
-      if (mapEdit) {
-        mapEdit.remove();
-        mapEdit = null;
-      }
-      const container = document.getElementById('mapEdit');
-      if (!container) {
-        console.error('Container mapEdit tidak ditemukan');
-        return null;
-      }
+      if (typeof L === 'undefined') return null;
+      if (mapEdit) { mapEdit.remove(); mapEdit = null; }
       try {
         mapEdit = L.map('mapEdit').setView([lat, lng], 13);
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapEdit);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(mapEdit);
         markerEdit = L.marker([lat, lng], { draggable: true }).addTo(mapEdit);
         markerEdit.on('moveend', e => {
           const p = e.target.getLatLng();
@@ -684,14 +460,9 @@
           document.getElementById('editLat').value = e.latlng.lat.toFixed(6);
           document.getElementById('editLng').value = e.latlng.lng.toFixed(6);
         });
-        // Paksa ukuran peta setelah inisialisasi
         setTimeout(() => { if (mapEdit) mapEdit.invalidateSize(); }, 100);
         return mapEdit;
-      } catch (err) {
-        console.error('Gagal inisialisasi peta edit:', err);
-        alert('Gagal memuat peta. Silakan coba lagi.');
-        return null;
-      }
+      } catch (err) { alert('Gagal memuat peta'); return null; }
     }
 
     async function editUsaha(id) {
@@ -712,60 +483,31 @@
           document.getElementById('editLat').value = currentEditLat.toFixed(6);
           document.getElementById('editLng').value = currentEditLng.toFixed(6);
 
-          // Tampilkan modal
           const modal = new bootstrap.Modal(document.getElementById('editUsahaModal'));
           modal.show();
 
-          // Inisialisasi peta setelah modal tampil
-          const modalEl = document.getElementById('editUsahaModal');
-          const onShown = function() {
+          document.getElementById('editUsahaModal').addEventListener('shown.bs.modal', function handler() {
             initMapEdit(currentEditLat, currentEditLng);
-            modalEl.removeEventListener('shown.bs.modal', onShown);
-          };
-          modalEl.addEventListener('shown.bs.modal', onShown);
+            document.getElementById('editUsahaModal').removeEventListener('shown.bs.modal', handler);
+          });
         } else alert('Gagal mengambil data: ' + res.message);
       } catch (err) { alert('Error: ' + err.message); }
     }
 
-    // Bersihkan peta saat modal ditutup
     document.getElementById('editUsahaModal').addEventListener('hidden.bs.modal', function () {
-      if (mapEdit) {
-        mapEdit.remove();
-        mapEdit = null;
-      }
+      if (mapEdit) { mapEdit.remove(); mapEdit = null; }
     });
 
-    // Fungsi inti untuk mendapatkan lokasi setelah peta siap
-    function getLocationEditCore() {
-      if (!mapEdit) {
-        alert('Peta belum siap, silakan coba lagi.');
-        return;
-      }
+    function getLocationEdit() {
+      if (typeof L === 'undefined' || !mapEdit) return;
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(pos => {
-          const lat = pos.coords.latitude;
-          const lng = pos.coords.longitude;
-          if (mapEdit) {
-            mapEdit.setView([lat, lng], 15);
-            markerEdit.setLatLng([lat, lng]);
-            document.getElementById('editLat').value = lat.toFixed(6);
-            document.getElementById('editLng').value = lng.toFixed(6);
-          }
-        }, err => alert('Tidak dapat mengambil lokasi: ' + err.message));
-      } else alert('Geolokasi tidak didukung');
-    }
-
-    function getLocationEdit() {
-      if (!mapEdit) {
-        // Jika peta belum ada, inisialisasi dulu dengan koordinat saat ini
-        initMapEdit(currentEditLat, currentEditLng);
-        // Tunggu sebentar agar peta selesai diinisialisasi
-        setTimeout(() => {
-          getLocationEditCore();
-        }, 300);
-      } else {
-        getLocationEditCore();
-      }
+          mapEdit.setView([pos.coords.latitude, pos.coords.longitude], 15);
+          markerEdit.setLatLng([pos.coords.latitude, pos.coords.longitude]);
+          document.getElementById('editLat').value = pos.coords.latitude.toFixed(6);
+          document.getElementById('editLng').value = pos.coords.longitude.toFixed(6);
+        }, err => alert('Gagal mengambil lokasi: ' + err.message));
+      } else alert('Geolokasi tidak didukung.');
     }
 
     async function updateUsaha() {
@@ -805,15 +547,11 @@
       } catch (err) { alert('Error: ' + err.message); }
     }
 
-    // Inisialisasi
-    window.onload = function() {
+    window.addEventListener('load', function() {
       const dashboardLink = document.querySelector('#sidebar ul li a[onclick*="dashboard"]');
-      if (dashboardLink) {
-        showSection('dashboard', dashboardLink);
-      } else {
-        showSection('dashboard', null);
-      }
-    };
+      if (dashboardLink) showSection('dashboard', dashboardLink);
+      else showSection('dashboard', null);
+    });
   </script>
 </body>
 </html>

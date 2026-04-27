@@ -10,238 +10,373 @@
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    * {
-      font-family: 'Poppins', sans-serif;
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #8b5cf6;
+      --accent: #06b6d4;
+      --dark: #0f172a;
+      --light: #f8fafc;
+      --card-bg: #ffffff;
+      --glass-bg: rgba(255, 255, 255, 0.75);
+      --glass-border: rgba(255, 255, 255, 0.4);
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow: 0 4px 6px rgba(0,0,0,0.05), 0 10px 15px rgba(0,0,0,0.03);
+      --shadow-lg: 0 20px 40px rgba(0,0,0,0.08), 0 8px 20px rgba(0,0,0,0.04);
+      --shadow-xl: 0 25px 50px rgba(0,0,0,0.12);
+      --radius-sm: 12px;
+      --radius: 20px;
+      --radius-lg: 28px;
+      --radius-xl: 36px;
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
+    * { font-family: 'Plus Jakarta Sans', sans-serif; }
     body {
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      background: var(--light);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 2rem;
     }
-    /* Navbar dengan efek glass */
+
+    /* Navbar Glass */
     .navbar {
-      background: rgba(255, 255, 255, 0.8) !important;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      background: var(--glass-bg) !important;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      box-shadow: var(--shadow-sm);
+      padding: 12px 0;
     }
     .navbar-brand {
       font-weight: 700;
-      color: #4a3f6b !important;
+      color: var(--dark) !important;
       display: flex;
       align-items: center;
+      gap: 10px;
+      font-size: 1rem;
     }
     .navbar-brand img {
-      margin-right: 10px;
+      height: 42px;
+      border-radius: 10px;
     }
     .brand-text {
-      line-height: 1.2;
+      line-height: 1.25;
+      font-size: 0.85rem;
+    }
+    .brand-text strong {
+      font-size: 1rem;
+      display: block;
     }
     .nav-link {
-      font-weight: 500;
-      color: #4a3f6b !important;
-      transition: color 0.3s;
+      font-weight: 500 !important;
+      color: var(--text) !important;
+      padding: 8px 16px !important;
+      border-radius: 30px;
+      transition: var(--transition) !important;
+      font-size: 0.9rem;
     }
     .nav-link:hover {
-      color: #667eea !important;
+      color: var(--primary) !important;
+      background: rgba(99,102,241,0.06);
     }
     .nav-link.active {
-      color: #667eea !important;
-      font-weight: 600;
+      color: var(--primary) !important;
+      font-weight: 600 !important;
+      background: rgba(99,102,241,0.1);
     }
-    /* Dropdown menu */
     .dropdown-menu {
-      border: none;
-      border-radius: 1rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      padding: 0.5rem 0;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-xl);
+      padding: 8px;
+      background: rgba(255,255,255,0.98);
+      backdrop-filter: blur(20px);
     }
     .dropdown-item {
+      border-radius: 10px;
+      padding: 10px 16px;
       font-weight: 500;
-      color: #4a3f6b;
-      padding: 0.5rem 1.5rem;
-      transition: background 0.3s;
+      font-size: 0.9rem;
+      transition: var(--transition);
     }
     .dropdown-item:hover {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-    }
-    .dropdown-divider {
-      margin: 0.25rem 0;
+      background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.08));
+      color: var(--primary);
     }
 
-    /* Peta */
-    #map {
-      height: 400px;
-      border-radius: 20px;
-      margin-bottom: 15px;
+    /* Hero / Header Section */
+    .page-header {
+      background: linear-gradient(160deg, #1e1b4b 0%, #312e81 40%, #4338ca 100%);
+      color: white;
+      padding: 3rem 0 2.5rem;
+      border-radius: 0 0 50px 50px;
+      margin-bottom: 2.5rem;
     }
+    .page-header h2 {
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      font-size: 2.2rem;
+    }
+    .breadcrumb-item+.breadcrumb-item::before {
+      color: rgba(255,255,255,0.6);
+    }
+    .breadcrumb-item a {
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+    }
+    .breadcrumb-item.active {
+      color: #fff;
+    }
+
+    /* Deskripsi Box */
+    .deskripsi-box {
+      background: white;
+      border-left: 5px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+    }
+
+    /* Form Card */
+    .form-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(0,0,0,0.04);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+    .form-card .card-header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+      padding: 1.5rem;
+      border-bottom: none;
+    }
+    .form-card .card-header h4 {
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin: 0;
+    }
+    .form-card .card-body {
+      padding: 2rem;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: var(--text);
+    }
+    .form-control, .form-select {
+      border-radius: 14px;
+      padding: 12px 18px;
+      border: 2px solid #e8ecf1;
+      transition: var(--transition);
+      font-size: 0.95rem;
+      background: #fafbfc;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(99,102,241,0.08);
+      background: #fff;
+    }
+    textarea.form-control {
+      border-radius: 14px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border: none;
+      border-radius: 50px;
+      padding: 12px 28px;
+      font-weight: 700;
+      transition: var(--transition);
+      box-shadow: 0 6px 18px rgba(99,102,241,0.3);
+      color: #fff;
+      font-size: 1rem;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(99,102,241,0.4);
+    }
+    .btn-outline-primary {
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      border-radius: 50px;
+      font-weight: 600;
+      transition: var(--transition);
+      background: transparent;
+    }
+    .btn-outline-primary:hover {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-color: transparent;
+      color: #fff;
+    }
+    .btn-outline-secondary {
+      border-radius: 50px;
+      font-weight: 600;
+    }
+
+    /* Map */
+    #map {
+      height: 380px;
+      border-radius: var(--radius);
+      border: 2px solid #e8ecf1;
+      margin-bottom: 15px;
+      box-shadow: var(--shadow);
+      z-index: 0;
+    }
+
+    .current-location-btn {
+      margin-bottom: 10px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
     .photo-preview {
       max-width: 200px;
       max-height: 200px;
       margin-top: 10px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
+      border-radius: var(--radius-sm);
+      border: 2px solid #e8ecf1;
       padding: 5px;
-    }
-    .deskripsi {
-      background: rgba(102,126,234,0.1);
-      border-left: 4px solid #667eea;
-      padding: 1rem;
-      margin-bottom: 2rem;
-      border-radius: 1rem;
-    }
-
-    /* Kartu form */
-    .card {
-      border: none;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      overflow: hidden;
-    }
-    .card-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border-bottom: none;
-      padding: 1.5rem;
-    }
-    .card-header h4 {
-      margin: 0;
-      font-weight: 600;
-    }
-    .card-body {
-      padding: 2rem;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border: none;
-      border-radius: 50px;
-      padding: 10px 25px;
-      font-weight: 600;
-    }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(102,126,234,0.4);
-    }
-    .btn-outline-primary {
-      border-color: #667eea;
-      color: #667eea;
-      border-radius: 50px;
-    }
-    .btn-outline-primary:hover {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-color: transparent;
-      color: white;
-    }
-    .form-control, .form-select {
-      border-radius: 50px;
-      padding: 0.75rem 1.25rem;
-      border: 1px solid #e0e0e0;
-    }
-    .form-control:focus, .form-select:focus {
-      border-color: #667eea;
-      box-shadow: 0 0 0 0.2rem rgba(102,126,234,0.25);
-    }
-    textarea.form-control {
-      border-radius: 20px;
-    }
-    /* Field tambahan untuk "Lainnya" */
-    #customJenisContainer {
-      margin-top: 10px;
     }
 
     /* Footer */
     footer {
-      background: white;
+      background: #fff;
       border-top: 1px solid rgba(0,0,0,0.05);
-      box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+      box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
+      margin-top: 3rem;
     }
-    footer h5 {
-      color: #4a3f6b;
-      font-weight: 600;
+    footer h5 { color: var(--dark); font-weight: 700; }
+    footer a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
+    footer a:hover { color: var(--primary); }
+    footer .social-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: rgba(99,102,241,0.06);
+      color: var(--primary);
+      transition: var(--transition);
+      font-size: 1.2rem;
     }
-    footer a {
-      color: #6c757d;
-      transition: color 0.3s;
-    }
-    footer a:hover {
-      color: #667eea;
+    footer .social-icon:hover {
+      background: var(--primary);
+      color: #fff;
     }
     .footer-bottom {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    /* Alert */
+    .alert {
+      border-radius: var(--radius);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .page-header { border-radius: 0 0 30px 30px; padding: 2rem 0 1.5rem; }
+      .form-card .card-body { padding: 1.5rem; }
     }
   </style>
 </head>
 <body>
-  <!-- Navbar dengan dropdown -->
+  <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light sticky-top">
     <div class="container">
       <a class="navbar-brand fw-bold" href="index.html">
         <img src="assets/logo buma.webp" alt="BUMA Bantul" height="40">
-        <span class="brand-text">BUMA PC GP Ansor<br>Kabupaten Bantul</span>
+        <span class="brand-text"><strong>BUMA</strong> PC GP Ansor<br>Kabupaten Bantul</span>
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto align-items-center">
+        <ul class="navbar-nav ms-auto align-items-center gap-1">
           <li class="nav-item"><a class="nav-link" href="index.html">Beranda</a></li>
           <li class="nav-item"><a class="nav-link active" href="pendataan.html">Pendataan Usaha</a></li>
           <li class="nav-item"><a class="nav-link" href="artikel.html">Artikel</a></li>
           <li class="nav-item"><a class="nav-link" href="kontak.html">Kontak</a></li>
-
-          <!-- Dropdown untuk user yang sudah login -->
           <li class="nav-item dropdown" id="userDropdown" style="display: none;">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
               <i class="bi bi-person-circle me-1"></i><span id="userName"></span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="#" id="dashboardLink">Dashboard</a></li>
+              <li><a class="dropdown-item" href="#" id="dashboardLink"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#" onclick="logout(); return false;">Logout</a></li>
+              <li><a class="dropdown-item" href="#" onclick="logout(); return false;"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
             </ul>
           </li>
-
-          <!-- Link login untuk yang belum login -->
-          <li class="nav-item" id="loginLink"><a class="nav-link" href="login.html">Login</a></li>
+          <li class="nav-item" id="loginLink"><a class="nav-link" href="login.html"><i class="bi bi-person me-1"></i>Login</a></li>
         </ul>
       </div>
     </div>
   </nav>
 
+  <!-- Header Page -->
+  <div class="page-header">
+    <div class="container">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-2">
+          <li class="breadcrumb-item"><a href="index.html">Beranda</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Pendataan Usaha</li>
+        </ol>
+      </nav>
+      <h2 class="mb-0">Form Pendataan Usaha</h2>
+      <p class="opacity-75 mb-0 mt-2">Daftarkan usaha Anda dalam database BUMA Kabupaten Bantul</p>
+    </div>
+  </div>
+
   <!-- Konten Utama -->
-  <div class="container my-5">
-    <!-- Deskripsi halaman -->
-    <div class="deskripsi">
-      <h5 class="mb-2"><i class="bi bi-info-circle-fill text-primary me-2"></i> Tentang Pendataan Usaha</h5>
-      <p class="mb-0">Formulir ini diperuntukkan bagi anggota Ansor atau masyarakat umum yang ingin mendaftarkan usaha mereka ke dalam database BUMA. Data yang terkumpul akan digunakan untuk pemetaan potensi ekonomi dan pengembangan program pemberdayaan usaha di Kabupaten Bantul. <strong>Tidak perlu login</strong>, cukup isi data dengan lengkap dan akurat. Semua field bertanda <span class="text-danger">*</span> wajib diisi.</p>
+  <div class="container">
+    <!-- Deskripsi -->
+    <div class="deskripsi-box">
+      <div class="d-flex align-items-start gap-3">
+        <i class="bi bi-info-circle-fill text-primary fs-4"></i>
+        <div>
+          <h5 class="fw-bold mb-2">Tentang Pendataan Usaha</h5>
+          <p class="mb-0 text-muted">Formulir ini diperuntukkan bagi anggota Ansor atau masyarakat umum yang ingin mendaftarkan usaha mereka ke dalam database BUMA. Data yang terkumpul akan digunakan untuk pemetaan potensi ekonomi dan pengembangan program pemberdayaan usaha di Kabupaten Bantul. <strong>Tidak perlu login</strong>, cukup isi data dengan lengkap dan akurat. Semua field bertanda <span class="text-danger">*</span> wajib diisi.</p>
+        </div>
+      </div>
     </div>
 
     <div class="row justify-content-center">
       <div class="col-lg-8">
-        <div class="card">
+        <div class="form-card">
           <div class="card-header text-center">
-            <h4>Form Pendataan Usaha</h4>
+            <h4><i class="bi bi-building me-2"></i>Data Usaha Anda</h4>
           </div>
           <div class="card-body">
             <div id="alertMessage" class="alert d-none"></div>
 
             <form id="usahaForm">
-              <!-- Data Usaha -->
+              <!-- Nama Usaha -->
               <div class="mb-3">
                 <label class="form-label">Nama Usaha <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="namaUsaha" required>
+                <input type="text" class="form-control" id="namaUsaha" placeholder="Nama usaha Anda" required>
               </div>
 
+              <!-- Nama Pemilik -->
               <div class="mb-3">
                 <label class="form-label">Nama Pemilik <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="pemilik" required>
+                <input type="text" class="form-control" id="pemilik" placeholder="Nama lengkap pemilik" required>
               </div>
 
+              <!-- Jenis Usaha -->
               <div class="mb-3">
                 <label class="form-label">Jenis Usaha <span class="text-danger">*</span></label>
                 <select class="form-select" id="jenisUsaha" required>
@@ -255,66 +390,72 @@
                   <option value="Bengkel">Bengkel</option>
                   <option value="Lainnya">Lainnya</option>
                 </select>
-                <!-- Input untuk jenis usaha lainnya (muncul jika memilih Lainnya) -->
                 <div id="customJenisContainer" style="display: none;">
-                  <input type="text" class="form-control mt-2" id="customJenis" placeholder="Sebutkan jenis usaha Anda" required>
+                  <input type="text" class="form-control mt-2" id="customJenis" placeholder="Sebutkan jenis usaha Anda">
                 </div>
               </div>
 
+              <!-- Alamat -->
               <div class="mb-3">
                 <label class="form-label">Alamat Lengkap <span class="text-danger">*</span></label>
-                <textarea class="form-control" id="alamat" rows="2" required></textarea>
+                <textarea class="form-control" id="alamat" rows="2" placeholder="Alamat usaha Anda" required></textarea>
               </div>
 
+              <!-- Telepon -->
               <div class="mb-3">
                 <label class="form-label">Telepon/WhatsApp <span class="text-danger">*</span></label>
-                <input type="tel" class="form-control" id="telepon" required>
+                <input type="tel" class="form-control" id="telepon" placeholder="Nomor yang bisa dihubungi" required>
               </div>
 
-              <!-- Deskripsi Usaha (tetap wajib) -->
+              <!-- Deskripsi -->
               <div class="mb-3">
                 <label class="form-label">Deskripsi Usaha <span class="text-danger">*</span></label>
-                <textarea class="form-control" id="deskripsi" rows="3" placeholder="Jelaskan secara singkat tentang usaha Anda (produk, layanan, keunggulan, dll.)" required></textarea>
+                <textarea class="form-control" id="deskripsi" rows="3" placeholder="Jelaskan tentang produk, layanan, atau keunggulan usaha Anda" required></textarea>
               </div>
 
-              <!-- Upload Foto (opsional) -->
+              <!-- Upload Foto -->
               <div class="mb-3">
-                <label class="form-label">Foto Usaha (opsional)</label>
+                <label class="form-label">Foto Usaha <small class="text-muted">(opsional)</small></label>
                 <input type="file" class="form-control" id="fotoInput" accept="image/*">
-                <div id="photoPreviewContainer" style="display: none;">
+                <div id="photoPreviewContainer" style="display: none;" class="mt-2">
                   <img id="photoPreview" class="photo-preview" src="#" alt="Preview">
-                  <button type="button" class="btn btn-sm btn-danger mt-2" id="removePhoto">Hapus</button>
+                  <button type="button" class="btn btn-sm btn-danger rounded-pill mt-2" id="removePhoto"><i class="bi bi-trash me-1"></i>Hapus</button>
                 </div>
               </div>
 
-              <!-- Peta dan Lokasi -->
+              <!-- Peta -->
               <div class="mb-3">
-                <label class="form-label">Lokasi Usaha (klik peta untuk menandai) <span class="text-danger">*</span></label>
-                <button type="button" class="btn btn-outline-primary btn-sm current-location-btn" id="getLocationBtn">
+                <label class="form-label">Lokasi Usaha <span class="text-danger">*</span></label>
+                <button type="button" class="btn btn-outline-primary current-location-btn" id="getLocationBtn">
                   <i class="bi bi-crosshair"></i> Dapatkan Lokasi Saya
                 </button>
                 <div id="map"></div>
-                <div class="row mt-2">
+                <div class="row mt-2 g-2">
                   <div class="col-md-6">
-                    <label class="form-label">Latitude</label>
+                    <label class="form-label small">Latitude</label>
                     <input type="text" class="form-control" id="lat" readonly required>
                   </div>
                   <div class="col-md-6">
-                    <label class="form-label">Longitude</label>
+                    <label class="form-label small">Longitude</label>
                     <input type="text" class="form-control" id="lng" readonly required>
                   </div>
                 </div>
-                <small class="text-muted">Klik pada peta untuk memilih titik lokasi usaha. Koordinat harus terisi.</small>
+                <small class="text-muted">Klik atau geser marker pada peta untuk menentukan lokasi tepat usaha Anda.</small>
               </div>
 
               <hr>
-              <div class="alert alert-info">
-                <i class="bi bi-info-circle"></i> Data yang Anda masukkan akan menjadi bagian dari database BUMA dan membantu pemetaan usaha anggota Ansor se-Kabupaten Bantul.
+              <div class="alert alert-info d-flex align-items-center gap-2">
+                <i class="bi bi-shield-lock fs-5"></i>
+                <span>Data Anda aman dan hanya digunakan untuk pemetaan ekonomi anggota Ansor Kabupaten Bantul.</span>
               </div>
 
-              <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary btn-lg">Simpan Data Usaha</button>
-                <button type="button" class="btn btn-outline-secondary" id="resetBtn">Reset Form</button>
+              <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-primary btn-lg">
+                  <i class="bi bi-cloud-upload me-2"></i>Simpan Data Usaha
+                </button>
+                <button type="button" class="btn btn-outline-secondary" id="resetBtn">
+                  <i class="bi bi-arrow-counterclockwise me-1"></i>Reset Form
+                </button>
               </div>
             </form>
           </div>
@@ -326,25 +467,28 @@
   <!-- Footer -->
   <footer class="text-center text-lg-start">
     <div class="container p-4">
-      <div class="row">
-        <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
-          <h5 class="text-uppercase">BUMA Bantul</h5>
-          <p>Badan Usaha Milik Ansor Kabupaten Bantul. Memberdayakan ekonomi anggota melalui pendataan dan pemetaan usaha.</p>
+      <div class="row align-items-start">
+        <div class="col-lg-5 col-md-12 mb-4 mb-md-0">
+          <h5 class="text-uppercase fw-bold">BUMA Bantul</h5>
+          <p class="text-muted" style="line-height:1.7;">Badan Usaha Milik Ansor Kabupaten Bantul. Memberdayakan ekonomi anggota melalui pendataan dan pemetaan usaha.</p>
         </div>
         <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-          <h5 class="text-uppercase">Tautan</h5>
+          <h5 class="text-uppercase fw-bold">Tautan</h5>
           <ul class="list-unstyled">
-            <li><a href="index.html" class="text-decoration-none">Beranda</a></li>
-            <li><a href="pendataan.html" class="text-decoration-none">Pendataan</a></li>
-            <li><a href="artikel.html" class="text-decoration-none">Artikel</a></li>
-            <li><a href="kontak.html" class="text-decoration-none">Kontak</a></li>
+            <li><a href="index.html">Beranda</a></li>
+            <li><a href="pendataan.html">Pendataan</a></li>
+            <li><a href="artikel.html">Artikel</a></li>
+            <li><a href="kontak.html">Kontak</a></li>
           </ul>
         </div>
-        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-          <h5 class="text-uppercase">Ikuti Kami</h5>
-          <a href="#" class="text-dark me-2"><i class="bi bi-facebook"></i></a>
-          <a href="#" class="text-dark me-2"><i class="bi bi-instagram"></i></a>
-          <a href="#" class="text-dark me-2"><i class="bi bi-twitter"></i></a>
+        <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+          <h5 class="text-uppercase fw-bold">Ikuti Kami</h5>
+          <div class="d-flex gap-2">
+            <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+            <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="bi bi-twitter-x"></i></a>
+            <a href="#" class="social-icon"><i class="bi bi-youtube"></i></a>
+          </div>
         </div>
       </div>
     </div>
@@ -366,7 +510,7 @@
       setupJenisListener();
     });
 
-    // Inisialisasi peta
+    // ---------- PETA ----------
     const defaultLat = -7.885;
     const defaultLng = 110.363;
     let map, marker;
@@ -376,7 +520,7 @@
       map = L.map('map').setView([lat, lng], 13);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
-        attribution: '© OpenStreetMap'
+        attribution: '© OpenStreetMap contributors'
       }).addTo(map);
 
       marker = L.marker([lat, lng], { draggable: true }).addTo(map);
@@ -418,7 +562,7 @@
       }
     });
 
-    // Preview foto
+    // ---------- PREVIEW FOTO ----------
     document.getElementById('fotoInput').addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (file) {
@@ -445,7 +589,7 @@
       initMap(defaultLat, defaultLng);
     });
 
-    // Listener untuk opsi "Lainnya" pada jenis usaha
+    // ---------- JENIS USAHA "LAINNYA" ----------
     function setupJenisListener() {
       const jenisSelect = document.getElementById('jenisUsaha');
       const customContainer = document.getElementById('customJenisContainer');
@@ -458,22 +602,20 @@
         } else {
           customContainer.style.display = 'none';
           customInput.removeAttribute('required');
-          customInput.value = ''; // kosongkan jika tidak dipakai
+          customInput.value = '';
         }
       });
     }
 
-    // Submit form
+    // ---------- SUBMIT FORM (MENGGUNAKAN apiCallPost UNTUK KIRIM DATA BESAR) ----------
     document.getElementById('usahaForm').addEventListener('submit', async function(e) {
       e.preventDefault();
 
-      // Validasi manual untuk memastikan koordinat terisi
       if (!document.getElementById('lat').value || !document.getElementById('lng').value) {
         showAlert('danger', 'Lokasi usaha harus dipilih pada peta.');
         return;
       }
 
-      // Tentukan jenis usaha final
       let jenisUsaha = document.getElementById('jenisUsaha').value;
       if (jenisUsaha === 'Lainnya') {
         const customJenis = document.getElementById('customJenis').value.trim();
@@ -485,8 +627,8 @@
       }
 
       const submitBtn = this.querySelector('button[type="submit"]');
-      const originalText = submitBtn.innerHTML;
-      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Menyimpan...';
+      const originalHTML = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyimpan...';
       submitBtn.disabled = true;
 
       const fotoInput = document.getElementById('fotoInput');
@@ -498,7 +640,7 @@
       const data = {
         namaUsaha: document.getElementById('namaUsaha').value,
         pemilik: document.getElementById('pemilik').value,
-        jenisUsaha: jenisUsaha, // nilai final (bisa custom)
+        jenisUsaha: jenisUsaha,
         alamat: document.getElementById('alamat').value,
         telepon: document.getElementById('telepon').value,
         deskripsi: document.getElementById('deskripsi').value,
@@ -508,7 +650,8 @@
       };
 
       try {
-        const res = await apiCall('addDataUsahaGuest', data);
+        // GUNAKAN apiCallPost untuk menghindari batasan URL
+        const res = await apiCallPost('addDataUsahaGuest', data);
         if (res.success) {
           showAlert('success', 'Data berhasil disimpan! Terima kasih telah berpartisipasi.');
           document.getElementById('usahaForm').reset();
@@ -522,7 +665,7 @@
       } catch (err) {
         showAlert('danger', 'Error: ' + err.message);
       } finally {
-        submitBtn.innerHTML = originalText;
+        submitBtn.innerHTML = originalHTML;
         submitBtn.disabled = false;
       }
     });
@@ -541,6 +684,7 @@
       alertDiv.className = `alert alert-${type}`;
       alertDiv.innerHTML = message;
       alertDiv.classList.remove('d-none');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       setTimeout(() => alertDiv.classList.add('d-none'), 5000);
     }
   </script>
