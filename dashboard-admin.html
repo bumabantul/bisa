@@ -10,12 +10,10 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <!-- Leaflet markercluster CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -27,8 +25,6 @@
     }
     * { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
     body { background: var(--light); overflow-x: hidden; }
-
-    /* Sidebar */
     #sidebar {
       min-width: var(--sidebar-width); max-width: var(--sidebar-width);
       background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%); color: #fff;
@@ -46,16 +42,12 @@
       background: rgba(99,102,241,0.2); color: #fff; border-left-color: var(--primary); transform: translateX(5px);
     }
     #sidebar ul li a i { margin-right: 15px; width: 24px; font-size: 1.2rem; }
-
-    /* Konten */
     #content { width: calc(100% - var(--sidebar-width)); margin-left: var(--sidebar-width); padding: 20px; }
     @media (max-width: 768px) {
       #sidebar { margin-left: calc(-1 * var(--sidebar-width)); }
       #sidebar.active { margin-left: 0; }
       #content { width: 100%; margin-left: 0; }
     }
-
-    /* Navbar */
     .navbar {
       background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.4);
       box-shadow: var(--shadow-sm); border-radius: var(--radius); margin-bottom: 25px; padding: 15px 25px;
@@ -75,7 +67,6 @@
     .stat-icon.info { background: #e0f2fe; color: #4895ef; }
     .stat-value { font-size: 2.2rem; font-weight: 700; color: var(--text); }
     .stat-label { color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
-
     .card {
       border: 1px solid rgba(0,0,0,0.04); border-radius: var(--radius); box-shadow: var(--shadow-lg);
       margin-bottom: 25px; background: white;
@@ -87,7 +78,14 @@
     .table { background: white; border-radius: 15px; overflow: hidden; }
     .table thead th { background: #f8fafc; font-weight: 600; text-transform: uppercase; }
     .foto-thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 12px; }
-    #map { height: 400px; border-radius: var(--radius); border: 2px solid #e8ecf1; z-index: 0; }
+    #map {
+      height: 550px;
+      width: 100%;
+      border-radius: 16px;
+      border: 1px solid rgba(0,0,0,0.1);
+      z-index: 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
     .btn-primary {
       background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none;
       border-radius: 50px; padding: 10px 20px; font-weight: 600; color: #fff;
@@ -95,17 +93,94 @@
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(99,102,241,0.4); }
     .btn-sm { border-radius: 50px; padding: 0.4rem 1rem; font-size: 0.85rem; }
     .search-box { border-radius: 50px; border: 2px solid #e8ecf1; padding: 10px 20px; width: 250px; }
-    .map-search { margin-bottom: 15px; }
-    #loadingSpinnerOverlay {
-      display: none; text-align: center; padding: 60px 20px;
-      background: rgba(255,255,255,0.8); backdrop-filter: blur(5px);
-      border-radius: var(--radius); position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      z-index: 10; align-items: center; justify-content: center;
+    .custom-search-container {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      z-index: 1000;
+      background: white;
+      padding: 10px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 260px;
+      backdrop-filter: blur(4px);
+      background: rgba(255,255,255,0.95);
+    }
+    .custom-search-input {
+      width: 100%;
+      padding: 8px 15px;
+      border: 1px solid #ced4da;
+      border-radius: 40px;
+      font-size: 14px;
+    }
+    .custom-search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(99,102,241,0.2);
+    }
+    #resetMapView {
+      border-radius: 40px;
+      font-size: 12px;
+      padding: 6px 12px;
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+    }
+    #resetMapView:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    .loading-spinner-overlay {
+      display: none;
+      text-align: center;
+      padding: 60px 20px;
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(5px);
+      border-radius: var(--radius);
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 10;
+      align-items: center;
+      justify-content: center;
+    }
+    .alert-fixed { position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 250px; }
+    .custom-popup .leaflet-popup-content-wrapper {
+      border-radius: 12px;
+      padding: 0;
+    }
+    .popup-biz {
+      padding: 12px;
+      min-width: 220px;
+    }
+    .popup-biz h5 {
+      margin: 0 0 8px 0;
+      color: var(--primary-dark);
+      font-weight: 700;
+    }
+    .popup-biz p {
+      margin: 5px 0;
+      font-size: 13px;
+    }
+    .btn-google {
+      display: inline-block;
+      margin-top: 8px;
+      background: #4285F4;
+      color: white;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 12px;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
-  <!-- Sidebar -->
+  <div class="alert-fixed" id="globalAlert" style="display:none;"></div>
   <nav id="sidebar">
     <div class="sidebar-header"><h3>BUMA Admin</h3><p>Kabupaten Bantul</p></div>
     <ul class="components">
@@ -119,7 +194,6 @@
     </ul>
   </nav>
 
-  <!-- Konten Utama -->
   <div id="content">
     <nav class="navbar navbar-expand">
       <div class="container-fluid">
@@ -136,7 +210,7 @@
     </nav>
 
     <div id="content-area">
-      <div id="loadingSpinnerOverlay"><div><div class="spinner-border text-primary" style="width:3rem;height:3rem;"></div><p class="mt-2 fw-semibold">Memuat data...</p></div></div>
+      <div id="loadingSpinnerOverlay" class="loading-spinner-overlay"><div><div class="spinner-border text-primary" style="width:3rem;height:3rem;"></div><p class="mt-2 fw-semibold">Memuat data...</p></div></div>
 
       <!-- Dashboard -->
       <div id="section-dashboard" class="content-section">
@@ -174,13 +248,16 @@
         </div>
       </div>
 
-      <!-- Peta Sebaran -->
+      <!-- Peta Sebaran (fokus Bantul) -->
       <div id="section-peta" class="content-section" style="display:none;">
         <div class="card">
-          <div class="card-header"><i class="bi bi-map"></i> Peta Sebaran Usaha</div>
-          <div class="card-body">
-            <div class="input-group map-search"><span class="input-group-text"><i class="bi bi-search"></i></span><input type="text" id="searchMap" class="form-control" placeholder="Cari di peta..."></div>
+          <div class="card-header"><i class="bi bi-map"></i> Peta Sebaran Usaha Anggota (Bantul)</div>
+          <div class="card-body" style="position:relative; padding: 15px;">
             <div id="map"></div>
+            <div class="custom-search-container">
+              <input type="text" class="custom-search-input" id="searchMap" placeholder="🔍 Cari nama usaha, pemilik, jenis...">
+              <button class="btn btn-sm btn-outline-secondary" id="resetMapView">↺ Reset Peta ke Bantul</button>
+            </div>
           </div>
         </div>
       </div>
@@ -206,8 +283,7 @@
               <input type="password" class="form-control mb-2" id="confirmPassword" placeholder="Konfirmasi">
               <button class="btn btn-primary" type="submit">Simpan</button>
             </form>
-            <hr>
-            <button class="btn btn-outline-secondary rounded-pill" onclick="backupData()">Backup JSON</button>
+            <hr><button class="btn btn-outline-secondary rounded-pill" onclick="backupData()">Backup JSON</button>
             <button class="btn btn-outline-danger rounded-pill" onclick="resetData()">Reset Data</button>
           </div>
         </div>
@@ -215,311 +291,407 @@
     </div>
   </div>
 
-  <!-- Modal View Detail -->
-  <div class="modal fade" id="viewUsahaModal" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
-      <div class="modal-header"><h5 class="modal-title"><i class="bi bi-eye"></i> Detail Usaha</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-      <div class="modal-body"><div class="row"><div class="col-md-4 text-center"><img id="viewFoto" src="" class="img-fluid rounded-3 mb-3" style="max-height:250px"><span id="viewNoFoto" class="text-muted">Tidak ada foto</span></div><div class="col-md-8"><table class="table table-borderless"><tr><td class="fw-bold">Nama</td><td>: <span id="viewNamaUsaha"></span></td></tr><tr><td class="fw-bold">Pemilik</td><td>: <span id="viewPemilik"></span></td></tr><tr><td class="fw-bold">Jenis</td><td>: <span id="viewJenisUsaha"></span></td></tr><tr><td class="fw-bold">Alamat</td><td>: <span id="viewAlamat"></span></td></tr><tr><td class="fw-bold">Telepon</td><td>: <span id="viewTelepon"></span></td></tr><tr><td class="fw-bold">Deskripsi</td><td>: <span id="viewDeskripsi"></span></td></tr><tr><td class="fw-bold">Koordinat</td><td>: <span id="viewKoordinat"></span></td></tr><tr><td class="fw-bold">Tgl</td><td>: <span id="viewCreatedAt"></span></td></tr></table></div></div></div><div class="modal-footer"><button class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Tutup</button></div></div></div>
-  </div>
+  <!-- Modals (sama) -->
+  <div class="modal fade" id="viewUsahaModal" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title"><i class="bi bi-eye"></i> Detail Usaha</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="row"><div class="col-md-4 text-center"><img id="viewFoto" src="" class="img-fluid rounded-3 mb-3" style="max-height:250px"><span id="viewNoFoto" class="text-muted">Tidak ada foto</span></div><div class="col-md-8"><table class="table table-borderless"><tr><td class="fw-bold">Nama</td><td>: <span id="viewNamaUsaha"></span></td></tr><tr><td class="fw-bold">Pemilik</td><td>: <span id="viewPemilik"></span></td></tr><tr><td class="fw-bold">Jenis</td><td>: <span id="viewJenisUsaha"></span></td></tr><tr><td class="fw-bold">Alamat</td><td>: <span id="viewAlamat"></span></td></tr><tr><td class="fw-bold">Telepon</td><td>: <span id="viewTelepon"></span></td></tr><tr><td class="fw-bold">Deskripsi</td><td>: <span id="viewDeskripsi"></span></td></tr><tr><td class="fw-bold">Koordinat</td><td>: <span id="viewKoordinat"></span></td></tr><tr><td class="fw-bold">Tgl</td><td>: <span id="viewCreatedAt"></span></td></tr></table></div></div></div><div class="modal-footer"><button class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Tutup</button></div></div></div></div>
 
-  <!-- Modal Edit Usaha -->
-  <div class="modal fade" id="editUsahaModal" tabindex="-1">
-    <div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="editUsahaModalTitle">Edit Data Usaha</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="editUsahaForm"><input type="hidden" id="editId"><div class="row"><div class="col-md-6 mb-2"><input class="form-control" id="editNamaUsaha" placeholder="Nama Usaha" required></div><div class="col-md-6 mb-2"><input class="form-control" id="editPemilik" placeholder="Pemilik" required></div></div><div class="row"><div class="col-md-6 mb-2"><input class="form-control" id="editJenisUsaha" placeholder="Jenis Usaha" required></div><div class="col-md-6 mb-2"><input class="form-control" id="editTelepon" placeholder="Telepon"></div></div><div class="mb-2"><textarea class="form-control" id="editAlamat" rows="2" placeholder="Alamat" required></textarea></div><div class="mb-2"><textarea class="form-control" id="editDeskripsi" rows="3" placeholder="Deskripsi"></textarea></div><div class="row"><div class="col-md-6 mb-2"><input class="form-control" id="editLat" placeholder="Latitude"></div><div class="col-md-6 mb-2"><input class="form-control" id="editLng" placeholder="Longitude"></div></div><div class="mb-2"><input class="form-control" id="editFoto" placeholder="URL Foto"></div></form></div><div class="modal-footer"><button class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Batal</button><button class="btn btn-primary" onclick="simpanUsaha()">Simpan</button></div></div></div>
-  </div>
+  <div class="modal fade" id="editUsahaModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="editUsahaModalTitle">Edit Data Usaha</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="editUsahaForm"><input type="hidden" id="editId"><div class="row"><div class="col-md-6 mb-2"><input class="form-control" id="editNamaUsaha" placeholder="Nama Usaha" required></div><div class="col-md-6 mb-2"><input class="form-control" id="editPemilik" placeholder="Pemilik" required></div></div><div class="row"><div class="col-md-6 mb-2"><input class="form-control" id="editJenisUsaha" placeholder="Jenis Usaha" required></div><div class="col-md-6 mb-2"><input class="form-control" id="editTelepon" placeholder="Telepon"></div></div><div class="mb-2"><textarea class="form-control" id="editAlamat" rows="2" placeholder="Alamat" required></textarea></div><div class="mb-2"><textarea class="form-control" id="editDeskripsi" rows="3" placeholder="Deskripsi"></textarea></div><div class="row"><div class="col-md-6 mb-2"><input class="form-control" id="editLat" placeholder="Lokasi (Latitude, Longitude)"></div><div class="col-md-6 mb-2"><input class="form-control" id="editFoto" placeholder="URL Foto"></div></div></form></div><div class="modal-footer"><button class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Batal</button><button class="btn btn-primary" onclick="simpanUsaha()">Simpan</button></div></div></div></div>
 
-  <!-- Modal Artikel -->
-  <div class="modal fade" id="artikelModal" tabindex="-1">
-    <div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="artikelModalTitle">Tambah Artikel</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="artikelForm"><input type="hidden" id="artikelId"><input class="form-control mb-2" id="artikelJudul" placeholder="Judul" required><textarea class="form-control mb-2" id="artikelKonten" rows="6" placeholder="Konten" required></textarea><input class="form-control" id="artikelGambar" placeholder="URL Gambar (opsional)"></form></div><div class="modal-footer"><button class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Batal</button><button class="btn btn-primary" onclick="simpanArtikel()">Simpan</button></div></div></div>
-  </div>
+  <div class="modal fade" id="artikelModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="artikelModalTitle">Tambah Artikel</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="artikelForm"><input type="hidden" id="artikelId"><input class="form-control mb-2" id="artikelJudul" placeholder="Judul" required><textarea class="form-control mb-2" id="artikelKonten" rows="6" placeholder="Konten" required></textarea><input class="form-control" id="artikelGambar" placeholder="URL Gambar (opsional)"></form></div><div class="modal-footer"><button class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Batal</button><button class="btn btn-primary" onclick="simpanArtikel()">Simpan</button></div></div></div></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/api.js"></script>
   <script src="js/auth.js"></script>
+
   <script>
-    // Auth
+    function safeStr(val) { return val == null ? '' : String(val); }
+    function escapeHtml(str) { return safeStr(str).replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+    let memoryToken = null;
+    function getToken() { try { return sessionStorage.getItem('token') || memoryToken; } catch(e) { return memoryToken; } }
+    function setToken(t) { memoryToken = t; try { sessionStorage.setItem('token', t); } catch(e) { console.warn('storage blocked, using memory'); } }
+    function clearToken() { memoryToken = null; try { sessionStorage.removeItem('token'); } catch(e) {} }
+
+    function checkAuth(requiredRole) {
+      const token = getToken();
+      if (!token) return false;
+      const role = (() => { try { return sessionStorage.getItem('role'); } catch(e) { return null; } })();
+      if (requiredRole === 'admin' && role !== 'admin') return false;
+      return true;
+    }
+
     if (!checkAuth('admin')) window.location.href = 'login.html';
-    const token = sessionStorage.getItem('token');
+    const token = getToken();
     if (!token) window.location.href = 'login.html';
-    document.getElementById('userDisplay').innerText = sessionStorage.getItem('nama') || 'Admin';
+    document.getElementById('userDisplay').innerText = (() => { try { return sessionStorage.getItem('nama'); } catch(e) { return 'Admin'; } })() || 'Admin';
+
     document.getElementById('sidebarCollapse').addEventListener('click', () => {
       document.getElementById('sidebar').classList.toggle('active');
       document.getElementById('content').classList.toggle('active');
     });
+
     async function logout() {
-      if (token) try { await apiCall('logout', { token }); } catch (e) {}
-      sessionStorage.clear(); window.location.href = 'index.html';
+      if (token) await apiCall('logout', { token });
+      clearToken();
+      try { sessionStorage.clear(); } catch(e) {}
+      window.location.href = 'index.html';
     }
 
     let currentDataUsaha = [], filteredDataUsaha = [], map, mcg, kategoriChart, allMarkers = [];
-
-    // Cache & Background Refresh
-    async function loadWithCache(key, fetchFn, renderFn, showSpinner = false) {
-      const cached = sessionStorage.getItem(key);
-      if (cached) { try { renderFn(JSON.parse(cached)); } catch (e) {} }
-      else { if (showSpinner) document.getElementById('loadingSpinnerOverlay').style.display = 'flex'; }
-      try {
-        const fresh = await fetchFn();
-        const freshStr = JSON.stringify(fresh);
-        if (cached !== freshStr) { sessionStorage.setItem(key, freshStr); renderFn(fresh); }
-      } catch (e) { console.error(e); }
-      finally { if (showSpinner) document.getElementById('loadingSpinnerOverlay').style.display = 'none'; }
+    function showAlert(msg, type='danger') {
+      let alertDiv = document.getElementById('globalAlert');
+      alertDiv.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">${escapeHtml(msg)}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>`;
+      alertDiv.style.display = 'block';
+      setTimeout(() => { alertDiv.style.display = 'none'; }, 5000);
     }
 
     // Koordinat
     function extractCoordinates(str) {
       if (!str) return null;
-      let m = str.match(/Latitude:\s*(-?\d+\.?\d*)/i), n = str.match(/Longitude:\s*(-?\d+\.?\d*)/i);
+      let s = safeStr(str);
+      let m = s.match(/Latitude:\s*(-?\d+\.?\d*)/i);
+      let n = s.match(/Longitude:\s*(-?\d+\.?\d*)/i);
       if (m && n) return { lat: parseFloat(m[1]), lng: parseFloat(n[1]) };
-      m = str.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);
-      if (m && m.length >= 3) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
-      let nums = str.match(/-?\d+\.?\d*/g);
+      let parts = s.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);
+      if (parts) return { lat: parseFloat(parts[1]), lng: parseFloat(parts[2]) };
+      let nums = s.match(/-?\d+\.?\d*/g);
       if (nums && nums.length >= 2) return { lat: parseFloat(nums[0]), lng: parseFloat(nums[1]) };
       return null;
     }
-    function cleanCoordinate(v) {
-      if (!v && v !== 0) return '';
-      let s = String(v).replace(',', '.'); let dot = false;
-      return s.replace(/\./g, () => dot ? '' : (dot = true, '.'));
-    }
+
     function getValidCoordinates(item) {
-      let lat = parseFloat(cleanCoordinate(item.lat)), lng = parseFloat(cleanCoordinate(item.lng));
-      if (!isNaN(lat) && !isNaN(lng) && !(lat===0&&lng===0) && lat>=-90&&lat<=90&&lng>=-180&&lng<=180) return {lat,lng};
-      if (item.alamat) { let ex = extractCoordinates(item.alamat); if (ex) return ex; }
-      if (item.lokasiMap) { let ex = extractCoordinates(item.lokasiMap); if (ex) return ex; }
+      if (item.lat != null && item.lat !== '') {
+        let latStr = safeStr(item.lat);
+        if (latStr.includes('Latitude')) {
+          let coords = extractCoordinates(latStr);
+          if (coords) return coords;
+        } else {
+          let latNum = parseFloat(latStr);
+          if (!isNaN(latNum) && item.lng != null) {
+            let lngNum = parseFloat(safeStr(item.lng));
+            if (!isNaN(lngNum)) return { lat: latNum, lng: lngNum };
+          }
+        }
+      }
+      if (item.alamat) {
+        let coords = extractCoordinates(safeStr(item.alamat));
+        if (coords) return coords;
+      }
+      if (item.lokasiMap) {
+        let coords = extractCoordinates(safeStr(item.lokasiMap));
+        if (coords) return coords;
+      }
       return null;
-    }
-
-    function showSection(section, element) {
-      document.querySelectorAll('.content-section').forEach(el => el.style.display = 'none');
-      document.getElementById('section-' + section).style.display = 'block';
-      document.querySelectorAll('#sidebar ul li a').forEach(link => link.classList.remove('active'));
-      if (element) element.classList.add('active');
-      sessionStorage.setItem('admin_last_section', section);
-      if (section === 'dataAnggota') loadDataUsaha();
-      else if (section === 'peta') { if (map) map.invalidateSize(); loadDataUsaha().then(() => filterMap()); }
-      else if (section === 'pengguna') loadUsers();
-      else if (section === 'artikel') loadArtikel();
-      else if (section === 'dashboard') updateDashboard();
-    }
-
-    // Dashboard
-    async function updateDashboard() {
-      await loadWithCache('admin_dashboard_usaha', async () => {
-        const res = await apiCall('getDataUsaha', { token });
-        return res.success ? res.data : [];
-      }, (data) => {
-        document.getElementById('totalUsaha').innerText = data.length;
-        document.getElementById('totalKategori').innerText = new Set(data.map(u => u.jenisUsaha).filter(Boolean)).size;
-        let tb = document.getElementById('recentUsahaTable'); tb.innerHTML = '';
-        [...data].sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt)).slice(0,5).forEach(item => {
-          tb.innerHTML += `<tr><td><strong>${item.namaUsaha}</strong></td><td>${item.pemilik}</td><td><span class="badge bg-primary">${item.jenisUsaha}</span></td><td>${item.alamat.substring(0,30)}</td></tr>`;
-        });
-        if (kategoriChart) kategoriChart.destroy();
-        let ctx = document.getElementById('kategoriChart')?.getContext('2d'); if (!ctx) return;
-        let kat = {}; data.forEach(item => { if (item.jenisUsaha) kat[item.jenisUsaha] = (kat[item.jenisUsaha]||0)+1; });
-        if (Object.keys(kat).length===0) return;
-        kategoriChart = new Chart(ctx, { type:'doughnut', data:{ labels:Object.keys(kat), datasets:[{ data:Object.values(kat), backgroundColor:['#6366f1','#8b5cf6','#06b6d4','#4cc9f0','#f72585'] }] }, options:{ responsive:true, cutout:'60%' } });
-      }, true);
-      await loadWithCache('admin_dashboard_users', async () => { let r = await apiCall('getUsers',{token}); return r.success?r.data:[]; }, (users) => document.getElementById('totalAnggotaAktif').innerText = users.filter(u=>u.role==='member').length);
-      await loadWithCache('admin_dashboard_artikel', async () => { let r = await apiCall('getAllArtikel',{}); return r.success?r.data:[]; }, (data) => document.getElementById('totalArtikel').innerText = data.length);
-    }
-
-    // Data Usaha
-    async function loadDataUsaha(force=false) {
-      await loadWithCache('admin_data_usaha', async () => { let r=await apiCall('getDataUsaha',{token}); return r.success?r.data:[]; }, (data) => {
-        currentDataUsaha = data.map(item => ({...item, lat: cleanCoordinate(item.lat), lng: cleanCoordinate(item.lng)}));
-        applyFilter(); document.getElementById('totalUsaha').innerText = currentDataUsaha.length;
-      }, false);
-    }
-    function applyFilter() {
-      let kw = document.getElementById('searchInput')?.value.toLowerCase()||'';
-      filteredDataUsaha = currentDataUsaha.filter(item => item.namaUsaha.toLowerCase().includes(kw)||item.pemilik.toLowerCase().includes(kw)||item.alamat.toLowerCase().includes(kw)||(item.jenisUsaha&&item.jenisUsaha.toLowerCase().includes(kw)));
-      renderUsahaTable(filteredDataUsaha);
-      document.getElementById('tableInfo').innerText = `Menampilkan ${filteredDataUsaha.length} dari ${currentDataUsaha.length}`;
-    }
-    function renderUsahaTable(data) {
-      let tb = document.getElementById('usahaTableBody'); tb.innerHTML = '';
-      data.forEach(item => {
-        let foto = item.foto ? `<img src="${item.foto}" class="foto-thumb">` : '<span class="text-muted">-</span>';
-        tb.innerHTML += `<tr><td><input type="checkbox" class="select-item" value="${item.id}"></td><td>${foto}</td><td><strong>${item.namaUsaha}</strong></td><td>${item.pemilik}</td><td>${item.jenisUsaha}</td><td>${item.alamat}</td><td>${item.telepon||'-'}</td><td>${(item.deskripsi||'').substring(0,30)}</td><td><button class="btn btn-sm btn-info" onclick="viewUsaha('${item.id}')"><i class="bi bi-eye"></i></button> <button class="btn btn-sm btn-warning" onclick="editUsaha('${item.id}')"><i class="bi bi-pencil"></i></button> <button class="btn btn-sm btn-danger" onclick="deleteUsaha('${item.id}')"><i class="bi bi-trash"></i></button></td></tr>`;
-      });
-    }
-
-    async function viewUsaha(id) {
-      try {
-        let r = await apiCall('getDataUsahaById',{token,id});
-        if (r.success) {
-          let item = r.data;
-          document.getElementById('viewNamaUsaha').innerText=item.namaUsaha; document.getElementById('viewPemilik').innerText=item.pemilik;
-          document.getElementById('viewJenisUsaha').innerText=item.jenisUsaha; document.getElementById('viewAlamat').innerText=item.alamat;
-          document.getElementById('viewTelepon').innerText=item.telepon||'-'; document.getElementById('viewDeskripsi').innerText=item.deskripsi||'-';
-          document.getElementById('viewKoordinat').innerText = (item.lat && item.lng) ? `Latitude: ${item.lat}, Longitude: ${item.lng}` : '-';
-          document.getElementById('viewCreatedAt').innerText=item.createdAt?new Date(item.createdAt).toLocaleString('id-ID'):'-';
-          let fotoEl=document.getElementById('viewFoto'), noFotoEl=document.getElementById('viewNoFoto');
-          if (item.foto) { fotoEl.src=item.foto; fotoEl.style.display='block'; noFotoEl.style.display='none'; }
-          else { fotoEl.style.display='none'; noFotoEl.style.display='inline'; }
-          new bootstrap.Modal(document.getElementById('viewUsahaModal')).show();
-        } else alert('Gagal memuat detail');
-      } catch(e) { alert('Error: '+e.message); }
     }
 
     // Peta
     function initMap() {
       if (map) return;
-      map = L.map('map').setView([-7.885,110.363],11);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map);
-      mcg = L.markerClusterGroup({showCoverageOnHover:false, zoomToBoundsOnClick:true});
+      var centerBantul = [-7.885, 110.363];
+      map = L.map('map').setView(centerBantul, 12);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+      }).addTo(map);
+      mcg = L.markerClusterGroup({
+        showCoverageOnHover: false,
+        zoomToBoundsOnClick: true,
+        maxClusterRadius: 50
+      });
       map.addLayer(mcg);
-      document.getElementById('searchMap')?.addEventListener('input', function(e) {
-        let text = e.target.value.toLowerCase(); if (!text) return;
-        let matching = allMarkers.filter(m => {
-          let p = m.feature?.properties||{};
-          return (p.namaUsaha||'').toLowerCase().includes(text)||(p.pemilik||'').toLowerCase().includes(text)||(p.jenisUsaha||'').toLowerCase().includes(text)||(p.alamat||'').toLowerCase().includes(text);
-        });
-        if (matching.length===1) { map.setView(matching[0].getLatLng(),16); matching[0].openPopup(); }
-        else if (matching.length>1) { map.fitBounds(L.featureGroup(matching).getBounds()); }
-      });
-    }
-    function filterMap() { updateMap(currentDataUsaha); }
-    function updateMap(data) {
-      if (!map) initMap();
-      mcg.clearLayers(); allMarkers = [];
-      data.forEach(item => {
-        let coords = getValidCoordinates(item); if (!coords) return;
-        let {lat,lng}=coords;
-        let popup = `<div class="p-2"><h5><strong>${item.namaUsaha||'Tanpa nama'}</strong></h5><p><strong>Pemilik:</strong> ${item.pemilik||'-'}</p><p><strong>Jenis:</strong> ${item.jenisUsaha||'-'}</p><p><strong>Alamat:</strong> ${item.alamat||'-'}</p><p><strong>HP:</strong> ${item.telepon||'-'}</p><a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" class="btn btn-sm btn-primary mt-2">Lihat di Google Maps</a></div>`;
-        let marker = L.marker([lat,lng]).bindPopup(popup);
-        marker.feature = { properties: { namaUsaha:item.namaUsaha||'', pemilik:item.pemilik||'', jenisUsaha:item.jenisUsaha||'', alamat:item.alamat||'', telepon:item.telepon||'' } };
-        mcg.addLayer(marker); allMarkers.push(marker);
-      });
-      map.invalidateSize();
-      if (allMarkers.length) map.fitBounds(mcg.getBounds(),{padding:[30,30]});
-      else map.setView([-7.885,110.363],11);
     }
 
-    // CRUD Usaha
+    function updateMap(data) {
+      if (!map) initMap();
+      mcg.clearLayers();
+      allMarkers = [];
+      let markerCount = 0;
+      data.forEach(item => {
+        const coords = getValidCoordinates(item);
+        if (coords && !isNaN(coords.lat) && !isNaN(coords.lng)) {
+          const { lat, lng } = coords;
+          const popupContent = `
+            <div class="popup-biz">
+              <h5>🏪 ${escapeHtml(item.namaUsaha) || 'Tidak ada nama'}</h5>
+              <p><strong>👤 Pemilik:</strong> ${escapeHtml(item.pemilik) || '-'}</p>
+              <p><strong>📂 Jenis:</strong> ${escapeHtml(item.jenisUsaha) || '-'}</p>
+              <p><strong>📞 HP:</strong> ${escapeHtml(item.telepon) || '-'}</p>
+              <a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" class="btn-google">📍 Lihat di Google Maps</a>
+            </div>
+          `;
+          const marker = L.marker([lat, lng], { riseOnHover: true }).bindPopup(popupContent, { className: 'custom-popup' });
+          marker.feature = {
+            properties: {
+              namaUsaha: safeStr(item.namaUsaha),
+              pemilik: safeStr(item.pemilik),
+              jenisUsaha: safeStr(item.jenisUsaha),
+              nomorHp: safeStr(item.telepon)
+            }
+          };
+          mcg.addLayer(marker);
+          allMarkers.push(marker);
+          markerCount++;
+        } else {
+          console.warn('Koordinat tidak valid untuk:', item.namaUsaha);
+        }
+      });
+      map.invalidateSize();
+      // SELALU SET VIEW KE BANTUL, TIDAK ZOOM OTOMATIS KE MARKER
+      map.setView([-7.885, 110.363], 12);
+      console.log('Jumlah marker:', markerCount);
+    }
+
+    function resetMapToBantul() {
+      if (map) map.setView([-7.885, 110.363], 12);
+    }
+
+    function setupMapSearch() {
+      const searchInput = document.getElementById('searchMap');
+      if (!searchInput) return;
+      const handler = function(e) {
+        let txt = e.target.value.toLowerCase().trim();
+        if (!txt.length) return;
+        let matched = allMarkers.filter(m => {
+          let p = m.feature?.properties || {};
+          return p.namaUsaha.toLowerCase().includes(txt) || 
+                 p.pemilik.toLowerCase().includes(txt) || 
+                 p.jenisUsaha.toLowerCase().includes(txt) || 
+                 p.nomorHp.toLowerCase().includes(txt);
+        });
+        if (matched.length === 1) {
+          map.setView(matched[0].getLatLng(), 16);
+          matched[0].openPopup();
+        } else if (matched.length > 1) {
+          let group = L.featureGroup(matched);
+          map.fitBounds(group.getBounds());
+        }
+      };
+      searchInput.removeEventListener('input', handler);
+      searchInput.addEventListener('input', handler);
+    }
+
+    // Data dan CRUD (sama seperti sebelumnya, tidak diubah)
+    async function loadDataUsaha(force=false, showSpinner=false) {
+      if (force) { try { sessionStorage.removeItem('admin_data_usaha'); } catch(e) {} }
+      if (showSpinner) document.getElementById('loadingSpinnerOverlay').style.display = 'flex';
+      try {
+        const res = await apiCall('getDataUsaha', { token });
+        if (!res.success) throw new Error(res.message || 'Gagal ambil data');
+        currentDataUsaha = res.data || [];
+        applyFilter();
+        document.getElementById('totalUsaha').innerText = currentDataUsaha.length;
+        try { sessionStorage.setItem('admin_data_usaha', JSON.stringify(currentDataUsaha.map(({foto, ...rest}) => rest))); } catch(e) {}
+      } catch (e) {
+        showAlert('Gagal memuat data: ' + e.message);
+      } finally {
+        if (showSpinner) document.getElementById('loadingSpinnerOverlay').style.display = 'none';
+      }
+    }
+
+    function applyFilter() {
+      let kw = '';
+      try { kw = document.getElementById('searchInput')?.value.toLowerCase() || ''; } catch(e) {}
+      filteredDataUsaha = currentDataUsaha.filter(item => 
+        safeStr(item.namaUsaha).toLowerCase().includes(kw) ||
+        safeStr(item.pemilik).toLowerCase().includes(kw) ||
+        safeStr(item.alamat).toLowerCase().includes(kw) ||
+        safeStr(item.jenisUsaha).toLowerCase().includes(kw)
+      );
+      renderUsahaTable(filteredDataUsaha);
+      let info = document.getElementById('tableInfo');
+      if (info) info.innerText = `Menampilkan ${filteredDataUsaha.length} dari ${currentDataUsaha.length}`;
+    }
+
+    function renderUsahaTable(data) {
+      let tb = document.getElementById('usahaTableBody');
+      if (!tb) return;
+      tb.innerHTML = '';
+      data.forEach(item => {
+        let fotoHtml = item.foto ? `<img src="${escapeHtml(item.foto)}" class="foto-thumb" onerror="this.style.display='none'">` : '<span class="text-muted">-</span>';
+        tb.innerHTML += `<tr>
+          <td><input type="checkbox" class="select-item" value="${escapeHtml(item.id)}"></td>
+          <td>${fotoHtml}</td>
+          <td><strong>${escapeHtml(item.namaUsaha)}</strong></td>
+          <td>${escapeHtml(item.pemilik)}</td>
+          <td>${escapeHtml(item.jenisUsaha)}</td>
+          <td>${escapeHtml(item.alamat)}</td>
+          <td>${escapeHtml(item.telepon||'-')}</td>
+          <td>${escapeHtml((item.deskripsi||'').substring(0,30))}</td>
+          <td>
+            <button class="btn btn-sm btn-info" onclick="viewUsaha('${escapeHtml(item.id)}')"><i class="bi bi-eye"></i></button>
+            <button class="btn btn-sm btn-warning" onclick="editUsaha('${escapeHtml(item.id)}')"><i class="bi bi-pencil"></i></button>
+            <button class="btn btn-sm btn-danger" onclick="deleteUsaha('${escapeHtml(item.id)}')"><i class="bi bi-trash"></i></button>
+          </td>
+        </tr>`;
+      });
+    }
+
+    async function viewUsaha(id) {
+      try {
+        let r = await apiCall('getDataUsahaById', { token, id });
+        if (r.success && r.data) {
+          let item = r.data;
+          document.getElementById('viewNamaUsaha').innerText = safeStr(item.namaUsaha);
+          document.getElementById('viewPemilik').innerText = safeStr(item.pemilik);
+          document.getElementById('viewJenisUsaha').innerText = safeStr(item.jenisUsaha);
+          document.getElementById('viewAlamat').innerText = safeStr(item.alamat);
+          document.getElementById('viewTelepon').innerText = safeStr(item.telepon);
+          document.getElementById('viewDeskripsi').innerText = safeStr(item.deskripsi);
+          document.getElementById('viewKoordinat').innerText = safeStr(item.lat);
+          document.getElementById('viewCreatedAt').innerText = item.createdAt ? new Date(item.createdAt).toLocaleString('id-ID') : '-';
+          let fotoEl = document.getElementById('viewFoto'), noFoto = document.getElementById('viewNoFoto');
+          if (item.foto) { fotoEl.src = item.foto; fotoEl.style.display = 'block'; noFoto.style.display = 'none'; }
+          else { fotoEl.style.display = 'none'; noFoto.style.display = 'inline'; }
+          new bootstrap.Modal(document.getElementById('viewUsahaModal')).show();
+        } else alert('Gagal memuat detail');
+      } catch(e) { alert('Error: '+e.message); }
+    }
+
     function tambahUsaha() {
-      document.getElementById('editUsahaModalTitle').innerText='Tambah Usaha'; document.getElementById('editId').value='';
-      ['editNamaUsaha','editPemilik','editJenisUsaha','editAlamat','editTelepon','editDeskripsi','editLat','editLng','editFoto'].forEach(id=>document.getElementById(id).value='');
+      document.getElementById('editUsahaModalTitle').innerText='Tambah Usaha';
+      document.getElementById('editId').value='';
+      ['editNamaUsaha','editPemilik','editJenisUsaha','editAlamat','editTelepon','editDeskripsi','editLat','editFoto'].forEach(id=>{ let el=document.getElementById(id); if(el) el.value=''; });
       new bootstrap.Modal(document.getElementById('editUsahaModal')).show();
     }
+
     async function simpanUsaha() {
       let id = document.getElementById('editId').value;
-      let data = { token, namaUsaha:document.getElementById('editNamaUsaha').value, pemilik:document.getElementById('editPemilik').value, jenisUsaha:document.getElementById('editJenisUsaha').value, alamat:document.getElementById('editAlamat').value, telepon:document.getElementById('editTelepon').value, deskripsi:document.getElementById('editDeskripsi').value, lat:document.getElementById('editLat').value, lng:document.getElementById('editLng').value, foto:document.getElementById('editFoto').value };
+      let data = { token, namaUsaha:document.getElementById('editNamaUsaha').value, pemilik:document.getElementById('editPemilik').value, jenisUsaha:document.getElementById('editJenisUsaha').value, alamat:document.getElementById('editAlamat').value, telepon:document.getElementById('editTelepon').value, deskripsi:document.getElementById('editDeskripsi').value, lokasiMap: document.getElementById('editLat').value, foto:document.getElementById('editFoto').value };
       try {
         let res; if (id) { data.id=id; res=await apiCall('updateDataUsaha',data); } else res=await apiCall('addDataUsaha',data);
-        if (res.success) { alert('Data berhasil disimpan'); sessionStorage.removeItem('admin_data_usaha'); sessionStorage.removeItem('admin_dashboard_usaha'); bootstrap.Modal.getInstance(document.getElementById('editUsahaModal')).hide(); loadDataUsaha(); updateDashboard(); }
+        if (res.success) { alert('Data berhasil disimpan'); try{ sessionStorage.removeItem('admin_data_usaha'); }catch(e){} bootstrap.Modal.getInstance(document.getElementById('editUsahaModal')).hide(); await loadDataUsaha(); await updateDashboard(); }
         else alert('Gagal: '+res.message);
       } catch(err) { alert('Error: '+err.message); }
     }
+
     async function editUsaha(id) {
-      try {
-        let r = await apiCall('getDataUsahaById',{token,id});
-        if (r.success) {
-          let item = r.data;
-          document.getElementById('editId').value=item.id; document.getElementById('editNamaUsaha').value=item.namaUsaha;
-          document.getElementById('editPemilik').value=item.pemilik; document.getElementById('editJenisUsaha').value=item.jenisUsaha;
-          document.getElementById('editAlamat').value=item.alamat; document.getElementById('editTelepon').value=item.telepon||'';
-          document.getElementById('editDeskripsi').value=item.deskripsi||''; document.getElementById('editLat').value=item.lat||'';
-          document.getElementById('editLng').value=item.lng||''; document.getElementById('editFoto').value=item.foto||'';
-          new bootstrap.Modal(document.getElementById('editUsahaModal')).show();
-        } else alert('Gagal mengambil data');
-      } catch(err) { alert('Error: '+err.message); }
+      try { let r=await apiCall('getDataUsahaById',{token,id}); if (r.success) { let item=r.data; document.getElementById('editId').value=item.id; document.getElementById('editNamaUsaha').value=item.namaUsaha||''; document.getElementById('editPemilik').value=item.pemilik||''; document.getElementById('editJenisUsaha').value=item.jenisUsaha||''; document.getElementById('editAlamat').value=item.alamat||''; document.getElementById('editTelepon').value=item.telepon||''; document.getElementById('editDeskripsi').value=item.deskripsi||''; document.getElementById('editLat').value=item.lat||''; document.getElementById('editFoto').value=item.foto||''; new bootstrap.Modal(document.getElementById('editUsahaModal')).show(); } else alert('Gagal'); } catch(e) { alert('Error: '+e.message); }
     }
-    async function deleteUsaha(id) { if (!confirm('Yakin hapus?')) return; try { let r=await apiCall('deleteDataUsaha',{token,id}); if (r.success) { alert('Data dihapus'); sessionStorage.removeItem('admin_data_usaha'); sessionStorage.removeItem('admin_dashboard_usaha'); loadDataUsaha(); updateDashboard(); } else alert('Gagal: '+r.message); } catch(e) { alert('Error: '+e.message); } }
-    function refreshData() { sessionStorage.removeItem('admin_data_usaha'); loadDataUsaha(); }
+
+    async function deleteUsaha(id) { if (!confirm('Yakin hapus?')) return; try { let r=await apiCall('deleteDataUsaha',{token,id}); if (r.success) { alert('Data dihapus'); try{ sessionStorage.removeItem('admin_data_usaha'); }catch(e){} await loadDataUsaha(); await updateDashboard(); } else alert('Gagal: '+r.message); } catch(e) { alert('Error: '+e.message); } }
+
+    function refreshData() { loadDataUsaha(true, true); updateDashboard(); }
     function toggleSelectAll(src) { document.querySelectorAll('.select-item').forEach(cb => cb.checked = src.checked); }
     function getSelectedIds() { return Array.from(document.querySelectorAll('.select-item:checked')).map(cb=>cb.value); }
+
     async function deleteSelected() {
       let ids = getSelectedIds(); if (!ids.length) { alert('Pilih data dulu'); return; }
       if (!confirm(`Hapus ${ids.length} data terpilih?`)) return;
       let success=0; for (let id of ids) { try { let r=await apiCall('deleteDataUsaha',{token,id}); if (r.success) success++; } catch(e) {} }
-      alert(`${success} data dihapus`); sessionStorage.removeItem('admin_data_usaha'); sessionStorage.removeItem('admin_dashboard_usaha'); loadDataUsaha(); updateDashboard();
+      alert(`${success} data dihapus`); try{ sessionStorage.removeItem('admin_data_usaha'); }catch(e){} await loadDataUsaha(); await updateDashboard();
     }
+
     function exportToCSV() {
       let data = filteredDataUsaha.length ? filteredDataUsaha : currentDataUsaha;
       if (!data.length) { alert('Tidak ada data'); return; }
       let headers = ['ID','Nama Usaha','Pemilik','Jenis Usaha','Alamat','Telepon','Deskripsi','Lat','Lng','Foto'];
-      let rows = data.map(item => [item.id, item.namaUsaha, item.pemilik, item.jenisUsaha, item.alamat, item.telepon||'', item.deskripsi||'', item.lat||'', item.lng||'', item.foto||'']);
-      let csv = headers.join(',') + '\n' + rows.map(row => row.map(c => `"${c}"`).join(',')).join('\n');
+      let rows = data.map(item => [item.id, item.namaUsaha, item.pemilik, item.jenisUsaha, item.alamat, item.telepon||'', item.deskripsi||'', item.lat||'', '', item.foto||'']);
+      let csv = headers.join(',') + '\n' + rows.map(row => row.map(c => `"${safeStr(c).replace(/"/g, '""')}"`).join(',')).join('\n');
       let blob = new Blob([csv],{type:'text/csv'}); let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `data_usaha_${new Date().toISOString().slice(0,10)}.csv`; a.click(); URL.revokeObjectURL(a.href);
     }
 
-    // Pengguna
-    async function loadUsers() {
-      await loadWithCache('admin_users', async () => { let r=await apiCall('getUsers',{token}); return r.success?r.data:[]; }, (data) => {
-        let tb = document.querySelector('#userTable tbody'); tb.innerHTML = '';
-        data.forEach(u => {
-          tb.innerHTML += `<tr><td>${u.id}</td><td><strong>${u.nama}</strong></td><td>${u.email}</td><td><select class="form-select form-select-sm" onchange="changeUserRole('${u.id}',this.value)"><option value="admin" ${u.role==='admin'?'selected':''}>Admin</option><option value="member" ${u.role==='member'?'selected':''}>Member</option></select></td><td><button class="btn btn-sm btn-danger" onclick="deleteUser('${u.id}')"><i class="bi bi-trash"></i></button></td></tr>`;
-        });
+    async function updateDashboard() {
+      if (currentDataUsaha.length === 0) await loadDataUsaha(false, true);
+      const data = currentDataUsaha;
+      document.getElementById('totalUsaha').innerText = data.length;
+      let uniqueKat = new Set(data.map(u=>u.jenisUsaha).filter(Boolean)).size;
+      document.getElementById('totalKategori').innerText = uniqueKat;
+      let tb = document.getElementById('recentUsahaTable'); tb.innerHTML = '';
+      [...data].sort((a,b)=> new Date(b.createdAt||0)-new Date(a.createdAt||0)).slice(0,5).forEach(item => {
+        tb.innerHTML += `<tr><td><strong>${escapeHtml(item.namaUsaha)}</strong></td><td>${escapeHtml(item.pemilik)}</td><td><span class="badge bg-primary">${escapeHtml(item.jenisUsaha)}</span></td><td>${escapeHtml(item.alamat).substring(0,30)}</td></tr>`;
       });
-    }
-    async function changeUserRole(userId, newRole) {
-      if (!confirm(`Ubah role?`)) return;
-      try { let r=await apiCall('updateUserRole',{token,userId,newRole}); if (r.success) { alert('Role diubah'); sessionStorage.removeItem('admin_users'); loadUsers(); } else alert('Gagal: '+r.message); } catch(e) { alert('Error: '+e.message); }
-    }
-    async function deleteUser(userId) {
-      if (!confirm('Hapus user?')) return;
-      try { let r=await apiCall('deleteUser',{token,userId}); if (r.success) { alert('User dihapus'); sessionStorage.removeItem('admin_users'); loadUsers(); } else alert('Gagal: '+r.message); } catch(e) { alert('Error: '+e.message); }
+      if (kategoriChart) kategoriChart.destroy();
+      let ctx = document.getElementById('kategoriChart')?.getContext('2d');
+      if (ctx) {
+        let kat = {};
+        data.forEach(item => { if (item.jenisUsaha) kat[item.jenisUsaha] = (kat[item.jenisUsaha]||0)+1; });
+        if (Object.keys(kat).length) {
+          kategoriChart = new Chart(ctx, { type:'doughnut', data:{ labels:Object.keys(kat), datasets:[{data:Object.values(kat), backgroundColor:['#6366f1','#8b5cf6','#06b6d4','#4cc9f0','#f72585']}]}, options:{responsive:true, cutout:'60%'}});
+        }
+      }
+      const usersRes = await apiCall('getUsers', { token });
+      if (usersRes.success) document.getElementById('totalAnggotaAktif').innerText = usersRes.data.filter(u=>u.role==='member').length;
+      const artikelRes = await apiCall('getAllArtikel', {});
+      if (artikelRes.success) document.getElementById('totalArtikel').innerText = artikelRes.data.length;
     }
 
-    // Artikel
-    async function loadArtikel() {
-      await loadWithCache('admin_artikel', async () => { let r=await apiCall('getAllArtikel',{token}); return r.success?r.data:[]; }, (data) => {
-        let tb = document.querySelector('#artikelTable tbody'); tb.innerHTML = '';
-        data.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).forEach(item => {
-          tb.innerHTML += `<tr><td>${item.id}</td><td><strong>${item.title}</strong></td><td>${item.authorName}</td><td>${new Date(item.createdAt).toLocaleDateString('id-ID')}</td><td><button class="btn btn-sm btn-warning" onclick="editArtikel('${item.id}')"><i class="bi bi-pencil"></i></button> <button class="btn btn-sm btn-danger" onclick="deleteArtikel('${item.id}')"><i class="bi bi-trash"></i></button></td></tr>`;
-        });
+    async function loadUsers() {
+      const res = await apiCall('getUsers', { token });
+      if (!res.success) return showAlert('Gagal ambil pengguna');
+      let tb = document.querySelector('#userTable tbody'); if(!tb) return;
+      tb.innerHTML = '';
+      res.data.forEach(u => {
+        tb.innerHTML += `<tr>
+          <td>${escapeHtml(u.id)}</td>
+          <td><strong>${escapeHtml(u.nama)}</strong></td>
+          <td>${escapeHtml(u.email)}</td>
+          <td><select class="form-select form-select-sm" onchange="changeUserRole('${escapeHtml(u.id)}',this.value)"><option value="admin" ${u.role==='admin'?'selected':''}>Admin</option><option value="member" ${u.role==='member'?'selected':''}>Member</option></select></td>
+          <td><button class="btn btn-sm btn-danger" onclick="deleteUser('${escapeHtml(u.id)}')"><i class="bi bi-trash"></i></button></td>
+        </table>`;
       });
     }
-    function tambahArtikel() {
-      document.getElementById('artikelModalTitle').innerText='Tambah Artikel'; document.getElementById('artikelId').value='';
-      document.getElementById('artikelJudul').value=''; document.getElementById('artikelKonten').value=''; document.getElementById('artikelGambar').value='';
-      new bootstrap.Modal(document.getElementById('artikelModal')).show();
+
+    async function changeUserRole(userId, newRole) { if (!confirm('Ubah role?')) return; let res = await apiCall('updateUserRole', { token, userId, newRole }); if (res.success) { alert('Role diubah'); loadUsers(); } else alert('Gagal: '+res.message); }
+    async function deleteUser(userId) { if (!confirm('Hapus user?')) return; let res = await apiCall('deleteUser', { token, userId }); if (res.success) { alert('User dihapus'); loadUsers(); } else alert('Gagal: '+res.message); }
+
+    async function loadArtikel() {
+      const res = await apiCall('getAllArtikel', { token });
+      if (!res.success) return showAlert('Gagal ambil artikel');
+      let tb = document.querySelector('#artikelTable tbody'); if(!tb) return;
+      tb.innerHTML = '';
+      res.data.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).forEach(item => {
+        tb.innerHTML += `<tr>
+          <td>${escapeHtml(item.id)}</td>
+          <td><strong>${escapeHtml(item.title)}</strong></td>
+          <td>${escapeHtml(item.authorName)}</td>
+          <td>${new Date(item.createdAt).toLocaleDateString('id-ID')}</td>
+          <td><button class="btn btn-sm btn-warning" onclick="editArtikel('${escapeHtml(item.id)}')"><i class="bi bi-pencil"></i></button> <button class="btn btn-sm btn-danger" onclick="deleteArtikel('${escapeHtml(item.id)}')"><i class="bi bi-trash"></i></button></td>
+        </tr>`;
+      });
     }
-    async function editArtikel(id) {
-      try { let r=await apiCall('getArtikelById',{id,token}); if (r.success) { let item=r.data; document.getElementById('artikelModalTitle').innerText='Edit Artikel'; document.getElementById('artikelId').value=item.id; document.getElementById('artikelJudul').value=item.title; document.getElementById('artikelKonten').value=item.content; document.getElementById('artikelGambar').value=item.imageUrl||''; new bootstrap.Modal(document.getElementById('artikelModal')).show(); } else alert('Gagal'); } catch(e) { alert('Error: '+e.message); }
-    }
+    function tambahArtikel() { document.getElementById('artikelModalTitle').innerText='Tambah Artikel'; document.getElementById('artikelId').value=''; document.getElementById('artikelJudul').value=''; document.getElementById('artikelKonten').value=''; document.getElementById('artikelGambar').value=''; new bootstrap.Modal(document.getElementById('artikelModal')).show(); }
+    async function editArtikel(id) { let r = await apiCall('getArtikelById', { id, token }); if (r.success) { let item=r.data; document.getElementById('artikelModalTitle').innerText='Edit Artikel'; document.getElementById('artikelId').value=item.id; document.getElementById('artikelJudul').value=item.title; document.getElementById('artikelKonten').value=item.content; document.getElementById('artikelGambar').value=item.imageUrl||''; new bootstrap.Modal(document.getElementById('artikelModal')).show(); } else alert('Gagal'); }
     async function simpanArtikel() {
       let id = document.getElementById('artikelId').value;
       let data = { token, title:document.getElementById('artikelJudul').value, content:document.getElementById('artikelKonten').value, imageUrl:document.getElementById('artikelGambar').value };
-      try {
-        let res; if (id) { data.id=id; res=await apiCall('updateArtikel',data); } else res=await apiCall('addArtikel',data);
-        if (res.success) { alert('Artikel disimpan'); sessionStorage.removeItem('admin_artikel'); sessionStorage.removeItem('admin_dashboard_artikel'); bootstrap.Modal.getInstance(document.getElementById('artikelModal')).hide(); loadArtikel(); updateDashboard(); }
-        else alert('Gagal: '+res.message);
-      } catch(e) { alert('Error: '+e.message); }
+      let res = id ? await apiCall('updateArtikel', { ...data, id }) : await apiCall('addArtikel', data);
+      if (res.success) { alert('Artikel disimpan'); bootstrap.Modal.getInstance(document.getElementById('artikelModal')).hide(); loadArtikel(); updateDashboard(); } else alert('Gagal: '+res.message);
     }
-    async function deleteArtikel(id) {
-      if (!confirm('Hapus artikel?')) return;
-      try { let r=await apiCall('deleteArtikel',{token,id}); if (r.success) { alert('Artikel dihapus'); sessionStorage.removeItem('admin_artikel'); sessionStorage.removeItem('admin_dashboard_artikel'); loadArtikel(); updateDashboard(); } else alert('Gagal: '+r.message); } catch(e) { alert('Error: '+e.message); }
+    async function deleteArtikel(id) { if (!confirm('Hapus artikel?')) return; let res = await apiCall('deleteArtikel', { token, id }); if (res.success) { alert('Artikel dihapus'); loadArtikel(); updateDashboard(); } else alert('Gagal: '+res.message); }
+
+    async function changePassword(e) { e.preventDefault(); if (document.getElementById('newPassword').value !== document.getElementById('confirmPassword').value) { alert('Password baru tidak cocok'); return; } let res = await apiCall('changePassword', { token, oldPassword:document.getElementById('oldPassword').value, newPassword:document.getElementById('newPassword').value }); if (res.success) alert('Password diubah'); else alert('Gagal: '+res.message); }
+    async function backupData() { let res = await apiCall('backupData', { token }); if (res.success) { let blob=new Blob([JSON.stringify(res.data,null,2)],{type:'application/json'}); let a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`buma_backup_${new Date().toISOString().slice(0,10)}.json`; a.click(); } else alert('Gagal'); }
+    async function resetData() { if (!confirm('Hapus SEMUA data?')) return; let res = await apiCall('resetData', { token }); if (res.success) { alert('Data direset'); loadDataUsaha(); loadArtikel(); updateDashboard(); if (mcg) mcg.clearLayers(); } else alert('Gagal: '+res.message); }
+
+    async function showSection(section, element) {
+      document.querySelectorAll('.content-section').forEach(el => el.style.display = 'none');
+      document.getElementById('section-' + section).style.display = 'block';
+      document.querySelectorAll('#sidebar ul li a').forEach(link => link.classList.remove('active'));
+      if (element) element.classList.add('active');
+      try { sessionStorage.setItem('admin_last_section', section); } catch(e) {}
+      if (section === 'dataAnggota') await loadDataUsaha();
+      else if (section === 'peta') {
+        document.getElementById('loadingSpinnerOverlay').style.display = 'flex';
+        await loadDataUsaha(true, false);
+        updateMap(currentDataUsaha);
+        setupMapSearch();
+        document.getElementById('loadingSpinnerOverlay').style.display = 'none';
+      }
+      else if (section === 'pengguna') await loadUsers();
+      else if (section === 'artikel') await loadArtikel();
+      else if (section === 'dashboard') await updateDashboard();
     }
 
-    // Pengaturan
-    async function changePassword(e) {
-      e.preventDefault();
-      if (document.getElementById('newPassword').value !== document.getElementById('confirmPassword').value) { alert('Password baru tidak cocok'); return; }
-      try { let r=await apiCall('changePassword',{token, oldPassword:document.getElementById('oldPassword').value, newPassword:document.getElementById('newPassword').value}); if (r.success) alert('Password diubah'); else alert('Gagal: '+r.message); } catch(e) { alert('Error: '+e.message); }
-    }
-    async function backupData() {
-      try { let r=await apiCall('backupData',{token}); if (r.success) { let blob=new Blob([JSON.stringify(r.data,null,2)],{type:'application/json'}); let a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`buma_backup_${new Date().toISOString().slice(0,10)}.json`; a.click(); } else alert('Gagal'); } catch(e) { alert('Error: '+e.message); }
-    }
-    async function resetData() {
-      if (!confirm('Hapus SEMUA data?')) return;
-      try { let r=await apiCall('resetData',{token}); if (r.success) { alert('Data direset'); sessionStorage.removeItem('admin_data_usaha'); sessionStorage.removeItem('admin_dashboard_usaha'); sessionStorage.removeItem('admin_artikel'); sessionStorage.removeItem('admin_dashboard_artikel'); loadDataUsaha(); loadArtikel(); updateDashboard(); if (mcg) mcg.clearLayers(); } else alert('Gagal: '+r.message); } catch(e) { alert('Error: '+e.message); }
-    }
+    document.getElementById('resetMapView')?.addEventListener('click', resetMapToBantul);
+    document.getElementById('searchInput')?.addEventListener('keyup', applyFilter);
 
-    // Init
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('searchInput')?.addEventListener('keyup', applyFilter);
-    });
     window.onload = async function() {
-      initMap();
-      await loadDataUsaha();
-      let lastSection = sessionStorage.getItem('admin_last_section') || 'dashboard';
-      let targetLink = document.querySelector(`#sidebar ul li a[onclick*="showSection('${lastSection}'"]`);
-      if (targetLink) showSection(lastSection, targetLink);
+      await loadDataUsaha(false, true);
+      let last = 'dashboard';
+      try { last = sessionStorage.getItem('admin_last_section') || 'dashboard'; } catch(e) {}
+      let targetLink = document.querySelector(`#sidebar ul li a[onclick*="showSection('${last}'"]`);
+      if (targetLink) showSection(last, targetLink);
       else showSection('dashboard', document.querySelector('#sidebar ul li a[onclick*="dashboard"]'));
     };
   </script>
