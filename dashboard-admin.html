@@ -7,7 +7,6 @@
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
-    <link rel="icon" type="image/webp" href="assets/logo buma.webp">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -20,27 +19,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #6366f1;
-      --primary-dark: #4f46e5;
-      --secondary: #8b5cf6;
-      --accent: #06b6d4;
-      --dark: #0f172a;
-      --light: #f8fafc;
-      --card-bg: #ffffff;
-      --glass-bg: rgba(255, 255, 255, 0.75);
-      --glass-border: rgba(255, 255, 255, 0.4);
-      --text: #1e293b;
-      --text-muted: #64748b;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-      --shadow: 0 4px 6px rgba(0,0,0,0.05), 0 10px 15px rgba(0,0,0,0.03);
-      --shadow-lg: 0 20px 40px rgba(0,0,0,0.08), 0 8px 20px rgba(0,0,0,0.04);
-      --shadow-xl: 0 25px 50px rgba(0,0,0,0.12);
-      --radius-sm: 12px;
-      --radius: 20px;
-      --radius-lg: 28px;
-      --radius-xl: 36px;
-      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      --sidebar-width: 280px;
+      --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #8b5cf6; --accent: #06b6d4;
+      --dark: #0f172a; --light: #f8fafc; --card-bg: #ffffff; --glass-bg: rgba(255,255,255,0.75);
+      --text: #1e293b; --text-muted: #64748b; --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow: 0 4px 6px rgba(0,0,0,0.05); --shadow-lg: 0 20px 40px rgba(0,0,0,0.08);
+      --radius: 20px; --transition: 0.3s; --sidebar-width: 280px;
     }
     * { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
     body { background: var(--light); overflow-x: hidden; }
@@ -48,121 +31,83 @@
     /* Sidebar */
     #sidebar {
       min-width: var(--sidebar-width); max-width: var(--sidebar-width);
-      background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%);
-      color: #fff; transition: all 0.3s ease; position: fixed; top: 0; left: 0; height: 100vh;
-      z-index: 1000; box-shadow: var(--shadow-xl);
+      background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%); color: #fff;
+      position: fixed; top: 0; left: 0; height: 100vh; z-index: 1000; box-shadow: var(--shadow-lg);
     }
     #sidebar .sidebar-header { padding: 30px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    #sidebar .sidebar-header h3 {
-      font-weight: 700; font-size: 1.8rem; margin: 0;
-      background: linear-gradient(135deg, #fff, #a5b4fc);
-      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-    }
+    #sidebar .sidebar-header h3 { font-weight: 700; font-size: 1.8rem; margin: 0; }
     #sidebar .sidebar-header p { color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-top: 5px; }
     #sidebar ul.components { padding: 20px 0; }
     #sidebar ul li a {
       padding: 15px 25px; display: block; color: rgba(255,255,255,0.7); text-decoration: none;
       font-weight: 500; transition: all 0.3s; border-left: 4px solid transparent; margin: 5px 10px; border-radius: 10px;
-      font-size: 0.95rem;
     }
     #sidebar ul li a:hover, #sidebar ul li a.active {
-      background: rgba(99,102,241,0.2); color: #fff; border-left-color: var(--primary);
-      box-shadow: 0 5px 15px rgba(99,102,241,0.2); transform: translateX(5px);
+      background: rgba(99,102,241,0.2); color: #fff; border-left-color: var(--primary); transform: translateX(5px);
     }
-    #sidebar ul li a i { margin-right: 15px; width: 24px; text-align: center; font-size: 1.2rem; }
+    #sidebar ul li a i { margin-right: 15px; width: 24px; font-size: 1.2rem; }
 
     /* Konten */
-    #content { width: calc(100% - var(--sidebar-width)); margin-left: var(--sidebar-width); transition: all 0.3s; padding: 20px; }
+    #content { width: calc(100% - var(--sidebar-width)); margin-left: var(--sidebar-width); padding: 20px; }
     @media (max-width: 768px) {
       #sidebar { margin-left: calc(-1 * var(--sidebar-width)); }
       #sidebar.active { margin-left: 0; }
       #content { width: 100%; margin-left: 0; }
-      #content.active { width: calc(100% - var(--sidebar-width)); margin-left: var(--sidebar-width); }
     }
 
-    /* Navbar glass */
+    /* Navbar */
     .navbar {
-      background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border); box-shadow: var(--shadow-sm); border-radius: var(--radius);
-      margin-bottom: 25px; padding: 15px 25px;
+      background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.4);
+      box-shadow: var(--shadow-sm); border-radius: var(--radius); margin-bottom: 25px; padding: 15px 25px;
     }
-    .navbar .dropdown-menu {
-      border: none; border-radius: var(--radius); box-shadow: var(--shadow-xl);
-      background: rgba(255,255,255,0.98); backdrop-filter: blur(20px);
-    }
-    .dropdown-item:hover {
-      background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.08)); color: var(--primary);
-    }
-    #sidebarCollapse { background: transparent; border: none; color: #333; font-size: 1.5rem; display: none; }
-    @media (max-width: 768px) { #sidebarCollapse { display: inline-block; } }
-
-    /* Stat card */
     .stat-card {
-      background: var(--card-bg); border-radius: var(--radius); padding: 25px; transition: all 0.3s;
-      border: 1px solid rgba(0,0,0,0.04); box-shadow: var(--shadow); position: relative; overflow: hidden;
+      background: white; border-radius: var(--radius); padding: 25px; transition: all 0.3s;
+      border: 1px solid rgba(0,0,0,0.04); box-shadow: var(--shadow);
     }
     .stat-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(99,102,241,0.15); }
     .stat-icon {
-      width: 60px; height: 60px; border-radius: 18px; display: flex; align-items: center;
-      justify-content: center; font-size: 2rem; margin-bottom: 15px;
+      width: 60px; height: 60px; border-radius: 18px; display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; margin-bottom: 15px;
     }
-    .stat-icon.primary { background: linear-gradient(135deg, #e0e7ff, #c7d2fe); color: var(--primary); }
-    .stat-icon.warning { background: linear-gradient(135deg, #fff3e0, #ffe0b2); color: #f8961e; }
-    .stat-icon.success { background: linear-gradient(135deg, #e0f2fe, #bae6fd); color: #4cc9f0; }
-    .stat-icon.info { background: linear-gradient(135deg, #e0f2fe, #bae6fd); color: #4895ef; }
-    .stat-value { font-size: 2.2rem; font-weight: 700; color: var(--text); line-height: 1.2; }
-    .stat-label { color: var(--text-muted); font-weight: 500; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 8px; }
+    .stat-icon.primary { background: #e0e7ff; color: var(--primary); }
+    .stat-icon.warning { background: #fff3e0; color: #f8961e; }
+    .stat-icon.success { background: #e0f2fe; color: #4cc9f0; }
+    .stat-icon.info { background: #e0f2fe; color: #4895ef; }
+    .stat-value { font-size: 2.2rem; font-weight: 700; color: var(--text); }
+    .stat-label { color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
 
-    /* Card umum */
     .card {
       border: 1px solid rgba(0,0,0,0.04); border-radius: var(--radius); box-shadow: var(--shadow-lg);
-      margin-bottom: 25px; transition: all 0.3s; background: var(--card-bg);
+      margin-bottom: 25px; background: white;
     }
     .card-header {
       background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff;
-      font-weight: 600; padding: 18px 25px; border-bottom: none;
-      border-radius: var(--radius) var(--radius) 0 0 !important; font-size: 1.1rem;
+      font-weight: 600; padding: 18px 25px; border-radius: var(--radius) var(--radius) 0 0 !important;
     }
-    .card-header i { margin-right: 10px; color: #fff; }
-    .card-body { padding: 25px; }
-
-    /* Tabel */
     .table { background: white; border-radius: 15px; overflow: hidden; }
-    .table thead th {
-      background: #f8fafc; border-bottom: 2px solid #e9ecef; color: #495057;
-      font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;
-    }
-    .table tbody tr:hover { background: #f8f9fa; }
-    .foto-thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 12px; box-shadow: var(--shadow-sm); }
-
-    /* Peta */
-    #map { height: 400px; border-radius: var(--radius); border: 2px solid #e8ecf1; box-shadow: var(--shadow); z-index: 1; }
-
-    /* Tombol */
+    .table thead th { background: #f8fafc; font-weight: 600; text-transform: uppercase; }
+    .foto-thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 12px; }
+    #map { height: 400px; border-radius: var(--radius); border: 2px solid #e8ecf1; z-index: 0; }
     .btn-primary {
       background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none;
-      border-radius: 50px; padding: 10px 20px; font-weight: 600; transition: var(--transition);
-      box-shadow: 0 6px 18px rgba(99,102,241,0.3); color: #fff;
+      border-radius: 50px; padding: 10px 20px; font-weight: 600; color: #fff;
     }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(99,102,241,0.4); }
     .btn-sm { border-radius: 50px; padding: 0.4rem 1rem; font-size: 0.85rem; }
-    .quick-actions .btn { border-radius: 50px; padding: 12px 24px; font-weight: 600; }
-    .search-box {
-      border-radius: 50px; border: 2px solid #e8ecf1; padding: 10px 20px; width: 250px;
-      transition: var(--transition); background: #fafbfc;
-    }
-    .search-box:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99,102,241,0.08); }
-    .chart-container { position: relative; height: 300px; width: 100%; }
+    .search-box { border-radius: 50px; border: 2px solid #e8ecf1; padding: 10px 20px; width: 250px; }
     .map-search { margin-bottom: 15px; }
+    #loadingSpinnerOverlay {
+      display: none; text-align: center; padding: 60px 20px;
+      background: rgba(255,255,255,0.8); backdrop-filter: blur(5px);
+      border-radius: var(--radius); position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 10; align-items: center; justify-content: center;
+    }
   </style>
 </head>
 <body>
   <!-- Sidebar -->
   <nav id="sidebar">
-    <div class="sidebar-header">
-      <h3>BUMA Admin</h3>
-      <p>Kabupaten Bantul</p>
-    </div>
+    <div class="sidebar-header"><h3>BUMA Admin</h3><p>Kabupaten Bantul</p></div>
     <ul class="components">
       <li><a href="#" class="active" onclick="showSection('dashboard', this)"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
       <li><a href="#" onclick="showSection('dataAnggota', this)"><i class="bi bi-people"></i> Data Anggota</a></li>
@@ -176,294 +121,174 @@
 
   <!-- Konten Utama -->
   <div id="content">
-    <!-- Navbar Atas -->
     <nav class="navbar navbar-expand">
       <div class="container-fluid">
-        <button type="button" id="sidebarCollapse" class="btn"><i class="bi bi-list"></i></button>
+        <button type="button" id="sidebarCollapse" class="btn d-md-none"><i class="bi bi-list"></i></button>
         <div class="ms-auto d-flex align-items-center">
           <div class="dropdown">
             <button class="btn btn-outline-secondary dropdown-toggle rounded-pill" type="button" data-bs-toggle="dropdown">
               <i class="bi bi-person-circle me-1"></i> <span id="userDisplay">Admin</span>
             </button>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li>
-            </ul>
+            <ul class="dropdown-menu dropdown-menu-end"><li><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li></ul>
           </div>
         </div>
       </div>
     </nav>
 
-    <!-- Konten Dinamis -->
     <div id="content-area">
+      <div id="loadingSpinnerOverlay"><div><div class="spinner-border text-primary" style="width:3rem;height:3rem;"></div><p class="mt-2 fw-semibold">Memuat data...</p></div></div>
+
       <!-- Dashboard -->
       <div id="section-dashboard" class="content-section">
         <div class="row g-4">
-          <div class="col-md-3">
-            <div class="stat-card">
-              <div class="stat-icon primary"><i class="bi bi-shop"></i></div>
-              <div class="stat-value" id="totalUsaha">0</div>
-              <div class="stat-label">Total Usaha</div>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="stat-card">
-              <div class="stat-icon warning"><i class="bi bi-tags"></i></div>
-              <div class="stat-value" id="totalKategori">0</div>
-              <div class="stat-label">Kategori Usaha</div>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="stat-card">
-              <div class="stat-icon success"><i class="bi bi-people"></i></div>
-              <div class="stat-value" id="totalAnggotaAktif">0</div>
-              <div class="stat-label">Anggota Aktif</div>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="stat-card">
-              <div class="stat-icon info"><i class="bi bi-newspaper"></i></div>
-              <div class="stat-value" id="totalArtikel">0</div>
-              <div class="stat-label">Total Artikel</div>
-            </div>
-          </div>
+          <div class="col-md-3"><div class="stat-card"><div class="stat-icon primary"><i class="bi bi-shop"></i></div><div class="stat-value" id="totalUsaha">0</div><div class="stat-label">Total Usaha</div></div></div>
+          <div class="col-md-3"><div class="stat-card"><div class="stat-icon warning"><i class="bi bi-tags"></i></div><div class="stat-value" id="totalKategori">0</div><div class="stat-label">Kategori</div></div></div>
+          <div class="col-md-3"><div class="stat-card"><div class="stat-icon success"><i class="bi bi-people"></i></div><div class="stat-value" id="totalAnggotaAktif">0</div><div class="stat-label">Anggota Aktif</div></div></div>
+          <div class="col-md-3"><div class="stat-card"><div class="stat-icon info"><i class="bi bi-newspaper"></i></div><div class="stat-value" id="totalArtikel">0</div><div class="stat-label">Artikel</div></div></div>
         </div>
-
         <div class="quick-actions mt-4">
           <button class="btn btn-primary" onclick="tambahUsaha()"><i class="bi bi-plus-circle"></i> Tambah Usaha</button>
           <button class="btn btn-outline-primary rounded-pill" onclick="exportToCSV()"><i class="bi bi-download"></i> Ekspor CSV</button>
           <button class="btn btn-outline-secondary rounded-pill" onclick="refreshData()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
         </div>
-
         <div class="row mt-4">
-          <div class="col-lg-6">
-            <div class="card">
-              <div class="card-header"><i class="bi bi-pie-chart"></i> Distribusi Usaha per Kategori</div>
-              <div class="card-body"><div class="chart-container"><canvas id="kategoriChart"></canvas></div></div>
-            </div>
-          </div>
-          <div class="col-lg-6">
-            <div class="card">
-              <div class="card-header"><i class="bi bi-clock-history"></i> 5 Data Usaha Terbaru</div>
-              <div class="card-body">
-                <div class="table-responsive">
-                  <table class="table table-hover align-middle">
-                    <thead><tr><th>Nama Usaha</th><th>Pemilik</th><th>Jenis</th><th>Alamat</th></tr></thead>
-                    <tbody id="recentUsahaTable"></tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
+          <div class="col-lg-6"><div class="card"><div class="card-header"><i class="bi bi-pie-chart"></i> Distribusi Usaha per Kategori</div><div class="card-body"><canvas id="kategoriChart"></canvas></div></div></div>
+          <div class="col-lg-6"><div class="card"><div class="card-header"><i class="bi bi-clock-history"></i> 5 Data Usaha Terbaru</div><div class="card-body"><table class="table table-hover"><thead><tr><th>Nama</th><th>Pemilik</th><th>Jenis</th><th>Alamat</th></tr></thead><tbody id="recentUsahaTable"></tbody></table></div></div></div>
         </div>
       </div>
 
       <!-- Data Anggota -->
-      <div id="section-dataAnggota" class="content-section" style="display: none;">
+      <div id="section-dataAnggota" class="content-section" style="display:none;">
         <div class="card">
-          <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
+          <div class="card-header d-flex justify-content-between align-items-center">
             <span><i class="bi bi-table"></i> Data Usaha Anggota</span>
-            <div class="d-flex gap-2 mt-2 mt-sm-0">
-              <input type="text" id="searchInput" class="form-control search-box" placeholder="Cari usaha...">
-              <button class="btn btn-primary btn-sm" onclick="tambahUsaha()"><i class="bi bi-plus"></i> Tambah</button>
-              <button class="btn btn-outline-primary btn-sm rounded-pill" onclick="exportToCSV()"><i class="bi bi-download"></i> Ekspor</button>
-              <button class="btn btn-outline-danger btn-sm rounded-pill" onclick="deleteSelected()"><i class="bi bi-trash"></i> Hapus</button>
-              <button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="refreshData()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
-            </div>
+            <div class="d-flex gap-2"><input type="text" id="searchInput" class="form-control search-box" placeholder="Cari..."><button class="btn btn-primary btn-sm" onclick="tambahUsaha()">+ Tambah</button><button class="btn btn-outline-primary btn-sm rounded-pill" onclick="exportToCSV()">Ekspor</button><button class="btn btn-outline-danger btn-sm rounded-pill" onclick="deleteSelected()">Hapus</button><button class="btn btn-outline-secondary btn-sm rounded-pill" onclick="refreshData()">Refresh</button></div>
           </div>
           <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-hover align-middle" id="usahaTable">
-                <thead>
-                  <tr><th><input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)"></th><th>Foto</th><th>Nama Usaha</th><th>Pemilik</th><th>Jenis</th><th>Alamat</th><th>Telepon</th><th>Deskripsi</th><th>Aksi</th></tr>
-                </thead>
-                <tbody id="usahaTableBody"></tbody>
-              </table>
-            </div>
+            <table class="table table-hover align-middle" id="usahaTable">
+              <thead><tr><th><input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)"></th><th>Foto</th><th>Nama</th><th>Pemilik</th><th>Jenis</th><th>Alamat</th><th>Telepon</th><th>Deskripsi</th><th>Aksi</th></tr></thead>
+              <tbody id="usahaTableBody"></tbody>
+            </table>
             <div id="tableInfo" class="text-muted small mt-2"></div>
           </div>
         </div>
       </div>
 
       <!-- Peta Sebaran -->
-      <div id="section-peta" class="content-section" style="display: none;">
+      <div id="section-peta" class="content-section" style="display:none;">
         <div class="card">
           <div class="card-header"><i class="bi bi-map"></i> Peta Sebaran Usaha</div>
           <div class="card-body">
-            <div class="input-group map-search">
-              <span class="input-group-text"><i class="bi bi-search"></i></span>
-              <input type="text" id="searchMap" class="form-control" placeholder="Cari usaha di peta...">
-            </div>
+            <div class="input-group map-search"><span class="input-group-text"><i class="bi bi-search"></i></span><input type="text" id="searchMap" class="form-control" placeholder="Cari di peta..."></div>
             <div id="map"></div>
           </div>
         </div>
       </div>
 
       <!-- Pengguna -->
-      <div id="section-pengguna" class="content-section" style="display: none;">
-        <div class="card">
-          <div class="card-header d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-people"></i> Manajemen Pengguna</span>
-            <button class="btn btn-outline-primary btn-sm rounded-pill" onclick="loadUsers()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
-          </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-hover align-middle" id="userTable">
-                <thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Role</th><th>Aksi</th></tr></thead>
-                <tbody></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+      <div id="section-pengguna" class="content-section" style="display:none;">
+        <div class="card"><div class="card-header"><i class="bi bi-people"></i> Manajemen Pengguna</div><div class="card-body"><table class="table" id="userTable"><thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Role</th><th>Aksi</th></tr></thead><tbody></tbody></table></div></div>
       </div>
 
       <!-- Artikel -->
-      <div id="section-artikel" class="content-section" style="display: none;">
-        <div class="card">
-          <div class="card-header d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-newspaper"></i> Manajemen Artikel</span>
-            <div>
-              <button class="btn btn-primary btn-sm" onclick="tambahArtikel()"><i class="bi bi-plus"></i> Tambah</button>
-              <button class="btn btn-outline-primary btn-sm rounded-pill" onclick="loadArtikel()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-hover align-middle" id="artikelTable">
-                <thead><tr><th>ID</th><th>Judul</th><th>Penulis</th><th>Tanggal</th><th>Aksi</th></tr></thead>
-                <tbody></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+      <div id="section-artikel" class="content-section" style="display:none;">
+        <div class="card"><div class="card-header d-flex justify-content-between"><span><i class="bi bi-newspaper"></i> Manajemen Artikel</span><button class="btn btn-primary btn-sm" onclick="tambahArtikel()">+ Artikel</button></div><div class="card-body"><table class="table" id="artikelTable"><thead><tr><th>ID</th><th>Judul</th><th>Penulis</th><th>Tanggal</th><th>Aksi</th></tr></thead><tbody></tbody></table></div></div>
       </div>
 
       <!-- Pengaturan -->
-      <div id="section-pengaturan" class="content-section" style="display: none;">
-        <div class="card">
-          <div class="card-header"><i class="bi bi-gear"></i> Pengaturan Sistem</div>
+      <div id="section-pengaturan" class="content-section" style="display:none;">
+        <div class="card"><div class="card-header"><i class="bi bi-gear"></i> Pengaturan</div>
           <div class="card-body">
-            <div class="row">
-              <div class="col-md-6">
-                <h5 class="fw-bold">Ubah Password Admin</h5>
-                <form id="changePasswordForm">
-                  <div class="mb-3"><label class="form-label fw-semibold">Password Lama</label><input type="password" class="form-control" id="oldPassword" required></div>
-                  <div class="mb-3"><label class="form-label fw-semibold">Password Baru</label><input type="password" class="form-control" id="newPassword" required></div>
-                  <div class="mb-3"><label class="form-label fw-semibold">Konfirmasi Password Baru</label><input type="password" class="form-control" id="confirmPassword" required></div>
-                  <button type="submit" class="btn btn-primary">Ubah Password</button>
-                </form>
-                <div id="passwordAlert" class="alert mt-3 d-none"></div>
-              </div>
-              <div class="col-md-6">
-                <h5 class="fw-bold">Manajemen Data</h5>
-                <button class="btn btn-outline-primary rounded-pill mb-2" onclick="backupData()"><i class="bi bi-download"></i> Backup Data (JSON)</button>
-                <button class="btn btn-outline-danger rounded-pill mb-2" onclick="resetData()"><i class="bi bi-exclamation-triangle"></i> Reset Semua Data</button>
-                <p class="text-muted small">Reset akan menghapus semua data usaha, pesan, dan artikel. User tetap.</p>
-              </div>
-            </div>
+            <form id="changePasswordForm" onsubmit="changePassword(event)">
+              <h5>Ubah Password</h5>
+              <input type="password" class="form-control mb-2" id="oldPassword" placeholder="Password lama">
+              <input type="password" class="form-control mb-2" id="newPassword" placeholder="Password baru">
+              <input type="password" class="form-control mb-2" id="confirmPassword" placeholder="Konfirmasi">
+              <button class="btn btn-primary" type="submit">Simpan</button>
+            </form>
+            <hr>
+            <button class="btn btn-outline-secondary rounded-pill" onclick="backupData()">Backup JSON</button>
+            <button class="btn btn-outline-danger rounded-pill" onclick="resetData()">Reset Data</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Modal Edit Data Usaha -->
+  <!-- Modal View Detail -->
+  <div class="modal fade" id="viewUsahaModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title"><i class="bi bi-eye"></i> Detail Usaha</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body"><div class="row"><div class="col-md-4 text-center"><img id="viewFoto" src="" class="img-fluid rounded-3 mb-3" style="max-height:250px"><span id="viewNoFoto" class="text-muted">Tidak ada foto</span></div><div class="col-md-8"><table class="table table-borderless"><tr><td class="fw-bold">Nama</td><td>: <span id="viewNamaUsaha"></span></td></tr><tr><td class="fw-bold">Pemilik</td><td>: <span id="viewPemilik"></span></td></tr><tr><td class="fw-bold">Jenis</td><td>: <span id="viewJenisUsaha"></span></td></tr><tr><td class="fw-bold">Alamat</td><td>: <span id="viewAlamat"></span></td></tr><tr><td class="fw-bold">Telepon</td><td>: <span id="viewTelepon"></span></td></tr><tr><td class="fw-bold">Deskripsi</td><td>: <span id="viewDeskripsi"></span></td></tr><tr><td class="fw-bold">Koordinat</td><td>: <span id="viewKoordinat"></span></td></tr><tr><td class="fw-bold">Tgl</td><td>: <span id="viewCreatedAt"></span></td></tr></table></div></div></div><div class="modal-footer"><button class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Tutup</button></div></div></div>
+  </div>
+
+  <!-- Modal Edit Usaha -->
   <div class="modal fade" id="editUsahaModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="editUsahaModalTitle">Edit Data Usaha</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <form id="editUsahaForm">
-            <input type="hidden" id="editId">
-            <div class="row">
-              <div class="col-md-6 mb-2"><input type="text" class="form-control" id="editNamaUsaha" placeholder="Nama Usaha" required></div>
-              <div class="col-md-6 mb-2"><input type="text" class="form-control" id="editPemilik" placeholder="Pemilik" required></div>
-            </div>
-            <div class="row">
-              <div class="col-md-6 mb-2"><input type="text" class="form-control" id="editJenisUsaha" placeholder="Jenis Usaha" required></div>
-              <div class="col-md-6 mb-2"><input type="text" class="form-control" id="editTelepon" placeholder="Telepon"></div>
-            </div>
-            <div class="mb-2"><textarea class="form-control" id="editAlamat" placeholder="Alamat" rows="2" required></textarea></div>
-            <div class="mb-2"><textarea class="form-control" id="editDeskripsi" placeholder="Deskripsi Usaha" rows="3"></textarea></div>
-            <div class="row">
-              <div class="col-md-6 mb-2"><input type="text" class="form-control" id="editLat" placeholder="Latitude"></div>
-              <div class="col-md-6 mb-2"><input type="text" class="form-control" id="editLng" placeholder="Longitude"></div>
-            </div>
-            <div class="mb-2"><input type="text" class="form-control" id="editFoto" placeholder="URL Foto"></div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Batal</button>
-          <button type="button" class="btn btn-primary" onclick="simpanUsaha()">Simpan</button>
-        </div>
-      </div>
-    </div>
+    <div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="editUsahaModalTitle">Edit Data Usaha</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="editUsahaForm"><input type="hidden" id="editId"><div class="row"><div class="col-md-6 mb-2"><input class="form-control" id="editNamaUsaha" placeholder="Nama Usaha" required></div><div class="col-md-6 mb-2"><input class="form-control" id="editPemilik" placeholder="Pemilik" required></div></div><div class="row"><div class="col-md-6 mb-2"><input class="form-control" id="editJenisUsaha" placeholder="Jenis Usaha" required></div><div class="col-md-6 mb-2"><input class="form-control" id="editTelepon" placeholder="Telepon"></div></div><div class="mb-2"><textarea class="form-control" id="editAlamat" rows="2" placeholder="Alamat" required></textarea></div><div class="mb-2"><textarea class="form-control" id="editDeskripsi" rows="3" placeholder="Deskripsi"></textarea></div><div class="row"><div class="col-md-6 mb-2"><input class="form-control" id="editLat" placeholder="Latitude"></div><div class="col-md-6 mb-2"><input class="form-control" id="editLng" placeholder="Longitude"></div></div><div class="mb-2"><input class="form-control" id="editFoto" placeholder="URL Foto"></div></form></div><div class="modal-footer"><button class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Batal</button><button class="btn btn-primary" onclick="simpanUsaha()">Simpan</button></div></div></div>
   </div>
 
   <!-- Modal Artikel -->
   <div class="modal fade" id="artikelModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="artikelModalTitle">Tambah Artikel</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <form id="artikelForm">
-            <input type="hidden" id="artikelId">
-            <div class="mb-2"><label class="fw-semibold">Judul</label><input type="text" class="form-control" id="artikelJudul" required></div>
-            <div class="mb-2"><label class="fw-semibold">Konten</label><textarea class="form-control" id="artikelKonten" rows="6" required></textarea></div>
-            <div class="mb-2"><label class="fw-semibold">URL Gambar (opsional)</label><input type="text" class="form-control" id="artikelGambar"></div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Batal</button>
-          <button type="button" class="btn btn-primary" onclick="simpanArtikel()">Simpan</button>
-        </div>
-      </div>
-    </div>
+    <div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="artikelModalTitle">Tambah Artikel</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="artikelForm"><input type="hidden" id="artikelId"><input class="form-control mb-2" id="artikelJudul" placeholder="Judul" required><textarea class="form-control mb-2" id="artikelKonten" rows="6" placeholder="Konten" required></textarea><input class="form-control" id="artikelGambar" placeholder="URL Gambar (opsional)"></form></div><div class="modal-footer"><button class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Batal</button><button class="btn btn-primary" onclick="simpanArtikel()">Simpan</button></div></div></div>
   </div>
 
-  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   <script src="js/api.js"></script>
   <script src="js/auth.js"></script>
   <script>
-    // Proteksi halaman
+    // Auth
     if (!checkAuth('admin')) window.location.href = 'login.html';
-
-    const userName = sessionStorage.getItem('nama') || 'Admin';
-    document.getElementById('userDisplay').innerText = userName;
-
-    document.getElementById('sidebarCollapse').addEventListener('click', function() {
+    const token = sessionStorage.getItem('token');
+    if (!token) window.location.href = 'login.html';
+    document.getElementById('userDisplay').innerText = sessionStorage.getItem('nama') || 'Admin';
+    document.getElementById('sidebarCollapse').addEventListener('click', () => {
       document.getElementById('sidebar').classList.toggle('active');
       document.getElementById('content').classList.toggle('active');
     });
-
     async function logout() {
-      const token = sessionStorage.getItem('token');
-      if (token) { try { await apiCall('logout', { token }); } catch (e) { console.error(e); } }
-      sessionStorage.clear();
-      window.location.href = 'index.html';
+      if (token) try { await apiCall('logout', { token }); } catch (e) {}
+      sessionStorage.clear(); window.location.href = 'index.html';
     }
 
-    let currentDataUsaha = [];
-    let filteredDataUsaha = [];
-    let map, mcg;
-    let kategoriChart = null;
+    let currentDataUsaha = [], filteredDataUsaha = [], map, mcg, kategoriChart, allMarkers = [];
 
-    async function loadWithCache(key, fetchFn, renderFn) {
+    // Cache & Background Refresh
+    async function loadWithCache(key, fetchFn, renderFn, showSpinner = false) {
       const cached = sessionStorage.getItem(key);
-      if (cached) { try { renderFn(JSON.parse(cached)); } catch(e) {} }
+      if (cached) { try { renderFn(JSON.parse(cached)); } catch (e) {} }
+      else { if (showSpinner) document.getElementById('loadingSpinnerOverlay').style.display = 'flex'; }
       try {
         const fresh = await fetchFn();
         const freshStr = JSON.stringify(fresh);
         if (cached !== freshStr) { sessionStorage.setItem(key, freshStr); renderFn(fresh); }
-      } catch (err) { console.error(err); }
+      } catch (e) { console.error(e); }
+      finally { if (showSpinner) document.getElementById('loadingSpinnerOverlay').style.display = 'none'; }
+    }
+
+    // Koordinat
+    function extractCoordinates(str) {
+      if (!str) return null;
+      let m = str.match(/Latitude:\s*(-?\d+\.?\d*)/i), n = str.match(/Longitude:\s*(-?\d+\.?\d*)/i);
+      if (m && n) return { lat: parseFloat(m[1]), lng: parseFloat(n[1]) };
+      m = str.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);
+      if (m && m.length >= 3) return { lat: parseFloat(m[1]), lng: parseFloat(m[2]) };
+      let nums = str.match(/-?\d+\.?\d*/g);
+      if (nums && nums.length >= 2) return { lat: parseFloat(nums[0]), lng: parseFloat(nums[1]) };
+      return null;
+    }
+    function cleanCoordinate(v) {
+      if (!v && v !== 0) return '';
+      let s = String(v).replace(',', '.'); let dot = false;
+      return s.replace(/\./g, () => dot ? '' : (dot = true, '.'));
+    }
+    function getValidCoordinates(item) {
+      let lat = parseFloat(cleanCoordinate(item.lat)), lng = parseFloat(cleanCoordinate(item.lng));
+      if (!isNaN(lat) && !isNaN(lng) && !(lat===0&&lng===0) && lat>=-90&&lat<=90&&lng>=-180&&lng<=180) return {lat,lng};
+      if (item.alamat) { let ex = extractCoordinates(item.alamat); if (ex) return ex; }
+      if (item.lokasiMap) { let ex = extractCoordinates(item.lokasiMap); if (ex) return ex; }
+      return null;
     }
 
     function showSection(section, element) {
@@ -471,503 +296,231 @@
       document.getElementById('section-' + section).style.display = 'block';
       document.querySelectorAll('#sidebar ul li a').forEach(link => link.classList.remove('active'));
       if (element) element.classList.add('active');
-
-      if (section === 'dataAnggota') { loadDataUsaha(); }
-      else if (section === 'peta') { if (!map) initMap(); filterMap(); }
-      else if (section === 'pengguna') { loadUsers(); }
-      else if (section === 'artikel') { loadArtikel(); }
-      else if (section === 'dashboard') { updateDashboard(); if (currentDataUsaha.length > 0) updateDashboardChartsAndTables(currentDataUsaha); }
+      sessionStorage.setItem('admin_last_section', section);
+      if (section === 'dataAnggota') loadDataUsaha();
+      else if (section === 'peta') { if (map) map.invalidateSize(); loadDataUsaha().then(() => filterMap()); }
+      else if (section === 'pengguna') loadUsers();
+      else if (section === 'artikel') loadArtikel();
+      else if (section === 'dashboard') updateDashboard();
     }
 
-    // ================== DASHBOARD STATISTIK ==================
+    // Dashboard
     async function updateDashboard() {
       await loadWithCache('admin_dashboard_usaha', async () => {
-        const res = await apiCall('getDataUsaha', { token: sessionStorage.getItem('token') });
+        const res = await apiCall('getDataUsaha', { token });
         return res.success ? res.data : [];
       }, (data) => {
         document.getElementById('totalUsaha').innerText = data.length;
-        const kategoriSet = new Set(data.map(u => u.jenisUsaha).filter(Boolean));
-        document.getElementById('totalKategori').innerText = kategoriSet.size;
-        updateDashboardChartsAndTables(data);
-      });
-
-      await loadWithCache('admin_dashboard_users', async () => {
-        const res = await apiCall('getUsers', { token: sessionStorage.getItem('token') });
-        return res.success ? res.data : [];
-      }, (users) => {
-        const anggotaAktif = users.filter(u => u.role === 'member').length;
-        document.getElementById('totalAnggotaAktif').innerText = anggotaAktif;
-      });
-
-      await loadWithCache('admin_dashboard_artikel', async () => {
-        const res = await apiCall('getAllArtikel', {});
-        return res.success ? res.data : [];
-      }, (data) => document.getElementById('totalArtikel').innerText = data.length);
-    }
-
-    function updateDashboardChartsAndTables(data) {
-      const recent = [...data].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,5);
-      const tbody = document.getElementById('recentUsahaTable');
-      tbody.innerHTML = '';
-      recent.forEach(item => {
-        tbody.innerHTML += `<tr><td><strong>${item.namaUsaha}</strong></td><td>${item.pemilik}</td><td><span class="badge bg-primary bg-opacity-10 text-primary">${item.jenisUsaha}</span></td><td>${item.alamat.substring(0,30)}${item.alamat.length>30?'...':''}</td></tr>`;
-      });
-
-      const kategoriCount = {};
-      data.forEach(item => { if (item.jenisUsaha) kategoriCount[item.jenisUsaha] = (kategoriCount[item.jenisUsaha]||0)+1; });
-      const labels = Object.keys(kategoriCount);
-      const values = Object.values(kategoriCount);
-
-      if (kategoriChart) kategoriChart.destroy();
-      const ctx = document.getElementById('kategoriChart').getContext('2d');
-      if (labels.length === 0) {
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.font = '16px Plus Jakarta Sans';
-        ctx.fillStyle = '#999';
-        ctx.textAlign = 'center';
-        ctx.fillText('Belum ada data usaha', ctx.canvas.width/2, ctx.canvas.height/2);
-      } else {
-        kategoriChart = new Chart(ctx, {
-          type: 'doughnut',
-          data: { labels, datasets: [{ data: values, backgroundColor: ['#6366f1','#8b5cf6','#06b6d4','#4cc9f0','#f72585','#f8961e'], borderWidth:0 }] },
-          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { family:'Plus Jakarta Sans' } } } }, cutout:'60%' }
+        document.getElementById('totalKategori').innerText = new Set(data.map(u => u.jenisUsaha).filter(Boolean)).size;
+        let tb = document.getElementById('recentUsahaTable'); tb.innerHTML = '';
+        [...data].sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt)).slice(0,5).forEach(item => {
+          tb.innerHTML += `<tr><td><strong>${item.namaUsaha}</strong></td><td>${item.pemilik}</td><td><span class="badge bg-primary">${item.jenisUsaha}</span></td><td>${item.alamat.substring(0,30)}</td></tr>`;
         });
-      }
+        if (kategoriChart) kategoriChart.destroy();
+        let ctx = document.getElementById('kategoriChart')?.getContext('2d'); if (!ctx) return;
+        let kat = {}; data.forEach(item => { if (item.jenisUsaha) kat[item.jenisUsaha] = (kat[item.jenisUsaha]||0)+1; });
+        if (Object.keys(kat).length===0) return;
+        kategoriChart = new Chart(ctx, { type:'doughnut', data:{ labels:Object.keys(kat), datasets:[{ data:Object.values(kat), backgroundColor:['#6366f1','#8b5cf6','#06b6d4','#4cc9f0','#f72585'] }] }, options:{ responsive:true, cutout:'60%' } });
+      }, true);
+      await loadWithCache('admin_dashboard_users', async () => { let r = await apiCall('getUsers',{token}); return r.success?r.data:[]; }, (users) => document.getElementById('totalAnggotaAktif').innerText = users.filter(u=>u.role==='member').length);
+      await loadWithCache('admin_dashboard_artikel', async () => { let r = await apiCall('getAllArtikel',{}); return r.success?r.data:[]; }, (data) => document.getElementById('totalArtikel').innerText = data.length);
     }
 
-    // ================== DATA USAHA ==================
-    async function loadDataUsaha() {
-      await loadWithCache('admin_data_usaha', async () => {
-        const res = await apiCall('getDataUsaha', { token: sessionStorage.getItem('token') });
-        return res.success ? res.data : [];
-      }, (data) => {
-        currentDataUsaha = data;
-        applyFilter();
-        updateMap(currentDataUsaha);
-        document.getElementById('totalUsaha').innerText = data.length;
-        const kategoriSet = new Set(data.map(u => u.jenisUsaha).filter(Boolean));
-        document.getElementById('totalKategori').innerText = kategoriSet.size;
-      });
+    // Data Usaha
+    async function loadDataUsaha(force=false) {
+      await loadWithCache('admin_data_usaha', async () => { let r=await apiCall('getDataUsaha',{token}); return r.success?r.data:[]; }, (data) => {
+        currentDataUsaha = data.map(item => ({...item, lat: cleanCoordinate(item.lat), lng: cleanCoordinate(item.lng)}));
+        applyFilter(); document.getElementById('totalUsaha').innerText = currentDataUsaha.length;
+      }, false);
     }
-
     function applyFilter() {
-      const keyword = document.getElementById('searchInput')?.value.toLowerCase() || '';
-      filteredDataUsaha = currentDataUsaha.filter(item => 
-        item.namaUsaha.toLowerCase().includes(keyword) || item.pemilik.toLowerCase().includes(keyword) ||
-        item.alamat.toLowerCase().includes(keyword) || (item.jenisUsaha && item.jenisUsaha.toLowerCase().includes(keyword))
-      );
+      let kw = document.getElementById('searchInput')?.value.toLowerCase()||'';
+      filteredDataUsaha = currentDataUsaha.filter(item => item.namaUsaha.toLowerCase().includes(kw)||item.pemilik.toLowerCase().includes(kw)||item.alamat.toLowerCase().includes(kw)||(item.jenisUsaha&&item.jenisUsaha.toLowerCase().includes(kw)));
       renderUsahaTable(filteredDataUsaha);
-      document.getElementById('tableInfo').innerText = `Menampilkan ${filteredDataUsaha.length} dari ${currentDataUsaha.length} data`;
+      document.getElementById('tableInfo').innerText = `Menampilkan ${filteredDataUsaha.length} dari ${currentDataUsaha.length}`;
     }
-
     function renderUsahaTable(data) {
-      const tbody = document.getElementById('usahaTableBody');
-      tbody.innerHTML = '';
+      let tb = document.getElementById('usahaTableBody'); tb.innerHTML = '';
       data.forEach(item => {
-        const fotoHtml = item.foto ? `<img src="${item.foto}" class="foto-thumb">` : '<span class="text-muted">-</span>';
-        tbody.innerHTML += `<tr>
-          <td><input type="checkbox" class="select-item" value="${item.id}"></td>
-          <td>${fotoHtml}</td>
-          <td><strong>${item.namaUsaha}</strong></td>
-          <td>${item.pemilik}</td>
-          <td><span class="badge bg-info bg-opacity-10 text-info">${item.jenisUsaha}</span></td>
-          <td>${item.alamat}</td>
-          <td>${item.telepon || '-'}</td>
-          <td>${item.deskripsi ? item.deskripsi.substring(0,30)+'...' : '-'}</td>
-          <td>
-            <button class="btn btn-sm btn-warning" onclick="editUsaha('${item.id}')"><i class="bi bi-pencil"></i></button>
-            <button class="btn btn-sm btn-danger" onclick="deleteUsaha('${item.id}')"><i class="bi bi-trash"></i></button>
-          </td>
-        </tr>`;
+        let foto = item.foto ? `<img src="${item.foto}" class="foto-thumb">` : '<span class="text-muted">-</span>';
+        tb.innerHTML += `<tr><td><input type="checkbox" class="select-item" value="${item.id}"></td><td>${foto}</td><td><strong>${item.namaUsaha}</strong></td><td>${item.pemilik}</td><td>${item.jenisUsaha}</td><td>${item.alamat}</td><td>${item.telepon||'-'}</td><td>${(item.deskripsi||'').substring(0,30)}</td><td><button class="btn btn-sm btn-info" onclick="viewUsaha('${item.id}')"><i class="bi bi-eye"></i></button> <button class="btn btn-sm btn-warning" onclick="editUsaha('${item.id}')"><i class="bi bi-pencil"></i></button> <button class="btn btn-sm btn-danger" onclick="deleteUsaha('${item.id}')"><i class="bi bi-trash"></i></button></td></tr>`;
       });
     }
 
-    function tambahUsaha() {
-      document.getElementById('editUsahaModalTitle').innerText = 'Tambah Usaha';
-      document.getElementById('editId').value = '';
-      document.getElementById('editNamaUsaha').value = '';
-      document.getElementById('editPemilik').value = '';
-      document.getElementById('editJenisUsaha').value = '';
-      document.getElementById('editAlamat').value = '';
-      document.getElementById('editTelepon').value = '';
-      document.getElementById('editDeskripsi').value = '';
-      document.getElementById('editLat').value = '';
-      document.getElementById('editLng').value = '';
-      document.getElementById('editFoto').value = '';
-      new bootstrap.Modal(document.getElementById('editUsahaModal')).show();
-    }
-
-    async function simpanUsaha() {
-      const id = document.getElementById('editId').value;
-      const data = {
-        token: sessionStorage.getItem('token'),
-        namaUsaha: document.getElementById('editNamaUsaha').value,
-        pemilik: document.getElementById('editPemilik').value,
-        jenisUsaha: document.getElementById('editJenisUsaha').value,
-        alamat: document.getElementById('editAlamat').value,
-        telepon: document.getElementById('editTelepon').value,
-        deskripsi: document.getElementById('editDeskripsi').value,
-        lat: document.getElementById('editLat').value,
-        lng: document.getElementById('editLng').value,
-        foto: document.getElementById('editFoto').value
-      };
+    async function viewUsaha(id) {
       try {
-        let res;
-        if (id) { data.id = id; res = await apiCall('updateDataUsaha', data); }
-        else res = await apiCall('addDataUsaha', data);
-        if (res.success) {
-          alert('Data berhasil disimpan');
-          sessionStorage.removeItem('admin_data_usaha');
-          sessionStorage.removeItem('admin_dashboard_usaha');
-          bootstrap.Modal.getInstance(document.getElementById('editUsahaModal')).hide();
-          loadDataUsaha();
-          updateDashboard();
-        } else alert('Gagal: ' + res.message);
-      } catch (err) { alert('Error: ' + err.message); }
+        let r = await apiCall('getDataUsahaById',{token,id});
+        if (r.success) {
+          let item = r.data;
+          document.getElementById('viewNamaUsaha').innerText=item.namaUsaha; document.getElementById('viewPemilik').innerText=item.pemilik;
+          document.getElementById('viewJenisUsaha').innerText=item.jenisUsaha; document.getElementById('viewAlamat').innerText=item.alamat;
+          document.getElementById('viewTelepon').innerText=item.telepon||'-'; document.getElementById('viewDeskripsi').innerText=item.deskripsi||'-';
+          document.getElementById('viewKoordinat').innerText = (item.lat && item.lng) ? `Latitude: ${item.lat}, Longitude: ${item.lng}` : '-';
+          document.getElementById('viewCreatedAt').innerText=item.createdAt?new Date(item.createdAt).toLocaleString('id-ID'):'-';
+          let fotoEl=document.getElementById('viewFoto'), noFotoEl=document.getElementById('viewNoFoto');
+          if (item.foto) { fotoEl.src=item.foto; fotoEl.style.display='block'; noFotoEl.style.display='none'; }
+          else { fotoEl.style.display='none'; noFotoEl.style.display='inline'; }
+          new bootstrap.Modal(document.getElementById('viewUsahaModal')).show();
+        } else alert('Gagal memuat detail');
+      } catch(e) { alert('Error: '+e.message); }
     }
 
-    async function editUsaha(id) {
-      try {
-        const res = await apiCall('getDataUsahaById', { token: sessionStorage.getItem('token'), id });
-        if (res.success) {
-          const item = res.data;
-          document.getElementById('editUsahaModalTitle').innerText = 'Edit Usaha';
-          document.getElementById('editId').value = item.id;
-          document.getElementById('editNamaUsaha').value = item.namaUsaha;
-          document.getElementById('editPemilik').value = item.pemilik;
-          document.getElementById('editJenisUsaha').value = item.jenisUsaha;
-          document.getElementById('editAlamat').value = item.alamat;
-          document.getElementById('editTelepon').value = item.telepon || '';
-          document.getElementById('editDeskripsi').value = item.deskripsi || '';
-          document.getElementById('editLat').value = item.lat || '';
-          document.getElementById('editLng').value = item.lng || '';
-          document.getElementById('editFoto').value = item.foto || '';
-          new bootstrap.Modal(document.getElementById('editUsahaModal')).show();
-        } else alert('Gagal mengambil data: ' + res.message);
-      } catch (err) { alert('Error: ' + err.message); }
-    }
-
-    async function deleteUsaha(id) {
-      if (!confirm('Yakin ingin menghapus data ini?')) return;
-      try {
-        const res = await apiCall('deleteDataUsaha', { token: sessionStorage.getItem('token'), id });
-        if (res.success) {
-          alert('Data dihapus');
-          sessionStorage.removeItem('admin_data_usaha');
-          sessionStorage.removeItem('admin_dashboard_usaha');
-          loadDataUsaha();
-          updateDashboard();
-        } else alert('Gagal: ' + res.message);
-      } catch (err) { alert('Error: ' + err.message); }
-    }
-
-    function refreshData() {
-      sessionStorage.removeItem('admin_data_usaha');
-      loadDataUsaha();
-    }
-
-    function toggleSelectAll(source) {
-      document.querySelectorAll('.select-item').forEach(cb => cb.checked = source.checked);
-    }
-
-    function getSelectedIds() {
-      return Array.from(document.querySelectorAll('.select-item:checked')).map(cb => cb.value);
-    }
-
-    async function deleteSelected() {
-      const ids = getSelectedIds();
-      if (ids.length === 0) { alert('Pilih data terlebih dahulu'); return; }
-      if (!confirm(`Hapus ${ids.length} data terpilih?`)) return;
-      let success = 0;
-      for (let id of ids) {
-        try {
-          const res = await apiCall('deleteDataUsaha', { token: sessionStorage.getItem('token'), id });
-          if (res.success) success++;
-        } catch (err) { console.error(err); }
-      }
-      alert(`${success} data berhasil dihapus`);
-      sessionStorage.removeItem('admin_data_usaha');
-      sessionStorage.removeItem('admin_dashboard_usaha');
-      loadDataUsaha();
-      updateDashboard();
-    }
-
-    function exportToCSV() {
-      const dataToExport = filteredDataUsaha.length ? filteredDataUsaha : currentDataUsaha;
-      if (dataToExport.length === 0) { alert('Tidak ada data untuk diekspor'); return; }
-      const headers = ['ID', 'Nama Usaha', 'Pemilik', 'Jenis Usaha', 'Alamat', 'Telepon', 'Deskripsi', 'Latitude', 'Longitude', 'Foto URL'];
-      const rows = dataToExport.map(item => [
-        item.id, item.namaUsaha, item.pemilik, item.jenisUsaha, item.alamat,
-        item.telepon || '', item.deskripsi || '', item.lat || '', item.lng || '', item.foto || ''
-      ]);
-      let csv = headers.join(',') + '\n';
-      rows.forEach(row => { csv += row.map(cell => `"${cell}"`).join(',') + '\n'; });
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `data_usaha_${new Date().toISOString().slice(0,10)}.csv`;
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    // ================== PETA ==================
+    // Peta
     function initMap() {
-      if (!map) {
-        map = L.map('map').setView([-7.885, 110.363], 11);
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
-        mcg = L.markerClusterGroup({ showCoverageOnHover: false, zoomToBoundsOnClick: true });
-        map.addLayer(mcg);
-      }
+      if (map) return;
+      map = L.map('map').setView([-7.885,110.363],11);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map);
+      mcg = L.markerClusterGroup({showCoverageOnHover:false, zoomToBoundsOnClick:true});
+      map.addLayer(mcg);
+      document.getElementById('searchMap')?.addEventListener('input', function(e) {
+        let text = e.target.value.toLowerCase(); if (!text) return;
+        let matching = allMarkers.filter(m => {
+          let p = m.feature?.properties||{};
+          return (p.namaUsaha||'').toLowerCase().includes(text)||(p.pemilik||'').toLowerCase().includes(text)||(p.jenisUsaha||'').toLowerCase().includes(text)||(p.alamat||'').toLowerCase().includes(text);
+        });
+        if (matching.length===1) { map.setView(matching[0].getLatLng(),16); matching[0].openPopup(); }
+        else if (matching.length>1) { map.fitBounds(L.featureGroup(matching).getBounds()); }
+      });
     }
-
-    function filterMap() {
-      const keyword = document.getElementById('searchMap')?.value.toLowerCase() || '';
-      let filtered = currentDataUsaha;
-      if (keyword) {
-        filtered = currentDataUsaha.filter(item => 
-          (item.namaUsaha && item.namaUsaha.toLowerCase().includes(keyword)) ||
-          (item.pemilik && item.pemilik.toLowerCase().includes(keyword)) ||
-          (item.jenisUsaha && item.jenisUsaha.toLowerCase().includes(keyword)) ||
-          (item.alamat && item.alamat.toLowerCase().includes(keyword))
-        );
-      }
-      updateMap(filtered);
-    }
-
+    function filterMap() { updateMap(currentDataUsaha); }
     function updateMap(data) {
       if (!map) initMap();
-      mcg.clearLayers();
+      mcg.clearLayers(); allMarkers = [];
       data.forEach(item => {
-        if (item.lat && item.lng) {
-          const mapsLink = `https://www.google.com/maps?q=${item.lat},${item.lng}`;
-          const popupContent = `<b>${item.namaUsaha}</b><br>${item.pemilik}<br>${item.alamat}<br><a href="${mapsLink}" target="_blank" rel="noopener">Lihat di Google Maps</a>`;
-          const marker = L.marker([parseFloat(item.lat), parseFloat(item.lng)]).bindPopup(popupContent);
-          mcg.addLayer(marker);
-        }
+        let coords = getValidCoordinates(item); if (!coords) return;
+        let {lat,lng}=coords;
+        let popup = `<div class="p-2"><h5><strong>${item.namaUsaha||'Tanpa nama'}</strong></h5><p><strong>Pemilik:</strong> ${item.pemilik||'-'}</p><p><strong>Jenis:</strong> ${item.jenisUsaha||'-'}</p><p><strong>Alamat:</strong> ${item.alamat||'-'}</p><p><strong>HP:</strong> ${item.telepon||'-'}</p><a href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" class="btn btn-sm btn-primary mt-2">Lihat di Google Maps</a></div>`;
+        let marker = L.marker([lat,lng]).bindPopup(popup);
+        marker.feature = { properties: { namaUsaha:item.namaUsaha||'', pemilik:item.pemilik||'', jenisUsaha:item.jenisUsaha||'', alamat:item.alamat||'', telepon:item.telepon||'' } };
+        mcg.addLayer(marker); allMarkers.push(marker);
       });
+      map.invalidateSize();
+      if (allMarkers.length) map.fitBounds(mcg.getBounds(),{padding:[30,30]});
+      else map.setView([-7.885,110.363],11);
     }
 
-    document.getElementById('searchMap')?.addEventListener('input', filterMap);
+    // CRUD Usaha
+    function tambahUsaha() {
+      document.getElementById('editUsahaModalTitle').innerText='Tambah Usaha'; document.getElementById('editId').value='';
+      ['editNamaUsaha','editPemilik','editJenisUsaha','editAlamat','editTelepon','editDeskripsi','editLat','editLng','editFoto'].forEach(id=>document.getElementById(id).value='');
+      new bootstrap.Modal(document.getElementById('editUsahaModal')).show();
+    }
+    async function simpanUsaha() {
+      let id = document.getElementById('editId').value;
+      let data = { token, namaUsaha:document.getElementById('editNamaUsaha').value, pemilik:document.getElementById('editPemilik').value, jenisUsaha:document.getElementById('editJenisUsaha').value, alamat:document.getElementById('editAlamat').value, telepon:document.getElementById('editTelepon').value, deskripsi:document.getElementById('editDeskripsi').value, lat:document.getElementById('editLat').value, lng:document.getElementById('editLng').value, foto:document.getElementById('editFoto').value };
+      try {
+        let res; if (id) { data.id=id; res=await apiCall('updateDataUsaha',data); } else res=await apiCall('addDataUsaha',data);
+        if (res.success) { alert('Data berhasil disimpan'); sessionStorage.removeItem('admin_data_usaha'); sessionStorage.removeItem('admin_dashboard_usaha'); bootstrap.Modal.getInstance(document.getElementById('editUsahaModal')).hide(); loadDataUsaha(); updateDashboard(); }
+        else alert('Gagal: '+res.message);
+      } catch(err) { alert('Error: '+err.message); }
+    }
+    async function editUsaha(id) {
+      try {
+        let r = await apiCall('getDataUsahaById',{token,id});
+        if (r.success) {
+          let item = r.data;
+          document.getElementById('editId').value=item.id; document.getElementById('editNamaUsaha').value=item.namaUsaha;
+          document.getElementById('editPemilik').value=item.pemilik; document.getElementById('editJenisUsaha').value=item.jenisUsaha;
+          document.getElementById('editAlamat').value=item.alamat; document.getElementById('editTelepon').value=item.telepon||'';
+          document.getElementById('editDeskripsi').value=item.deskripsi||''; document.getElementById('editLat').value=item.lat||'';
+          document.getElementById('editLng').value=item.lng||''; document.getElementById('editFoto').value=item.foto||'';
+          new bootstrap.Modal(document.getElementById('editUsahaModal')).show();
+        } else alert('Gagal mengambil data');
+      } catch(err) { alert('Error: '+err.message); }
+    }
+    async function deleteUsaha(id) { if (!confirm('Yakin hapus?')) return; try { let r=await apiCall('deleteDataUsaha',{token,id}); if (r.success) { alert('Data dihapus'); sessionStorage.removeItem('admin_data_usaha'); sessionStorage.removeItem('admin_dashboard_usaha'); loadDataUsaha(); updateDashboard(); } else alert('Gagal: '+r.message); } catch(e) { alert('Error: '+e.message); } }
+    function refreshData() { sessionStorage.removeItem('admin_data_usaha'); loadDataUsaha(); }
+    function toggleSelectAll(src) { document.querySelectorAll('.select-item').forEach(cb => cb.checked = src.checked); }
+    function getSelectedIds() { return Array.from(document.querySelectorAll('.select-item:checked')).map(cb=>cb.value); }
+    async function deleteSelected() {
+      let ids = getSelectedIds(); if (!ids.length) { alert('Pilih data dulu'); return; }
+      if (!confirm(`Hapus ${ids.length} data terpilih?`)) return;
+      let success=0; for (let id of ids) { try { let r=await apiCall('deleteDataUsaha',{token,id}); if (r.success) success++; } catch(e) {} }
+      alert(`${success} data dihapus`); sessionStorage.removeItem('admin_data_usaha'); sessionStorage.removeItem('admin_dashboard_usaha'); loadDataUsaha(); updateDashboard();
+    }
+    function exportToCSV() {
+      let data = filteredDataUsaha.length ? filteredDataUsaha : currentDataUsaha;
+      if (!data.length) { alert('Tidak ada data'); return; }
+      let headers = ['ID','Nama Usaha','Pemilik','Jenis Usaha','Alamat','Telepon','Deskripsi','Lat','Lng','Foto'];
+      let rows = data.map(item => [item.id, item.namaUsaha, item.pemilik, item.jenisUsaha, item.alamat, item.telepon||'', item.deskripsi||'', item.lat||'', item.lng||'', item.foto||'']);
+      let csv = headers.join(',') + '\n' + rows.map(row => row.map(c => `"${c}"`).join(',')).join('\n');
+      let blob = new Blob([csv],{type:'text/csv'}); let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `data_usaha_${new Date().toISOString().slice(0,10)}.csv`; a.click(); URL.revokeObjectURL(a.href);
+    }
 
-    // ================== PENGGUNA ==================
+    // Pengguna
     async function loadUsers() {
-      await loadWithCache('admin_users', async () => {
-        const res = await apiCall('getUsers', { token: sessionStorage.getItem('token') });
-        return res.success ? res.data : [];
-      }, (data) => {
-        const tbody = document.querySelector('#userTable tbody');
-        tbody.innerHTML = '';
+      await loadWithCache('admin_users', async () => { let r=await apiCall('getUsers',{token}); return r.success?r.data:[]; }, (data) => {
+        let tb = document.querySelector('#userTable tbody'); tb.innerHTML = '';
         data.forEach(u => {
-          tbody.innerHTML += `<tr>
-            <td>${u.id}</td>
-            <td><strong>${u.nama}</strong></td>
-            <td>${u.email}</td>
-            <td>
-              <select class="form-select form-select-sm" onchange="changeUserRole('${u.id}', this.value)">
-                <option value="admin" ${u.role==='admin'?'selected':''}>Admin</option>
-                <option value="member" ${u.role==='member'?'selected':''}>Member</option>
-              </select>
-            </td>
-            <td><button class="btn btn-sm btn-danger" onclick="deleteUser('${u.id}')"><i class="bi bi-trash"></i></button></td>
-          </tr>`;
+          tb.innerHTML += `<tr><td>${u.id}</td><td><strong>${u.nama}</strong></td><td>${u.email}</td><td><select class="form-select form-select-sm" onchange="changeUserRole('${u.id}',this.value)"><option value="admin" ${u.role==='admin'?'selected':''}>Admin</option><option value="member" ${u.role==='member'?'selected':''}>Member</option></select></td><td><button class="btn btn-sm btn-danger" onclick="deleteUser('${u.id}')"><i class="bi bi-trash"></i></button></td></tr>`;
         });
-        const anggotaAktif = data.filter(u => u.role === 'member').length;
-        document.getElementById('totalAnggotaAktif').innerText = anggotaAktif;
       });
     }
-
     async function changeUserRole(userId, newRole) {
-      if (!confirm(`Ubah role user menjadi ${newRole}?`)) return;
-      try {
-        const res = await apiCall('updateUserRole', { token: sessionStorage.getItem('token'), userId, newRole });
-        if (res.success) {
-          alert('Role berhasil diubah');
-          sessionStorage.removeItem('admin_users');
-          sessionStorage.removeItem('admin_dashboard_users');
-          loadUsers();
-          updateDashboard();
-        } else alert('Gagal: ' + res.message);
-      } catch (err) { alert('Error: ' + err.message); }
+      if (!confirm(`Ubah role?`)) return;
+      try { let r=await apiCall('updateUserRole',{token,userId,newRole}); if (r.success) { alert('Role diubah'); sessionStorage.removeItem('admin_users'); loadUsers(); } else alert('Gagal: '+r.message); } catch(e) { alert('Error: '+e.message); }
     }
-
     async function deleteUser(userId) {
-      if (!confirm('Yakin ingin menghapus user ini?')) return;
-      try {
-        const res = await apiCall('deleteUser', { token: sessionStorage.getItem('token'), userId });
-        if (res.success) {
-          alert('User dihapus');
-          sessionStorage.removeItem('admin_users');
-          sessionStorage.removeItem('admin_dashboard_users');
-          loadUsers();
-          updateDashboard();
-        } else alert('Gagal: ' + res.message);
-      } catch (err) { alert('Error: ' + err.message); }
+      if (!confirm('Hapus user?')) return;
+      try { let r=await apiCall('deleteUser',{token,userId}); if (r.success) { alert('User dihapus'); sessionStorage.removeItem('admin_users'); loadUsers(); } else alert('Gagal: '+r.message); } catch(e) { alert('Error: '+e.message); }
     }
 
-    // ================== ARTIKEL ==================
+    // Artikel
     async function loadArtikel() {
-      await loadWithCache('admin_artikel', async () => {
-        const res = await apiCall('getAllArtikel', { token: sessionStorage.getItem('token') });
-        return res.success ? res.data : [];
-      }, (data) => {
-        const tbody = document.querySelector('#artikelTable tbody');
-        tbody.innerHTML = '';
-        data.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
-        data.forEach(item => {
-          tbody.innerHTML += `<tr>
-            <td>${item.id}</td>
-            <td><strong>${item.title}</strong></td>
-            <td>${item.authorName}</td>
-            <td>${new Date(item.createdAt).toLocaleDateString('id-ID')}</td>
-            <td>
-              <button class="btn btn-sm btn-warning" onclick="editArtikel('${item.id}')"><i class="bi bi-pencil"></i></button>
-              <button class="btn btn-sm btn-danger" onclick="deleteArtikel('${item.id}')"><i class="bi bi-trash"></i></button>
-            </td>
-          </tr>`;
+      await loadWithCache('admin_artikel', async () => { let r=await apiCall('getAllArtikel',{token}); return r.success?r.data:[]; }, (data) => {
+        let tb = document.querySelector('#artikelTable tbody'); tb.innerHTML = '';
+        data.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).forEach(item => {
+          tb.innerHTML += `<tr><td>${item.id}</td><td><strong>${item.title}</strong></td><td>${item.authorName}</td><td>${new Date(item.createdAt).toLocaleDateString('id-ID')}</td><td><button class="btn btn-sm btn-warning" onclick="editArtikel('${item.id}')"><i class="bi bi-pencil"></i></button> <button class="btn btn-sm btn-danger" onclick="deleteArtikel('${item.id}')"><i class="bi bi-trash"></i></button></td></tr>`;
         });
-        document.getElementById('totalArtikel').innerText = data.length;
       });
     }
-
     function tambahArtikel() {
-      document.getElementById('artikelModalTitle').innerText = 'Tambah Artikel';
-      document.getElementById('artikelId').value = '';
-      document.getElementById('artikelJudul').value = '';
-      document.getElementById('artikelKonten').value = '';
-      document.getElementById('artikelGambar').value = '';
+      document.getElementById('artikelModalTitle').innerText='Tambah Artikel'; document.getElementById('artikelId').value='';
+      document.getElementById('artikelJudul').value=''; document.getElementById('artikelKonten').value=''; document.getElementById('artikelGambar').value='';
       new bootstrap.Modal(document.getElementById('artikelModal')).show();
     }
-
     async function editArtikel(id) {
-      try {
-        const res = await apiCall('getArtikelById', { id, token: sessionStorage.getItem('token') });
-        if (res.success) {
-          const item = res.data;
-          document.getElementById('artikelModalTitle').innerText = 'Edit Artikel';
-          document.getElementById('artikelId').value = item.id;
-          document.getElementById('artikelJudul').value = item.title;
-          document.getElementById('artikelKonten').value = item.content;
-          document.getElementById('artikelGambar').value = item.imageUrl || '';
-          new bootstrap.Modal(document.getElementById('artikelModal')).show();
-        } else alert('Gagal mengambil data: ' + res.message);
-      } catch (err) { alert('Error: ' + err.message); }
+      try { let r=await apiCall('getArtikelById',{id,token}); if (r.success) { let item=r.data; document.getElementById('artikelModalTitle').innerText='Edit Artikel'; document.getElementById('artikelId').value=item.id; document.getElementById('artikelJudul').value=item.title; document.getElementById('artikelKonten').value=item.content; document.getElementById('artikelGambar').value=item.imageUrl||''; new bootstrap.Modal(document.getElementById('artikelModal')).show(); } else alert('Gagal'); } catch(e) { alert('Error: '+e.message); }
     }
-
     async function simpanArtikel() {
-      const id = document.getElementById('artikelId').value;
-      const data = {
-        token: sessionStorage.getItem('token'),
-        title: document.getElementById('artikelJudul').value,
-        content: document.getElementById('artikelKonten').value,
-        imageUrl: document.getElementById('artikelGambar').value
-      };
+      let id = document.getElementById('artikelId').value;
+      let data = { token, title:document.getElementById('artikelJudul').value, content:document.getElementById('artikelKonten').value, imageUrl:document.getElementById('artikelGambar').value };
       try {
-        let res;
-        if (id) { data.id = id; res = await apiCall('updateArtikel', data); }
-        else res = await apiCall('addArtikel', data);
-        if (res.success) {
-          alert('Artikel berhasil disimpan');
-          sessionStorage.removeItem('admin_artikel');
-          sessionStorage.removeItem('admin_dashboard_artikel');
-          bootstrap.Modal.getInstance(document.getElementById('artikelModal')).hide();
-          loadArtikel();
-          updateDashboard();
-        } else alert('Gagal: ' + res.message);
-      } catch (err) { alert('Error: ' + err.message); }
+        let res; if (id) { data.id=id; res=await apiCall('updateArtikel',data); } else res=await apiCall('addArtikel',data);
+        if (res.success) { alert('Artikel disimpan'); sessionStorage.removeItem('admin_artikel'); sessionStorage.removeItem('admin_dashboard_artikel'); bootstrap.Modal.getInstance(document.getElementById('artikelModal')).hide(); loadArtikel(); updateDashboard(); }
+        else alert('Gagal: '+res.message);
+      } catch(e) { alert('Error: '+e.message); }
     }
-
     async function deleteArtikel(id) {
-      if (!confirm('Yakin ingin menghapus artikel ini?')) return;
-      try {
-        const res = await apiCall('deleteArtikel', { token: sessionStorage.getItem('token'), id });
-        if (res.success) {
-          alert('Artikel dihapus');
-          sessionStorage.removeItem('admin_artikel');
-          sessionStorage.removeItem('admin_dashboard_artikel');
-          loadArtikel();
-          updateDashboard();
-        } else alert('Gagal: ' + res.message);
-      } catch (err) { alert('Error: ' + err.message); }
+      if (!confirm('Hapus artikel?')) return;
+      try { let r=await apiCall('deleteArtikel',{token,id}); if (r.success) { alert('Artikel dihapus'); sessionStorage.removeItem('admin_artikel'); sessionStorage.removeItem('admin_dashboard_artikel'); loadArtikel(); updateDashboard(); } else alert('Gagal: '+r.message); } catch(e) { alert('Error: '+e.message); }
     }
 
-    // ================== PENGATURAN ==================
-    document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+    // Pengaturan
+    async function changePassword(e) {
       e.preventDefault();
-      const oldPass = document.getElementById('oldPassword').value;
-      const newPass = document.getElementById('newPassword').value;
-      const confirmPass = document.getElementById('confirmPassword').value;
-      if (newPass !== confirmPass) {
-        showPasswordAlert('danger', 'Password baru dan konfirmasi tidak cocok');
-        return;
-      }
-      try {
-        const res = await apiCall('changePassword', {
-          token: sessionStorage.getItem('token'),
-          oldPassword: oldPass,
-          newPassword: newPass
-        });
-        if (res.success) {
-          showPasswordAlert('success', 'Password berhasil diubah');
-          document.getElementById('changePasswordForm').reset();
-        } else showPasswordAlert('danger', res.message);
-      } catch (err) { showPasswordAlert('danger', 'Error: ' + err.message); }
-    });
-
-    function showPasswordAlert(type, message) {
-      const alert = document.getElementById('passwordAlert');
-      alert.className = `alert alert-${type}`;
-      alert.textContent = message;
-      alert.classList.remove('d-none');
-      setTimeout(() => alert.classList.add('d-none'), 5000);
+      if (document.getElementById('newPassword').value !== document.getElementById('confirmPassword').value) { alert('Password baru tidak cocok'); return; }
+      try { let r=await apiCall('changePassword',{token, oldPassword:document.getElementById('oldPassword').value, newPassword:document.getElementById('newPassword').value}); if (r.success) alert('Password diubah'); else alert('Gagal: '+r.message); } catch(e) { alert('Error: '+e.message); }
     }
-
     async function backupData() {
-      try {
-        const res = await apiCall('backupData', { token: sessionStorage.getItem('token') });
-        if (res.success) {
-          const dataStr = JSON.stringify(res.data, null, 2);
-          const blob = new Blob([dataStr], { type: 'application/json' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `buma_backup_${new Date().toISOString().slice(0,10)}.json`;
-          a.click();
-          URL.revokeObjectURL(url);
-        } else alert('Gagal backup: ' + res.message);
-      } catch (err) { alert('Error: ' + err.message); }
+      try { let r=await apiCall('backupData',{token}); if (r.success) { let blob=new Blob([JSON.stringify(r.data,null,2)],{type:'application/json'}); let a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`buma_backup_${new Date().toISOString().slice(0,10)}.json`; a.click(); } else alert('Gagal'); } catch(e) { alert('Error: '+e.message); }
     }
-
     async function resetData() {
-      if (!confirm('PERINGATAN: Tindakan ini akan menghapus SEMUA data usaha, pesan, dan artikel. Apakah Anda yakin?')) return;
-      if (!confirm('Ketik "RESET" untuk konfirmasi')) return;
-      try {
-        const res = await apiCall('resetData', { token: sessionStorage.getItem('token') });
-        if (res.success) {
-          alert('Data berhasil direset');
-          sessionStorage.removeItem('admin_data_usaha');
-          sessionStorage.removeItem('admin_dashboard_usaha');
-          sessionStorage.removeItem('admin_artikel');
-          sessionStorage.removeItem('admin_dashboard_artikel');
-          if (currentDataUsaha) loadDataUsaha();
-          loadArtikel();
-          updateDashboard();
-          if (mcg) mcg.clearLayers();
-          currentDataUsaha = [];
-        } else alert('Gagal reset: ' + res.message);
-      } catch (err) { alert('Error: ' + err.message); }
+      if (!confirm('Hapus SEMUA data?')) return;
+      try { let r=await apiCall('resetData',{token}); if (r.success) { alert('Data direset'); sessionStorage.removeItem('admin_data_usaha'); sessionStorage.removeItem('admin_dashboard_usaha'); sessionStorage.removeItem('admin_artikel'); sessionStorage.removeItem('admin_dashboard_artikel'); loadDataUsaha(); loadArtikel(); updateDashboard(); if (mcg) mcg.clearLayers(); } else alert('Gagal: '+r.message); } catch(e) { alert('Error: '+e.message); }
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-      const searchInput = document.getElementById('searchInput');
-      if (searchInput) searchInput.addEventListener('keyup', applyFilter);
+    // Init
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('searchInput')?.addEventListener('keyup', applyFilter);
     });
-
-    window.onload = function() {
-      const dashboardLink = document.querySelector('#sidebar ul li a[onclick*="dashboard"]');
-      if (dashboardLink) showSection('dashboard', dashboardLink);
-      else showSection('dashboard', null);
+    window.onload = async function() {
       initMap();
+      await loadDataUsaha();
+      let lastSection = sessionStorage.getItem('admin_last_section') || 'dashboard';
+      let targetLink = document.querySelector(`#sidebar ul li a[onclick*="showSection('${lastSection}'"]`);
+      if (targetLink) showSection(lastSection, targetLink);
+      else showSection('dashboard', document.querySelector('#sidebar ul li a[onclick*="dashboard"]'));
     };
   </script>
 </body>

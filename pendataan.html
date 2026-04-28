@@ -445,7 +445,7 @@
                 </button>
                 <div id="map"></div>
                 <input type="text" class="form-control mt-2" id="lokasiUsaha" placeholder="Klik peta atau gunakan tombol di atas" required>
-                <small class="text-muted">Format: Latitude: -7.8511338094615395, Longitude: 110.35994724060245</small>
+                <small class="text-muted">Lokasi lebih akurat bisa di geser manual</small>
               </div>
 
               <hr>
@@ -515,7 +515,7 @@
       setupJenisListener();
     });
 
-    // ---------- PETA (FORMAT DIPAKSA) ----------
+    // ---------- PETA (PRESISI PENUH, SEPERTI GOOGLE MAPS) ----------
     const defaultLat = -7.885;
     const defaultLng = 110.363;
     let map, marker;
@@ -543,8 +543,8 @@
       });
     }
 
+    // TIDAK menggunakan toFixed – presisi penuh dari sensor/peta
     function updateMapInput(lat, lng) {
-      // PAKSA format sesuai keinginan
       document.getElementById('lokasiUsaha').value = `Latitude: ${lat}, Longitude: ${lng}`;
     }
 
@@ -556,12 +556,12 @@
             const lng = position.coords.longitude;
             map.setView([lat, lng], 15);
             marker.setLatLng([lat, lng]);
-            updateMapInput(lat, lng);
+            updateMapInput(lat, lng);   // sama persis dengan klik peta
           },
           function(error) {
             alert('Tidak dapat mengambil lokasi: ' + error.message);
           },
-          { enableHighAccuracy: true }
+          { enableHighAccuracy: true }   // akurasi tinggi
         );
       } else {
         alert('Browser tidak mendukung geolokasi.');
@@ -651,7 +651,7 @@
         alamat: document.getElementById('alamat').value,
         telepon: document.getElementById('telepon').value,
         deskripsi: document.getElementById('deskripsi').value,
-        lokasiMap: document.getElementById('lokasiUsaha').value,   // <-- string dengan format khusus
+        lokasiMap: document.getElementById('lokasiUsaha').value,   // string format "Latitude: …, Longitude: …"
         foto: fotoBase64
       };
 
