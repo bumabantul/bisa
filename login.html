@@ -22,16 +22,11 @@
       --light: #f8fafc;
       --card-bg: #ffffff;
       --glass-bg: rgba(255, 255, 255, 0.75);
-      --glass-border: rgba(255, 255, 255, 0.4);
       --text: #1e293b;
       --text-muted: #64748b;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-      --shadow: 0 4px 6px rgba(0,0,0,0.05), 0 10px 15px rgba(0,0,0,0.03);
-      --shadow-lg: 0 20px 40px rgba(0,0,0,0.08), 0 8px 20px rgba(0,0,0,0.04);
-      --radius-sm: 12px;
+      --shadow-lg: 0 20px 40px rgba(0,0,0,0.08);
       --radius: 20px;
-      --radius-lg: 28px;
-      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition: 0.3s;
     }
     * { font-family: 'Plus Jakarta Sans', sans-serif; }
     body {
@@ -46,7 +41,7 @@
     }
     .card {
       border: none;
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius);
       box-shadow: 0 25px 60px rgba(0,0,0,0.3);
       overflow: hidden;
       background: rgba(255, 255, 255, 0.95);
@@ -110,6 +105,7 @@
       background: #b0b0b0;
       transform: none;
       box-shadow: none;
+      cursor: not-allowed;
     }
     .btn-success {
       background: linear-gradient(135deg, #10b981, #059669);
@@ -133,21 +129,16 @@
     a:hover {
       text-decoration: underline;
     }
-    .spinner-border-sm {
-      width: 1rem;
-      height: 1rem;
-      border-width: 0.15em;
-    }
-    hr {
-      border-top: 1px solid #e8ecf1;
-    }
     .alert {
       border-radius: var(--radius);
       font-weight: 500;
     }
+    hr {
+      border-top: 1px solid #e8ecf1;
+    }
     .modal-content {
       border: none;
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius);
       box-shadow: 0 25px 60px rgba(0,0,0,0.3);
       overflow: hidden;
     }
@@ -174,7 +165,6 @@
     }
     .back-link:hover {
       color: #fff;
-      text-decoration: none;
     }
   </style>
 </head>
@@ -198,7 +188,7 @@
           <input type="password" class="form-control" id="password" placeholder="******" required>
         </div>
         <button type="submit" class="btn btn-primary" id="loginBtn">
-          <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true" id="loginSpinner"></span>
+          <span class="spinner-border spinner-border-sm d-none" role="status" id="loginSpinner"></span>
           <span id="loginText">Login</span>
         </button>
       </form>
@@ -232,6 +222,11 @@
               <label class="fw-semibold">Email</label>
               <input type="email" class="form-control" id="regEmail" required>
             </div>
+            <!-- Tambahan: Nomor HP/WhatsApp -->
+            <div class="mb-3">
+              <label class="fw-semibold">Nomor HP/WhatsApp</label>
+              <input type="tel" class="form-control" id="regPhone" placeholder="0812xxxxxxxx" required>
+            </div>
             <div class="mb-3">
               <label class="fw-semibold">Password</label>
               <input type="password" class="form-control" id="regPassword" required>
@@ -242,7 +237,7 @@
               <input type="number" class="form-control" id="regVerifikasi" required min="0" max="10" placeholder="Jawab dengan angka">
             </div>
             <button type="submit" class="btn btn-success" id="registerBtn">
-              <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true" id="registerSpinner"></span>
+              <span class="spinner-border spinner-border-sm d-none" role="status" id="registerSpinner"></span>
               <span id="registerText">Daftar</span>
             </button>
           </form>
@@ -253,8 +248,27 @@
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- API (standar) -->
   <script src="js/api.js"></script>
+
   <script>
+    // Deteksi penyimpanan
+    function isStorageAvailable() {
+      try {
+        const test = '__storage_test__';
+        sessionStorage.setItem(test, test);
+        sessionStorage.removeItem(test);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    // Peringatan jika storage diblokir
+    if (!isStorageAvailable()) {
+      alert('Browser Anda memblokir penyimpanan sesi (sessionStorage).\nFitur login tidak akan berfungsi. Silakan nonaktifkan "Prevent cross-site tracking" atau gunakan mode normal.');
+    }
+
     // Login form handler
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -276,11 +290,20 @@
           sessionStorage.setItem('role', res.role);
           sessionStorage.setItem('nama', res.nama);
           sessionStorage.setItem('userId', res.userId);
+
+          if (!sessionStorage.getItem('token')) {
+            alert('Browser Anda memblokir penyimpanan data login.\nSilakan nonaktifkan fitur privasi yang ketat atau gunakan jendela normal.');
+            loginBtn.disabled = false;
+            loginSpinner.classList.add('d-none');
+            loginText.textContent = 'Login';
+            return;
+          }
+
           window.location.href = res.role === 'admin' ? 'dashboard-admin.html' : 'dashboard-member.html';
         } else {
           const alertBox = document.getElementById('loginAlert');
-          alertBox.classList.remove('d-none');
           alertBox.textContent = res.message;
+          alertBox.classList.remove('d-none');
           loginBtn.disabled = false;
           loginSpinner.classList.add('d-none');
           loginText.textContent = 'Login';
@@ -309,6 +332,7 @@
       const data = {
         nama: document.getElementById('regNama').value,
         email: document.getElementById('regEmail').value,
+        phone: document.getElementById('regPhone').value,   // <-- ambil nomor HP
         password: document.getElementById('regPassword').value
       };
 
