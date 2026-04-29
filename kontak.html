@@ -4,65 +4,106 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kontak - BUMA Bantul</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/webp" href="assets/logo buma.webp">
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    * {
-      font-family: 'Poppins', sans-serif;
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #8b5cf6;
+      --accent: #06b6d4;
+      --dark: #0f172a;
+      --light: #f8fafc;
+      --card-bg: #ffffff;
+      --glass-bg: rgba(255, 255, 255, 0.75);
+      --glass-border: rgba(255, 255, 255, 0.4);
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow: 0 4px 6px rgba(0,0,0,0.05);
+      --shadow-lg: 0 20px 40px rgba(0,0,0,0.08);
+      --radius: 20px;
+      --transition: 0.3s;
     }
+    * { font-family: 'Plus Jakarta Sans', sans-serif; }
     body {
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      background: var(--light);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
     }
-    /* Navbar dengan efek glass */
+    /* Navbar */
     .navbar {
-      background: rgba(255, 255, 255, 0.8) !important;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      background: var(--glass-bg) !important;
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      box-shadow: var(--shadow-sm);
+      padding: 12px 0;
     }
     .navbar-brand {
       font-weight: 700;
-      color: #4a3f6b !important;
+      color: var(--dark) !important;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1rem;
+    }
+    .navbar-brand img {
+      height: 42px;
+      border-radius: 10px;
+    }
+    .brand-text {
+      line-height: 1.25;
+      font-size: 0.85rem;
+    }
+    .brand-text strong {
+      font-size: 1rem;
+      display: block;
     }
     .nav-link {
-      font-weight: 500;
-      color: #4a3f6b !important;
-      transition: color 0.3s;
+      font-weight: 500 !important;
+      color: var(--text) !important;
+      padding: 8px 16px !important;
+      border-radius: 30px;
+      transition: var(--transition) !important;
+      font-size: 0.9rem;
     }
     .nav-link:hover {
-      color: #667eea !important;
+      color: var(--primary) !important;
+      background: rgba(99,102,241,0.06);
     }
     .nav-link.active {
-      color: #667eea !important;
-      font-weight: 600;
+      color: var(--primary) !important;
+      font-weight: 600 !important;
+      background: rgba(99,102,241,0.1);
     }
-    /* Dropdown menu */
     .dropdown-menu {
       border: none;
-      border-radius: 1rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      padding: 0.5rem 0;
+      border-radius: var(--radius);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.12);
+      padding: 8px;
+      background: rgba(255,255,255,0.98);
+      backdrop-filter: blur(20px);
     }
     .dropdown-item {
+      border-radius: 10px;
+      padding: 10px 16px;
       font-weight: 500;
-      color: #4a3f6b;
-      padding: 0.5rem 1.5rem;
-      transition: background 0.3s;
+      font-size: 0.9rem;
     }
     .dropdown-item:hover {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-    }
-    .dropdown-divider {
-      margin: 0.25rem 0;
+      background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.08));
+      color: var(--primary);
     }
 
-    /* Hero Kontak */
+    /* Hero */
     .hero-contact {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(160deg, #1e1b4b 0%, #312e81 40%, #4338ca 100%);
       color: white;
       padding: 60px 0;
       margin-bottom: 2rem;
@@ -71,97 +112,148 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     }
     .hero-contact h1 {
-      font-weight: 700;
+      font-weight: 800;
       font-size: 2.5rem;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      letter-spacing: -0.5px;
     }
 
-    /* Kartu informasi */
+    /* Info cards */
     .info-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 2rem 1.5rem;
       text-align: center;
-      padding: 2rem;
-      background: white;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-      transition: transform 0.3s, box-shadow 0.3s;
+      border: 1px solid rgba(0,0,0,0.04);
+      box-shadow: var(--shadow);
+      transition: all 0.3s;
+      height: 100%;
     }
     .info-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 20px 40px rgba(102,126,234,0.2);
+      box-shadow: var(--shadow-lg);
     }
-    .info-card i {
-      font-size: 3rem;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    .info-card .icon-circle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.06));
+      margin-bottom: 16px;
+      transition: var(--transition);
+    }
+    .info-card:hover .icon-circle {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+    }
+    .info-card .icon-circle i {
+      font-size: 1.8rem;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
       -webkit-background-clip: text;
+      background-clip: text;
       -webkit-text-fill-color: transparent;
+      transition: var(--transition);
+    }
+    .info-card:hover .icon-circle i {
+      -webkit-text-fill-color: #fff;
+      background: none;
+      color: #fff;
     }
 
-    /* Form kontak */
-    .card {
-      border: none;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      overflow: hidden;
+    /* Form card */
+    .kontak-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      padding: 2.5rem;
+      border: 1px solid rgba(0,0,0,0.04);
     }
-    .card-body {
-      padding: 2rem;
+    .kontak-card .form-control {
+      border-radius: 14px;
+      padding: 12px 18px;
+      border: 2px solid #e8ecf1;
+      transition: var(--transition);
+      font-size: 0.95rem;
+      background: #fafbfc;
     }
-    .btn-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    .kontak-card .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(99,102,241,0.08);
+      background: #fff;
+    }
+    .btn-submit {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
       border: none;
       border-radius: 50px;
-      padding: 10px 25px;
-      font-weight: 600;
+      padding: 14px;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: -0.2px;
+      transition: all 0.3s;
+      box-shadow: 0 6px 20px rgba(99,102,241,0.3);
+      color: #fff;
     }
-    .btn-primary:hover {
+    .btn-submit:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(102,126,234,0.4);
-    }
-    .form-control {
-      border-radius: 50px;
-      padding: 0.75rem 1.25rem;
-      border: 1px solid #e0e0e0;
-    }
-    .form-control:focus {
-      border-color: #667eea;
-      box-shadow: 0 0 0 0.2rem rgba(102,126,234,0.25);
+      box-shadow: 0 12px 30px rgba(99,102,241,0.45);
     }
 
     /* Footer */
     footer {
       background: white;
       border-top: 1px solid rgba(0,0,0,0.05);
-      box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+      box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
     }
     footer h5 {
-      color: #4a3f6b;
-      font-weight: 600;
+      color: var(--dark);
+      font-weight: 700;
     }
     footer a {
-      color: #6c757d;
-      transition: color 0.3s;
+      color: var(--text-muted);
+      transition: var(--transition);
+      text-decoration: none;
+      font-size: 0.9rem;
     }
     footer a:hover {
-      color: #667eea;
+      color: var(--primary);
+    }
+    .social-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(99,102,241,0.06);
+      color: var(--primary);
+      transition: var(--transition);
+      font-size: 1.2rem;
+    }
+    .social-icon:hover {
+      background: var(--primary);
+      color: #fff;
     }
     .footer-bottom {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 500;
     }
   </style>
 </head>
 <body>
-  <!-- Navbar dengan dropdown -->
+  <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light sticky-top">
     <div class="container">
       <a class="navbar-brand fw-bold" href="index.html">
-        <i class="bi bi-building"></i> BUMA Bantul
+        <img src="assets/logo buma.webp" alt="BUMA Bantul" height="40">
+        <span class="brand-text"><strong>BUMA</strong> PC GP Ansor<br>Kabupaten Bantul</span>
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto align-items-center">
+        <ul class="navbar-nav ms-auto align-items-center gap-1">
           <li class="nav-item"><a class="nav-link" href="index.html">Beranda</a></li>
           <li class="nav-item"><a class="nav-link" href="pendataan.html">Pendataan Usaha</a></li>
           <li class="nav-item"><a class="nav-link" href="artikel.html">Artikel</a></li>
@@ -169,18 +261,18 @@
 
           <!-- Dropdown untuk user yang sudah login -->
           <li class="nav-item dropdown" id="userDropdown" style="display: none;">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
               <i class="bi bi-person-circle me-1"></i><span id="userName"></span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="#" id="dashboardLink">Dashboard</a></li>
+              <li><a class="dropdown-item" href="#" id="dashboardLink"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#" onclick="logout(); return false;">Logout</a></li>
+              <li><a class="dropdown-item" href="#" onclick="logout(); return false;"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
             </ul>
           </li>
 
           <!-- Link login untuk yang belum login -->
-          <li class="nav-item" id="loginLink"><a class="nav-link" href="login.html">Login</a></li>
+          <li class="nav-item" id="loginLink"><a class="nav-link" href="login.html"><i class="bi bi-person me-1"></i>Login</a></li>
         </ul>
       </div>
     </div>
@@ -190,7 +282,7 @@
   <div class="hero-contact">
     <div class="container">
       <h1>Hubungi Kami</h1>
-      <p class="lead mb-0">Kantor Sekretariat BUMA Kabupaten Bantul siap melayani Anda</p>
+      <p class="lead mb-0 opacity-75">Kantor Sekretariat BUMA Kabupaten Bantul siap melayani Anda</p>
     </div>
   </div>
 
@@ -199,23 +291,23 @@
     <div class="row g-4">
       <div class="col-md-4">
         <div class="info-card">
-          <i class="bi bi-geo-alt"></i>
-          <h5 class="mt-3">Alamat</h5>
-          <p class="text-muted">Jl. Parangtritis No. 123, Bantul, DIY</p>
+          <div class="icon-circle"><i class="bi bi-geo-alt"></i></div>
+          <h5 class="fw-bold">Alamat</h5>
+          <p class="text-muted">Jalan Marsda Adisucipto No. 45,<br>Karangbayam, Bantul, DIY</p>
         </div>
       </div>
       <div class="col-md-4">
         <div class="info-card">
-          <i class="bi bi-telephone"></i>
-          <h5 class="mt-3">Telepon</h5>
+          <div class="icon-circle"><i class="bi bi-telephone"></i></div>
+          <h5 class="fw-bold">Telepon</h5>
           <p class="text-muted">(0274) 123456<br>+62 812 3456 7890</p>
         </div>
       </div>
       <div class="col-md-4">
         <div class="info-card">
-          <i class="bi bi-envelope"></i>
-          <h5 class="mt-3">Email</h5>
-          <p class="text-muted">info@buma-bantul.or.id<br>buma@ansor.or.id</p>
+          <div class="icon-circle"><i class="bi bi-envelope"></i></div>
+          <h5 class="fw-bold">Email</h5>
+          <p class="text-muted">bumabantul@gmail.com</p>
         </div>
       </div>
     </div>
@@ -225,31 +317,32 @@
   <div class="container mb-5">
     <div class="row justify-content-center">
       <div class="col-md-8">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title text-center mb-4">Kirim Pesan</h4>
-            <div id="kontakAlert" class="alert d-none"></div>
-            <form id="kontakForm">
-              <div class="mb-3">
-                <label class="form-label">Nama Lengkap</label>
-                <input type="text" class="form-control" id="nama" required>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" required>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Pesan</label>
-                <textarea class="form-control" id="pesan" rows="4" required></textarea>
-              </div>
-              <!-- Verifikasi sederhana -->
-              <div class="mb-3">
-                <label class="form-label">Verifikasi: Berapa 2 + 3 ?</label>
-                <input type="number" class="form-control" id="verifikasi" required min="0" max="10">
-              </div>
-              <button type="submit" class="btn btn-primary w-100" id="btnKirim">Kirim Pesan</button>
-            </form>
-          </div>
+        <div class="kontak-card">
+          <h4 class="text-center fw-bold mb-4">Kirim Pesan</h4>
+          <div id="kontakAlert" class="alert d-none"></div>
+          <form id="kontakForm">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Nama Lengkap</label>
+              <input type="text" class="form-control" id="nama" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Email</label>
+              <input type="email" class="form-control" id="email" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Pesan</label>
+              <textarea class="form-control" id="pesan" rows="4" required></textarea>
+            </div>
+            <!-- Verifikasi sederhana -->
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Verifikasi: Berapa 2 + 3 ?</label>
+              <input type="number" class="form-control" id="verifikasi" required min="0" max="10" placeholder="Jawab dengan angka">
+            </div>
+            <button type="submit" class="btn btn-submit w-100" id="btnKirim">
+              <span class="spinner-border spinner-border-sm d-none me-2" id="kirimSpinner"></span>
+              <span id="kirimText">Kirim Pesan <i class="bi bi-send ms-1"></i></span>
+            </button>
+          </form>
         </div>
       </div>
     </div>
@@ -259,24 +352,27 @@
   <footer class="text-center text-lg-start">
     <div class="container p-4">
       <div class="row">
-        <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
-          <h5 class="text-uppercase">BUMA Bantul</h5>
-          <p>Badan Usaha Milik Ansor Kabupaten Bantul. Memberdayakan ekonomi anggota melalui pendataan dan pemetaan usaha.</p>
+        <div class="col-lg-5 col-md-12 mb-4 mb-md-0">
+          <h5 class="text-uppercase fw-bold">BUMA Bantul</h5>
+          <p class="text-muted" style="line-height:1.7;">Badan Usaha Milik Ansor Kabupaten Bantul. Memberdayakan ekonomi anggota melalui pendataan dan pemetaan usaha.</p>
         </div>
         <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-          <h5 class="text-uppercase">Tautan</h5>
+          <h5 class="text-uppercase fw-bold">Tautan</h5>
           <ul class="list-unstyled">
-            <li><a href="index.html" class="text-decoration-none">Beranda</a></li>
-            <li><a href="pendataan.html" class="text-decoration-none">Pendataan</a></li>
-            <li><a href="artikel.html" class="text-decoration-none">Artikel</a></li>
-            <li><a href="kontak.html" class="text-decoration-none">Kontak</a></li>
+            <li><a href="index.html">Beranda</a></li>
+            <li><a href="pendataan.html">Pendataan</a></li>
+            <li><a href="artikel.html">Artikel</a></li>
+            <li><a href="kontak.html">Kontak</a></li>
           </ul>
         </div>
-        <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-          <h5 class="text-uppercase">Ikuti Kami</h5>
-          <a href="#" class="text-dark me-2"><i class="bi bi-facebook"></i></a>
-          <a href="#" class="text-dark me-2"><i class="bi bi-instagram"></i></a>
-          <a href="#" class="text-dark me-2"><i class="bi bi-twitter"></i></a>
+        <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+          <h5 class="text-uppercase fw-bold">Ikuti Kami</h5>
+          <div class="d-flex gap-2">
+            <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+            <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="bi bi-twitter-x"></i></a>
+            <a href="#" class="social-icon"><i class="bi bi-youtube"></i></a>
+          </div>
         </div>
       </div>
     </div>
@@ -287,11 +383,12 @@
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- API dan Auth -->
   <script src="js/api.js"></script>
   <script src="js/auth.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      updateNavbar();
+      if (typeof updateNavbar === 'function') updateNavbar();
     });
 
     document.getElementById('kontakForm').addEventListener('submit', async (e) => {
@@ -301,21 +398,26 @@
       const jawaban = parseInt(document.getElementById('verifikasi').value);
       if (jawaban !== 5) {
         alert('Jawaban verifikasi salah!');
+        document.getElementById('verifikasi').value = '';
+        document.getElementById('verifikasi').focus();
         return;
       }
 
-      const data = {
-        nama: document.getElementById('nama').value,
-        email: document.getElementById('email').value,
-        pesan: document.getElementById('pesan').value
-      };
-
       const btn = document.getElementById('btnKirim');
+      const spinner = document.getElementById('kirimSpinner');
+      const text = document.getElementById('kirimText');
+
       btn.disabled = true;
-      btn.innerHTML = 'Mengirim...';
+      spinner.classList.remove('d-none');
+      text.innerHTML = 'Mengirim...';
 
       try {
-        const res = await apiCall('simpanPesan', data);
+        const res = await apiCall('simpanPesan', {
+          nama: document.getElementById('nama').value,
+          email: document.getElementById('email').value,
+          pesan: document.getElementById('pesan').value
+        });
+
         const alertBox = document.getElementById('kontakAlert');
         if (res.success) {
           alertBox.classList.remove('d-none', 'alert-danger');
@@ -331,7 +433,8 @@
         alert('Error: ' + err.message);
       } finally {
         btn.disabled = false;
-        btn.innerHTML = 'Kirim Pesan';
+        spinner.classList.add('d-none');
+        text.innerHTML = 'Kirim Pesan <i class="bi bi-send ms-1"></i>';
       }
     });
   </script>
