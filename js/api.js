@@ -1,5 +1,5 @@
 // ======================== KONFIGURASI ========================
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzoddbppvHjQXnMypZXzJQBVGUDbRuClZvWtGlelwGn_hgHRTweVzsnfMIcIKezN90j/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxyabUGKy9TrGhVe8wLBZH8Rt0OzVxPAQkuq0VroIHCEbqMwF9SBIZLYPQi5tdWVfcz_g/exec';
 
 /**
  * Pengecekan ketersediaan sessionStorage (untuk peringatan dini)
