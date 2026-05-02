@@ -2,15 +2,11 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <title>Login - BUMA Bantul</title>
-  <!-- Favicon -->
   <link rel="icon" type="image/webp" href="assets/logo buma.webp">
-  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -155,7 +151,6 @@
     .btn-close {
       filter: brightness(0) invert(1);
     }
-    /* Tombol kembali */
     .back-link {
       color: rgba(255, 255, 255, 0.8);
       text-decoration: none;
@@ -199,7 +194,6 @@
     </div>
   </div>
 
-  <!-- Tombol Kembali ke Beranda -->
   <div class="mt-4 text-center">
     <a href="index.html" class="back-link"><i class="bi bi-arrow-left me-1"></i>Kembali ke Beranda</a>
   </div>
@@ -222,7 +216,6 @@
               <label class="fw-semibold">Email</label>
               <input type="email" class="form-control" id="regEmail" required>
             </div>
-            <!-- Tambahan: Nomor HP/WhatsApp -->
             <div class="mb-3">
               <label class="fw-semibold">Nomor HP/WhatsApp</label>
               <input type="tel" class="form-control" id="regPhone" placeholder="0812xxxxxxxx" required>
@@ -231,7 +224,6 @@
               <label class="fw-semibold">Password</label>
               <input type="password" class="form-control" id="regPassword" required>
             </div>
-            <!-- Verifikasi sederhana -->
             <div class="mb-3">
               <label class="fw-semibold">Verifikasi: Berapa 2 + 3?</label>
               <input type="number" class="form-control" id="regVerifikasi" required min="0" max="10" placeholder="Jawab dengan angka">
@@ -246,30 +238,22 @@
     </div>
   </div>
 
-  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- API (standar) -->
   <script src="js/api.js"></script>
 
   <script>
-    // Deteksi penyimpanan
-    function isStorageAvailable() {
-      try {
-        const test = '__storage_test__';
-        sessionStorage.setItem(test, test);
-        sessionStorage.removeItem(test);
-        return true;
-      } catch (e) {
-        return false;
+    (function() {
+      const token = (typeof appStorage !== 'undefined') ? appStorage.get('token') : null;
+      const role = (typeof appStorage !== 'undefined') ? appStorage.get('role') : null;
+      if (token && role) {
+        if (role === 'admin') {
+          window.location.href = 'admin/dashboard-admin.html';
+        } else if (role === 'member') {
+          window.location.href = 'member/dashboard-member.html';
+        }
       }
-    }
+    })();
 
-    // Peringatan jika storage diblokir
-    if (!isStorageAvailable()) {
-      alert('Browser Anda memblokir penyimpanan sesi (sessionStorage).\nFitur login tidak akan berfungsi. Silakan nonaktifkan "Prevent cross-site tracking" atau gunakan mode normal.');
-    }
-
-    // Login form handler
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('email').value;
@@ -286,23 +270,20 @@
       try {
         const res = await apiCall('login', { email, password });
         if (res.success) {
-          sessionStorage.setItem('token', res.token);
-          sessionStorage.setItem('role', res.role);
-          sessionStorage.setItem('nama', res.nama);
-          sessionStorage.setItem('userId', res.userId);
+          appStorage.set('token', res.token);
+          appStorage.set('role', res.role);
+          appStorage.set('nama', res.nama);
+          appStorage.set('userId', res.userId);
 
-          if (!sessionStorage.getItem('token')) {
-            alert('Browser Anda memblokir penyimpanan data login.\nSilakan nonaktifkan fitur privasi yang ketat atau gunakan jendela normal.');
-            loginBtn.disabled = false;
-            loginSpinner.classList.add('d-none');
-            loginText.textContent = 'Login';
-            return;
+          if (res.role === 'admin') {
+            window.location.href = 'admin/preload.html';
+          } else {
+            // Member langsung ke dashboard tanpa preload (preload opsional)
+            window.location.href = 'member/dashboard-member.html';
           }
-
-          window.location.href = res.role === 'admin' ? 'dashboard-admin.html' : 'dashboard-member.html';
         } else {
           const alertBox = document.getElementById('loginAlert');
-          alertBox.textContent = res.message;
+          alertBox.textContent = res.message || 'Login gagal';
           alertBox.classList.remove('d-none');
           loginBtn.disabled = false;
           loginSpinner.classList.add('d-none');
@@ -316,11 +297,8 @@
       }
     });
 
-    // Register form handler
     document.getElementById('registerForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-
-      // Verifikasi sederhana
       const jawaban = parseInt(document.getElementById('regVerifikasi').value);
       if (jawaban !== 5) {
         alert('Jawaban verifikasi salah! Silakan coba lagi.');
@@ -332,7 +310,7 @@
       const data = {
         nama: document.getElementById('regNama').value,
         email: document.getElementById('regEmail').value,
-        phone: document.getElementById('regPhone').value,   // <-- ambil nomor HP
+        phone: document.getElementById('regPhone').value,
         password: document.getElementById('regPassword').value
       };
 
@@ -347,7 +325,7 @@
       try {
         const res = await apiCall('register', data);
         if (res.success) {
-          alert('Registrasi berhasil, silakan login');
+          alert('Registrasi berhasil, silakan login.');
           const modalEl = document.getElementById('registerModal');
           const modal = bootstrap.Modal.getInstance(modalEl);
           modal.hide();
@@ -364,7 +342,6 @@
       }
     });
 
-    // Reset form saat modal ditutup
     document.getElementById('registerModal').addEventListener('hidden.bs.modal', function () {
       document.getElementById('registerForm').reset();
     });

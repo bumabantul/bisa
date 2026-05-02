@@ -4,18 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BUMA PC GP Ansor Kabupaten Bantul - Beranda</title>
-    <!-- Favicon -->
     <link rel="icon" type="image/webp" href="assets/logo buma.webp">
-    
-    <!-- Preconnect untuk mempercepat koneksi ke Apps Script -->
     <link rel="preconnect" href="https://script.google.com">
     <link rel="dns-prefetch" href="https://script.google.com">
-    
-    <!-- Bootstrap CSS -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -46,25 +41,13 @@
         * { font-family: 'Plus Jakarta Sans', sans-serif; }
         html { scroll-behavior: smooth; scroll-padding-top: 80px; }
         body { background: var(--light); color: var(--text); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-
-        /* ============ NAVBAR ============ */
         .navbar {
-            position: sticky;
-            top: 0;
-            z-index: 1030;
-            background: var(--glass-bg) !important;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border);
-            box-shadow: var(--shadow-sm);
-            transition: padding 0.3s ease, box-shadow 0.3s ease;
-            padding: 14px 0; /* sedikit lebih tinggi */
+            position: sticky; top: 0; z-index: 1030;
+            background: var(--glass-bg) !important; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border); box-shadow: var(--shadow-sm);
+            transition: padding 0.3s ease, box-shadow 0.3s ease; padding: 14px 0;
         }
-        .navbar.scrolled { 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.06); /* shadow halus */ 
-            padding: 8px 0; 
-            background: rgba(255, 255, 255, 0.95) !important; 
-        }
+        .navbar.scrolled { box-shadow: 0 2px 10px rgba(0,0,0,0.06); padding: 8px 0; background: rgba(255, 255, 255, 0.95) !important; }
         .navbar-brand { font-weight: 700; color: var(--dark) !important; display: flex; align-items: center; gap: 10px; font-size: 1rem; letter-spacing: -0.3px; }
         .navbar-brand img { height: 42px; border-radius: 10px; transition: var(--transition); }
         .navbar-brand:hover img { transform: scale(1.05); }
@@ -73,44 +56,38 @@
         .navbar-nav { position: relative; }
         .nav-link {
             font-weight: 500 !important; color: var(--text) !important; padding: 8px 16px !important;
-            border-radius: 30px; transition: color 0.3s ease, background 0.3s ease; font-size: 0.9rem; position: relative;
-            z-index: 1;
+            border-radius: 30px; transition: color 0.3s ease, background 0.3s ease; font-size: 0.9rem;
+            position: relative; z-index: 1;
         }
         .nav-link:hover { color: var(--primary) !important; background: rgba(99, 102, 241, 0.06); }
         .nav-link.active { color: #fff !important; font-weight: 600 !important; background: transparent !important; }
 
-        /* Sliding indicator – lembut tanpa bounce */
         .nav-slider {
             position: absolute;
             bottom: 2px;
             height: 40px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: rgba(99, 102, 241, 0.25);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(99, 102, 241, 0.4);
             border-radius: 30px;
             transition: left 0.5s ease, width 0.5s ease, opacity 0.3s ease;
             z-index: 0;
-            box-shadow: 0 2px 8px rgba(99,102,241,0.2);
+            box-shadow: 0 2px 12px rgba(99, 102, 241, 0.25);
             opacity: 0;
             pointer-events: none;
         }
-        /* Tampilkan hanya di desktop */
-        @media (min-width: 992px) {
-            .navbar-expand-lg .navbar-collapse {
-                position: relative;
-            }
-        }
-
+        @media (min-width: 992px) { .navbar-expand-lg .navbar-collapse { position: relative; } }
+        @media (max-width: 768px) { .nav-slider { display: none; } }
         .dropdown-menu {
-            border: 1px solid rgba(0, 0, 0, 0.06); border-radius: var(--radius); box-shadow: var(--shadow-xl);
-            padding: 8px; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(20px);
+            border: 1px solid rgba(0,0,0,0.06); border-radius: var(--radius); box-shadow: var(--shadow-xl);
+            padding: 8px; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px);
             animation: dropdownFade 0.25s ease;
         }
         @keyframes dropdownFade { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
-        .dropdown-item {
-            border-radius: 10px; padding: 10px 16px; font-weight: 500; font-size: 0.9rem; transition: var(--transition);
-        }
-        .dropdown-item:hover { background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.08)); color: var(--primary); }
+        .dropdown-item { border-radius: 10px; padding: 10px 16px; font-weight: 500; font-size: 0.9rem; }
+        .dropdown-item:hover { background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.08)); color: var(--primary); }
 
-        /* ============ HERO ============ */
         .hero-wrapper {
             position: relative; overflow: hidden;
             background: linear-gradient(160deg, #1e1b4b 0%, #312e81 30%, #4338ca 60%, #6366f1 100%);
@@ -118,9 +95,9 @@
         }
         .hero-wrapper::before {
             content: ''; position: absolute; inset: 0;
-            background: radial-gradient(ellipse at 20% 50%, rgba(6, 182, 212, 0.35) 0%, transparent 55%),
-                        radial-gradient(ellipse at 80% 20%, rgba(139, 92, 246, 0.4) 0%, transparent 55%),
-                        radial-gradient(ellipse at 60% 80%, rgba(99, 102, 241, 0.3) 0%, transparent 55%);
+            background: radial-gradient(ellipse at 20% 50%, rgba(6,182,212,0.35) 0%, transparent 55%),
+                        radial-gradient(ellipse at 80% 20%, rgba(139,92,246,0.4) 0%, transparent 55%),
+                        radial-gradient(ellipse at 60% 80%, rgba(99,102,241,0.3) 0%, transparent 55%);
             z-index: 0; animation: heroGlow 8s ease-in-out infinite alternate;
         }
         @keyframes heroGlow { 0% { opacity: 0.7; } 100% { opacity: 1; } }
@@ -138,8 +115,8 @@
         }
         .hero-content { position: relative; z-index: 2; text-align: center; color: #fff; }
         .hero-badge {
-            display: inline-block; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.25); color: #fff; padding: 8px 20px; border-radius: 50px;
+            display: inline-block; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.25); color: #fff; padding: 8px 20px; border-radius: 50px;
             font-size: 0.85rem; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 24px; animation: fadeInUp 0.6s ease;
         }
         .hero-content h1 {
@@ -160,7 +137,6 @@
         .btn-hero-outline { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.5); backdrop-filter: blur(4px); }
         .btn-hero-outline:hover { background: #fff; color: var(--primary-dark); border-color: #fff; transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,0.25); }
 
-        /* ============ SECTIONS ============ */
         section { padding: 90px 0; position: relative; }
         .section-label {
             display: inline-block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
@@ -169,22 +145,21 @@
         .section-title { font-weight: 800; color: var(--dark); margin-bottom: 16px; letter-spacing: -1px; font-size: clamp(1.8rem, 3.5vw, 2.5rem); }
         .section-subtitle { color: var(--text-muted); font-size: 1.05rem; max-width: 600px; margin: 0 auto 50px; line-height: 1.7; }
 
-        /* ============ CARDS ============ */
         .card-feature {
-            background: var(--card-bg); border: 1px solid rgba(0, 0, 0, 0.04); border-radius: var(--radius-lg);
+            background: var(--card-bg); border: 1px solid rgba(0,0,0,0.04); border-radius: var(--radius-lg);
             box-shadow: var(--shadow); transition: var(--transition-slow); overflow: hidden;
             padding: 2rem 1.5rem; text-align: center; height: 100%; position: relative; z-index: 1;
         }
         .card-feature::before {
             content: ''; position: absolute; inset: 0;
-            background: linear-gradient(160deg, rgba(99, 102, 241, 0.04), rgba(139, 92, 246, 0.02));
+            background: linear-gradient(160deg, rgba(99,102,241,0.04), rgba(139,92,246,0.02));
             z-index: -1; opacity: 0; transition: var(--transition-slow);
         }
-        .card-feature:hover { transform: translateY(-8px); box-shadow: var(--shadow-glow); border-color: rgba(99, 102, 241, 0.2); }
+        .card-feature:hover { transform: translateY(-8px); box-shadow: var(--shadow-glow); border-color: rgba(99,102,241,0.2); }
         .card-feature:hover::before { opacity: 1; }
         .feature-icon-wrap {
             display: inline-flex; align-items: center; justify-content: center; width: 70px; height: 70px;
-            border-radius: 20px; background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.08));
+            border-radius: 20px; background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.08));
             margin-bottom: 20px; transition: var(--transition);
         }
         .card-feature:hover .feature-icon-wrap { transform: scale(1.1); background: linear-gradient(135deg, var(--primary), var(--secondary)); }
@@ -196,10 +171,9 @@
         .card-feature h4 { font-weight: 700; font-size: 1.15rem; letter-spacing: -0.3px; }
         .card-feature p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 0; }
 
-        /* ============ STATS ============ */
         .stat-card {
             background: var(--card-bg); border-radius: var(--radius-lg); padding: 2rem 1rem; text-align: center;
-            border: 1px solid rgba(0, 0, 0, 0.04); box-shadow: var(--shadow); transition: var(--transition-slow);
+            border: 1px solid rgba(0,0,0,0.04); box-shadow: var(--shadow); transition: var(--transition-slow);
             position: relative; overflow: hidden;
         }
         .stat-card::after {
@@ -217,39 +191,8 @@
         .stat-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; margin-top: 8px; text-transform: uppercase; letter-spacing: 1px; }
         .stat-icon { font-size: 1.5rem; margin-bottom: 8px; opacity: 0.6; }
 
-        /* Skeleton loading */
-        .skeleton {
-            background: linear-gradient(90deg, #e8ecf1 25%, #f0f3f6 50%, #e8ecf1 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 8px;
-        }
-        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
-        .stat-skeleton {
-            width: 80px;
-            height: 2.8rem;
-            margin: 0 auto 8px;
-            border-radius: 8px;
-        }
-        .artikel-skeleton-img {
-            height: 200px;
-            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-            margin-bottom: 1rem;
-        }
-        .artikel-skeleton-title {
-            height: 1.2rem;
-            width: 70%;
-            margin-bottom: 0.5rem;
-        }
-        .artikel-skeleton-text {
-            height: 0.9rem;
-            width: 90%;
-            margin-bottom: 0.4rem;
-        }
-
-        /* ============ ARTIKEL CARDS ============ */
         .card-artikel {
-            border: 1px solid rgba(0, 0, 0, 0.05); border-radius: var(--radius-lg); overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05); border-radius: var(--radius-lg); overflow: hidden;
             box-shadow: var(--shadow); transition: var(--transition-slow); background: var(--card-bg); height: 100%;
         }
         .card-artikel:hover { transform: translateY(-6px); box-shadow: var(--shadow-xl); }
@@ -258,9 +201,8 @@
         .card-artikel .card-body { padding: 1.5rem; }
         .card-artikel .card-title { font-weight: 700; font-size: 1.1rem; letter-spacing: -0.3px; margin-bottom: 8px; }
         .card-artikel .card-text { color: var(--text-muted); font-size: 0.88rem; line-height: 1.6; }
-        .badge-date { font-size: 0.75rem; font-weight: 500; color: var(--text-muted); background: rgba(0, 0, 0, 0.03); padding: 4px 10px; border-radius: 20px; }
+        .badge-date { font-size: 0.75rem; font-weight: 500; color: var(--text-muted); background: rgba(0,0,0,0.03); padding: 4px 10px; border-radius: 20px; }
 
-        /* ============ CTA ============ */
         .cta-section {
             background: linear-gradient(150deg, #312e81 0%, #4338ca 40%, #6366f1 100%);
             color: #fff; padding: 70px 0; border-radius: var(--radius-xl);
@@ -268,25 +210,25 @@
         }
         .cta-section::before {
             content: ''; position: absolute; inset: 0;
-            background: radial-gradient(ellipse at 30% 50%, rgba(6, 182, 212, 0.3) 0%, transparent 60%);
+            background: radial-gradient(ellipse at 30% 50%, rgba(6,182,212,0.3) 0%, transparent 60%);
             pointer-events: none;
         }
         .cta-section h3 { font-weight: 800; letter-spacing: -0.5px; }
         .btn-cta {
             background: #fff; color: var(--primary-dark); border-radius: 50px; padding: 14px 36px;
-            font-weight: 700; border: none; transition: var(--transition-slow); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); font-size: 1rem;
+            font-weight: 700; border: none; transition: var(--transition-slow);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2); font-size: 1rem;
         }
-        .btn-cta:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3); background: #f0f0ff; }
+        .btn-cta:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,0.3); background: #f0f0ff; }
 
-        /* ============ CONTACT ============ */
         .info-contact-card {
             background: var(--card-bg); border-radius: var(--radius-lg); padding: 2rem 1.5rem; text-align: center;
-            border: 1px solid rgba(0, 0, 0, 0.04); box-shadow: var(--shadow); transition: var(--transition-slow); height: 100%;
+            border: 1px solid rgba(0,0,0,0.04); box-shadow: var(--shadow); transition: var(--transition-slow); height: 100%;
         }
         .info-contact-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
         .info-contact-card .icon-circle {
             display: inline-flex; align-items: center; justify-content: center; width: 60px; height: 60px;
-            border-radius: 50%; background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.06));
+            border-radius: 50%; background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.06));
             margin-bottom: 16px; transition: var(--transition);
         }
         .info-contact-card:hover .icon-circle { background: linear-gradient(135deg, var(--primary), var(--secondary)); }
@@ -297,134 +239,68 @@
         .info-contact-card:hover .icon-circle i { -webkit-text-fill-color: #fff; background: none; color: #fff; }
         .kontak-card {
             background: var(--card-bg); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
-            padding: 2.5rem; border: 1px solid rgba(0, 0, 0, 0.04);
+            padding: 2.5rem; border: 1px solid rgba(0,0,0,0.04);
         }
         .kontak-card .form-control { border-radius: 14px; padding: 12px 18px; border: 2px solid #e8ecf1; transition: var(--transition); font-size: 0.95rem; background: #fafbfc; }
-        .kontak-card .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.08); background: #fff; }
+        .kontak-card .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99,102,241,0.08); background: #fff; }
         .btn-submit {
             background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; border-radius: 50px;
             padding: 14px; font-weight: 700; font-size: 1rem; letter-spacing: -0.2px; transition: var(--transition-slow);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 6px 20px rgba(99,102,241,0.3);
         }
-        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(99, 102, 241, 0.45); }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(99,102,241,0.45); }
 
-        /* ============ BOTTOM BUTTONS ============ */
         .bottom-buttons {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            z-index: 11;
+            position: fixed; bottom: 24px; right: 24px;
+            display: flex; flex-direction: column; align-items: center; gap: 12px; z-index: 11;
         }
         .btn-scroll-top {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: white;
-            color: var(--primary);
-            border: 2px solid rgba(99,102,241,0.2);
-            font-size: 1.3rem;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: var(--shadow);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(10px);
+            width: 48px; height: 48px; border-radius: 50%; background: white; color: var(--primary);
+            border: 2px solid rgba(99,102,241,0.2); font-size: 1.3rem; cursor: pointer; transition: var(--transition);
+            display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow);
+            opacity: 0; visibility: hidden; transform: translateY(10px);
         }
-        .btn-scroll-top.visible {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
+        .btn-scroll-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
         .btn-scroll-top:hover {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            border-color: transparent;
-            box-shadow: 0 8px 25px rgba(99,102,241,0.4);
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;
+            border-color: transparent; box-shadow: 0 8px 25px rgba(99,102,241,0.4);
         }
-
-        /* ============ FAQ BUTTON ============ */
         .btn-faq-float {
-            width: 58px;
-            height: 58px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border: none;
-            color: #fff;
-            font-size: 1.5rem;
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.45);
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
+            width: 58px; height: 58px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none;
+            color: #fff; font-size: 1.5rem; box-shadow: 0 8px 25px rgba(99,102,241,0.45);
+            cursor: pointer; transition: var(--transition);
         }
-        .btn-faq-float:hover {
-            transform: scale(1.08);
-            box-shadow: 0 14px 35px rgba(99, 102, 241, 0.55);
-        }
-        .btn-faq-float::after {
-            content: '';
-            position: absolute;
-            inset: -6px;
-            border-radius: 50%;
-            border: 2px solid rgba(99, 102, 241, 0.3);
-            animation: pulseRing 2s ease-out infinite;
-        }
-        @keyframes pulseRing { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.5); opacity: 0; } }
-        .toast-faq { border: none; box-shadow: var(--shadow-xl); border-radius: var(--radius); width: 320px; max-width: 90vw; background: transparent; position: relative; }
+        .btn-faq-float:hover { transform: scale(1.08); }
+        .toast-faq { border: none; box-shadow: var(--shadow-xl); border-radius: var(--radius); width: 320px; max-width: 90vw; }
         .toast-faq .toast-header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; border-bottom: none; border-radius: var(--radius) var(--radius) 0 0; padding: 0.85rem 1.2rem; }
         .toast-faq .toast-body { background: #fff; border-radius: 0 0 var(--radius) var(--radius); padding: 1.25rem; }
         .toast-faq .toast-body h6 { color: var(--primary); font-weight: 700; font-size: 0.9rem; margin-top: 0.75rem; }
         .toast-faq .toast-body p { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.5rem; }
-        .toast-faq::after {
-            content: ''; position: absolute; bottom: 20px; right: -12px; width: 0; height: 0;
-            border-left: 12px solid #fff; border-top: 10px solid transparent; border-bottom: 10px solid transparent;
-            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.08));
-        }
-        @media (max-width: 576px) {
-            .toast-faq::after { bottom: -12px; right: 20px; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 12px solid #fff; border-bottom: none; }
-        }
 
-        /* ============ FOOTER ============ */
         footer { background: #fff; border-top: 1px solid rgba(0,0,0,0.05); box-shadow: 0 -5px 20px rgba(0,0,0,0.03); }
         footer h5 { color: var(--dark); font-weight: 700; letter-spacing: -0.3px; }
-        footer a { color: var(--text-muted); transition: var(--transition); text-decoration: none; font-size: 0.9rem; }
+        footer a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
         footer a:hover { color: var(--primary); }
-        footer .social-icon { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(99,102,241,0.06); color: var(--primary); transition: var(--transition); font-size: 1.2rem; }
-        footer .social-icon:hover { background: var(--primary); color: #fff; }
         .footer-bottom { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; font-size: 0.85rem; font-weight: 500; }
 
-        /* ============ MODAL ============ */
-        .modal-content { border-radius: var(--radius-lg); border: none; box-shadow: var(--shadow-xl); overflow: hidden; }
-        .modal-header { border-bottom: 1px solid rgba(0,0,0,0.05); padding: 1.25rem 1.5rem; }
-        .modal-title { font-weight: 700; letter-spacing: -0.3px; }
-
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         @media (max-width: 768px) {
             .hero-wrapper { border-radius: 0 0 30px 30px; padding: 70px 0 80px; }
             section { padding: 50px 0; }
-            .cta-section { border-radius: var(--radius-lg); margin: 2rem 1rem; padding: 40px 0; text-align: center; }
+            .cta-section { border-radius: var(--radius-lg); margin: 2rem 1rem; padding: 40px 0; }
             .navbar-brand img { height: 34px; }
             .brand-text { font-size: 0.75rem; }
             .stat-number { font-size: 2rem; }
-            .nav-slider { display: none; } /* Sembunyikan slider di mobile */
+        }
+        @media (max-width: 576px) {
+            .bottom-buttons { bottom: 16px; right: 16px; gap: 8px; }
+            .btn-scroll-top, .btn-faq-float { width: 44px; height: 44px; font-size: 1.1rem; }
+            footer { padding-bottom: 80px !important; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light sticky-top" id="navbarNav">
         <div class="container">
             <a class="navbar-brand" href="index.html">
@@ -443,13 +319,12 @@
                     <li class="nav-item"><a class="nav-link" href="#artikel">Artikel</a></li>
                     <li class="nav-item"><a class="nav-link" href="#kontak">Kontak</a></li>
                     <li class="nav-item dropdown" id="userDropdown" style="display:none;">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
                             <i class="bi bi-person-circle me-1"></i><span id="userName"></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="#" id="dashboardLink"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#" onclick="logout(); return false;"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="logout()"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
                         </ul>
                     </li>
                     <li class="nav-item" id="loginLink"><a class="nav-link" href="login.html"><i class="bi bi-person me-1"></i>Login</a></li>
@@ -459,13 +334,9 @@
         </div>
     </nav>
 
-    <!-- Hero -->
     <section id="hero" class="hero-wrapper">
         <div class="hero-shapes">
-            <div class="hero-shape"></div>
-            <div class="hero-shape"></div>
-            <div class="hero-shape"></div>
-            <div class="hero-shape"></div>
+            <div class="hero-shape"></div><div class="hero-shape"></div><div class="hero-shape"></div><div class="hero-shape"></div>
         </div>
         <div class="container hero-content">
             <span class="hero-badge"><i class="bi bi-star-fill me-1"></i> BUMA PC GP Ansor Kabupaten Bantul</span>
@@ -478,29 +349,27 @@
         </div>
     </section>
 
-    <!-- Tentang -->
     <section id="tentang">
         <div class="container">
             <div class="row align-items-center g-5">
                 <div class="col-lg-6">
                     <span class="section-label">Tentang Kami</span>
                     <h2 class="section-title">Mengenal BUMA Bantul</h2>
-                    <p class="lead" style="font-weight:500;">Wadah usaha yang didirikan oleh Gerakan Pemuda Ansor Kabupaten Bantul untuk memberdayakan potensi ekonomi anggota.</p>
-                    <p style="color:var(--text-muted); line-height:1.8;">Kami hadir untuk memetakan, mendampingi, dan mengembangkan usaha anggota agar lebih maju dan berdaya saing. Dengan sistem pendataan modern, BUMA menjadi pusat informasi usaha anggota yang akurat dan terpercaya.</p>
+                    <p class="lead" style="font-weight:500;">Wadah usaha yang didirikan oleh Gerakan Pemuda Ansor Kabupaten Bantul.</p>
+                    <p style="color:var(--text-muted); line-height:1.8;">Kami memetakan, mendampingi, dan mengembangkan usaha anggota agar lebih maju dan berdaya saing.</p>
                     <ul class="list-unstyled mt-3">
                         <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Pendataan usaha secara digital</li>
                         <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Pendampingan manajemen dan pemasaran</li>
                         <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> Akses permodalan dan jaringan bisnis</li>
                     </ul>
                 </div>
-                <div class="col-lg-6">
-                    <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Tentang BUMA" class="img-fluid rounded-4 shadow-lg" style="border-radius:var(--radius-lg) !important;">
+                <div class="col-lg-6 text-center">
+                    <img src="assets/buma.webp" alt="BUMA Bantul" class="img-fluid rounded-4 shadow-lg" loading="lazy" style="max-width: 130%; object-fit: contain;">
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Layanan -->
     <section id="layanan" style="background:#fafbfd;">
         <div class="container">
             <div class="text-center mb-5">
@@ -509,26 +378,24 @@
                 <p class="section-subtitle">Kami menyediakan berbagai layanan untuk mendukung pertumbuhan usaha anggota.</p>
             </div>
             <div class="row g-4">
-                <div class="col-md-4"><div class="card-feature"><div class="feature-icon-wrap"><i class="bi bi-database"></i></div><h4>Pendataan Usaha</h4><p>Registrasi dan pendataan usaha anggota secara online, terintegrasi dalam satu sistem modern.</p></div></div>
-                <div class="col-md-4"><div class="card-feature"><div class="feature-icon-wrap"><i class="bi bi-graph-up-arrow"></i></div><h4>Pembinaan & Pelatihan</h4><p>Program pelatihan manajemen, keuangan, dan digital marketing untuk anggota.</p></div></div>
-                <div class="col-md-4"><div class="card-feature"><div class="feature-icon-wrap"><i class="bi bi-shop"></i></div><h4>Pemasaran & Jaringan</h4><p>Fasilitasi promosi produk dan koneksi dengan mitra bisnis potensial.</p></div></div>
+                <div class="col-12 col-md-4"><div class="card-feature"><div class="feature-icon-wrap"><i class="bi bi-database"></i></div><h4>Pendataan Usaha</h4><p>Registrasi dan pendataan usaha anggota secara online.</p></div></div>
+                <div class="col-12 col-md-4"><div class="card-feature"><div class="feature-icon-wrap"><i class="bi bi-graph-up-arrow"></i></div><h4>Pembinaan & Pelatihan</h4><p>Program pelatihan manajemen, keuangan, dan digital marketing.</p></div></div>
+                <div class="col-12 col-md-4"><div class="card-feature"><div class="feature-icon-wrap"><i class="bi bi-shop"></i></div><h4>Pemasaran & Jaringan</h4><p>Fasilitasi promosi produk dan koneksi dengan mitra bisnis potensial.</p></div></div>
             </div>
         </div>
     </section>
 
-    <!-- Statistik -->
     <section style="padding:50px 0;">
         <div class="container">
             <div class="row g-4" id="statContainer">
-                <div class="col-md-3 col-6"><div class="stat-card"><div class="stat-icon"><i class="bi bi-building"></i></div><div class="stat-number skeleton stat-skeleton"></div><div class="stat-label">Usaha Terdata</div></div></div>
-                <div class="col-md-3 col-6"><div class="stat-card"><div class="stat-icon"><i class="bi bi-grid"></i></div><div class="stat-number skeleton stat-skeleton"></div><div class="stat-label">Kategori Usaha</div></div></div>
-                <div class="col-md-3 col-6"><div class="stat-card"><div class="stat-icon"><i class="bi bi-people"></i></div><div class="stat-number skeleton stat-skeleton"></div><div class="stat-label">Anggota Aktif</div></div></div>
-                <div class="col-md-3 col-6"><div class="stat-card"><div class="stat-icon"><i class="bi bi-newspaper"></i></div><div class="stat-number skeleton stat-skeleton"></div><div class="stat-label">Total Artikel</div></div></div>
+                <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon"><i class="bi bi-building"></i></div><div class="stat-number" id="totalUsahaStat">--</div><div class="stat-label">Usaha Terdata</div></div></div>
+                <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon"><i class="bi bi-grid"></i></div><div class="stat-number" id="totalKategoriStat">--</div><div class="stat-label">Kategori Usaha</div></div></div>
+                <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon"><i class="bi bi-people"></i></div><div class="stat-number" id="totalAnggotaStat">--</div><div class="stat-label">Anggota Aktif</div></div></div>
+                <div class="col-6 col-md-3"><div class="stat-card"><div class="stat-icon"><i class="bi bi-newspaper"></i></div><div class="stat-number" id="totalArtikelStat">--</div><div class="stat-label">Total Artikel</div></div></div>
             </div>
         </div>
     </section>
 
-    <!-- Artikel -->
     <section id="artikel" style="background:#fafbfd;">
         <div class="container">
             <div class="text-center mb-5">
@@ -536,24 +403,18 @@
                 <h2 class="section-title">Artikel Terbaru</h2>
                 <p class="section-subtitle">Informasi dan berita terkini seputar BUMA dan kegiatan anggota.</p>
             </div>
-            <div id="artikelContainer" class="row g-4">
-                <div class="col-md-4"><div class="card-artikel"><div class="skeleton artikel-skeleton-img"></div><div class="card-body"><div class="skeleton artikel-skeleton-title"></div><div class="skeleton artikel-skeleton-text"></div><div class="skeleton artikel-skeleton-text" style="width:60%"></div></div></div></div>
-                <div class="col-md-4"><div class="card-artikel"><div class="skeleton artikel-skeleton-img"></div><div class="card-body"><div class="skeleton artikel-skeleton-title"></div><div class="skeleton artikel-skeleton-text"></div><div class="skeleton artikel-skeleton-text" style="width:60%"></div></div></div></div>
-                <div class="col-md-4"><div class="card-artikel"><div class="skeleton artikel-skeleton-img"></div><div class="card-body"><div class="skeleton artikel-skeleton-title"></div><div class="skeleton artikel-skeleton-text"></div><div class="skeleton artikel-skeleton-text" style="width:60%"></div></div></div></div>
-            </div>
+            <div id="artikelContainer" class="row g-4 justify-content-center"></div>
             <div class="text-center mt-4"><a href="artikel.html" class="btn btn-outline-primary btn-lg rounded-pill px-5 fw-semibold">Lihat Semua Berita <i class="bi bi-arrow-right ms-1"></i></a></div>
         </div>
     </section>
 
-    <!-- CTA -->
     <section class="cta-section container">
         <div class="row align-items-center text-center text-lg-start px-4">
-            <div class="col-lg-8 mb-3 mb-lg-0"><h3 class="fw-bold mb-2">Siap Memajukan Usaha Anda?</h3><p class="mb-0 opacity-90">Bergabunglah dengan BUMA dan dapatkan berbagai manfaat untuk usaha Anda.</p></div>
+            <div class="col-lg-8 mb-3 mb-lg-0"><h3 class="fw-bold mb-2">Siap Memajukan Usaha Anda?</h3><p class="mb-0 opacity-90">Bergabunglah dengan BUMA dan dapatkan berbagai manfaat.</p></div>
             <div class="col-lg-4 text-center"><a href="pendataan.html" class="btn btn-cta">Daftar Sekarang <i class="bi bi-arrow-right ms-1"></i></a></div>
         </div>
     </section>
 
-    <!-- Kontak -->
     <section id="kontak">
         <div class="container">
             <div class="text-center mb-5">
@@ -562,9 +423,9 @@
                 <p class="section-subtitle">Jangan ragu untuk menghubungi kami melalui informasi di bawah ini.</p>
             </div>
             <div class="row g-4 mb-5">
-                <div class="col-md-4"><div class="info-contact-card"><div class="icon-circle"><i class="bi bi-geo-alt"></i></div><h5 class="fw-bold">Alamat</h5><p class="text-muted mb-0">Jalan Marsda Adisucipto No. 45,<br>Karangbayam, Bantul, DIY</p></div></div>
-                <div class="col-md-4"><div class="info-contact-card"><div class="icon-circle"><i class="bi bi-telephone"></i></div><h5 class="fw-bold">Telepon</h5><p class="text-muted mb-0">(0274) 123456<br>+62 812 3456 7890</p></div></div>
-                <div class="col-md-4"><div class="info-contact-card"><div class="icon-circle"><i class="bi bi-envelope"></i></div><h5 class="fw-bold">Email</h5><p class="text-muted mb-0">bumabantul@gmail.com</p></div></div>
+                <div class="col-12 col-md-4"><div class="info-contact-card"><div class="icon-circle"><i class="bi bi-geo-alt"></i></div><h5 class="fw-bold">Alamat</h5><p class="text-muted mb-0">Jalan Marsda Adisucipto No. 45,<br>Karangbayam, Bantul, DIY</p></div></div>
+                <div class="col-12 col-md-4"><div class="info-contact-card"><div class="icon-circle"><i class="bi bi-telephone"></i></div><h5 class="fw-bold">Telepon</h5><p class="text-muted mb-0">(0274) 123456<br>+62 812 3456 7890</p></div></div>
+                <div class="col-12 col-md-4"><div class="info-contact-card"><div class="icon-circle"><i class="bi bi-envelope"></i></div><h5 class="fw-bold">Email</h5><p class="text-muted mb-0">bumabantul@gmail.com</p></div></div>
             </div>
             <div class="row justify-content-center">
                 <div class="col-md-8">
@@ -584,40 +445,28 @@
         </div>
     </section>
 
-    <!-- Modal Detail Artikel -->
-    <div class="modal fade" id="artikelModal" tabindex="-1" aria-labelledby="artikelModalLabel" aria-hidden="true">
+    <!-- Modal Artikel: konten saja (thubnail sudah di kartu) -->
+    <div class="modal fade" id="artikelModal" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="artikelModalLabel">Judul Artikel</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
+                <div class="modal-header"><h5 class="modal-title" id="artikelModalLabel"></h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <p id="artikelMeta" class="text-muted small"></p>
-                    <img id="artikelGambar" class="img-fluid mb-3 rounded-3" style="max-height:350px;width:100%;object-fit:cover;display:none;" alt="">
+                    <img id="artikelGambar" style="display:none;" alt="">
                     <div id="artikelKontenLengkap" style="line-height:1.8;"></div>
-                </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Tutup</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tombol Scroll to Top + FAQ -->
     <div class="bottom-buttons">
-        <button class="btn-scroll-top" id="btnScrollTop" title="Kembali ke atas">
-            <i class="bi bi-chevron-up"></i>
-        </button>
-        <button class="btn-faq-float" type="button" onclick="toggleFaqToast()" title="Bantuan">
-            <i class="bi bi-question-lg"></i>
-        </button>
+        <button class="btn-scroll-top" id="btnScrollTop" title="Kembali ke atas"><i class="bi bi-chevron-up"></i></button>
+        <button class="btn-faq-float" type="button" onclick="toggleFaqToast()" title="Bantuan"><i class="bi bi-question-lg"></i></button>
     </div>
 
-    <!-- Toast FAQ -->
     <div class="position-fixed bottom-0 end-0 p-3" style="z-index:11; pointer-events: none;">
-        <div class="toast-container-custom" id="faqToastContainer" style="position:absolute; bottom:80px; right:20px; pointer-events: auto;">
-            <div id="faqToast" class="toast toast-faq" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+        <div id="faqToastContainer" style="position:absolute; bottom:80px; right:20px; pointer-events: auto;">
+            <div id="faqToast" class="toast toast-faq" role="alert" data-bs-autohide="false">
                 <div class="toast-header"><i class="bi bi-info-circle-fill me-2"></i><strong class="me-auto">Pusat Bantuan</strong><button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button></div>
                 <div class="toast-body">
                     <h6><i class="bi bi-question-circle-fill me-1 text-primary"></i> Bagaimana cara mendata usaha?</h6>
@@ -647,68 +496,29 @@
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="text-center text-lg-start">
         <div class="container p-4">
-            <div class="row align-items-start">
-                <div class="col-lg-5 col-md-12 mb-4 mb-md-0">
-                    <h5 class="text-uppercase fw-bold">BUMA Bantul</h5>
-                    <p class="text-muted" style="line-height:1.7;">Badan Usaha Milik Ansor Kabupaten Bantul. Memberdayakan ekonomi anggota melalui pendataan dan pemetaan usaha.</p>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-                    <h5 class="text-uppercase fw-bold">Tautan</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#hero">Beranda</a></li>
-                        <li><a href="pendataan.html">Pendataan</a></li>
-                        <li><a href="#artikel">Artikel</a></li>
-                        <li><a href="#kontak">Kontak</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
-                    <h5 class="text-uppercase fw-bold">Ikuti Kami</h5>
-                    <div class="d-flex gap-2">
-                        <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
-                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
-                        <a href="#" class="social-icon"><i class="bi bi-twitter-x"></i></a>
-                        <a href="#" class="social-icon"><i class="bi bi-youtube"></i></a>
-                    </div>
-                </div>
+            <div class="row">
+                <div class="col-lg-5 col-md-12 mb-4"><h5 class="text-uppercase fw-bold">BUMA Bantul</h5><p class="text-muted" style="line-height:1.7;">Badan Usaha Milik Ansor Kabupaten Bantul.</p></div>
+                <div class="col-lg-3 col-md-6 mb-4"><h5 class="text-uppercase fw-bold">Tautan</h5><ul class="list-unstyled"><li><a href="#hero">Beranda</a></li><li><a href="pendataan.html">Pendataan</a></li><li><a href="#artikel">Artikel</a></li><li><a href="#kontak">Kontak</a></li></ul></div>
+                <div class="col-lg-4 col-md-6 mb-4"><h5 class="text-uppercase fw-bold">Ikuti Kami</h5><div class="d-flex gap-2"><a href="#" class="text-dark me-2"><i class="bi bi-facebook"></i></a><a href="#" class="text-dark me-2"><i class="bi bi-instagram"></i></a><a href="#" class="text-dark me-2"><i class="bi bi-twitter-x"></i></a><a href="#" class="text-dark me-2"><i class="bi bi-youtube"></i></a></div></div>
             </div>
         </div>
         <div class="footer-bottom text-center p-3">© 2026 BUMA Bantul. All rights reserved.</div>
     </footer>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- API & Auth -->
     <script src="js/api.js"></script>
     <script src="js/auth.js"></script>
-
     <script>
-        // ================== DETEKSI PENYIMPANAN ==================
-        (function() {
-            try {
-                const test = '__storage_test__';
-                sessionStorage.setItem(test, test);
-                sessionStorage.removeItem(test);
-            } catch (e) {
-                console.warn('sessionStorage diblokir, beberapa fitur mungkin tidak optimal.');
-            }
-        })();
-
-        // ================== SLIDING NAVBAR INDICATOR ==================
         const slider = document.getElementById('navSlider');
         const navLinks = document.querySelectorAll('#mainNavLinks .nav-link[href^="#"]');
         const navbarCollapse = document.getElementById('navbarSupportedContent');
-        let lastActiveId = null; // untuk melacak section aktif sebelumnya
+        let lastActiveId = null;
 
         function moveSlider(link) {
             if (!link || !slider || !navbarCollapse) return;
-            // Hanya tampilkan slider di desktop (lg ke atas)
-            if (window.innerWidth < 992) {
-                slider.style.opacity = '0';
-                return;
-            }
+            if (window.innerWidth < 992) { slider.style.opacity = '0'; return; }
             const linkRect = link.getBoundingClientRect();
             const navRect = navbarCollapse.getBoundingClientRect();
             const left = linkRect.left - navRect.left;
@@ -719,7 +529,7 @@
         }
 
         function updateActiveNav() {
-            const scrollPos = window.scrollY + 100; // offset biar pas
+            const scrollPos = window.scrollY + 100;
             let currentSection = null;
             document.querySelectorAll('section[id]').forEach(section => {
                 if (section.offsetTop <= scrollPos && section.offsetTop + section.offsetHeight > scrollPos) {
@@ -728,320 +538,204 @@
             });
             if (currentSection) {
                 const id = currentSection.getAttribute('id');
-                // Hanya update jika section benar-benar berbeda
                 if (lastActiveId !== id) {
                     navLinks.forEach(link => {
                         link.classList.remove('active');
-                        if (link.getAttribute('href') === '#' + id) {
-                            link.classList.add('active');
-                            moveSlider(link);
-                        }
+                        if (link.getAttribute('href') === '#' + id) { link.classList.add('active'); moveSlider(link); }
                     });
                     lastActiveId = id;
                 }
             } else {
-                // Di paling atas -> set ke Beranda
                 if (lastActiveId !== 'hero') {
                     const homeLink = document.querySelector('#mainNavLinks .nav-link[href="#hero"]');
-                    if (homeLink) {
-                        navLinks.forEach(l => l.classList.remove('active'));
-                        homeLink.classList.add('active');
-                        moveSlider(homeLink);
-                        lastActiveId = 'hero';
-                    }
+                    if (homeLink) { navLinks.forEach(l => l.classList.remove('active')); homeLink.classList.add('active'); moveSlider(homeLink); lastActiveId = 'hero'; }
                 }
             }
         }
 
-        navLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                navLinks.forEach(l => l.classList.remove('active'));
-                this.classList.add('active');
-                moveSlider(this);
-                lastActiveId = this.getAttribute('href').substring(1);
-            });
-        });
+        navLinks.forEach(link => link.addEventListener('click', function() { navLinks.forEach(l => l.classList.remove('active')); this.classList.add('active'); moveSlider(this); lastActiveId = this.getAttribute('href').substring(1); }));
+        window.addEventListener('resize', () => { const activeLink = document.querySelector('#mainNavLinks .nav-link.active[href^="#"]'); if (activeLink) moveSlider(activeLink); });
 
-        window.addEventListener('resize', () => {
-            const activeLink = document.querySelector('#mainNavLinks .nav-link.active[href^="#"]');
-            if (activeLink) moveSlider(activeLink);
-        });
-
-        // ================== SCROLL TO TOP BUTTON ==================
         const btnScrollTop = document.getElementById('btnScrollTop');
         window.addEventListener('scroll', function() {
             handleNavbarScroll();
             updateActiveNav();
-            if (window.scrollY > 500) {
-                btnScrollTop.classList.add('visible');
-            } else {
-                btnScrollTop.classList.remove('visible');
-            }
+            if (window.scrollY > 500) btnScrollTop.classList.add('visible'); else btnScrollTop.classList.remove('visible');
         });
+        btnScrollTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        function handleNavbarScroll() { const navbar = document.getElementById('navbarNav'); if (window.scrollY > 50) navbar.classList.add('scrolled'); else navbar.classList.remove('scrolled'); }
 
-        btnScrollTop.addEventListener('click', function() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        // ================== CACHE-FIRST DENGAN SKELETON ==================
-        async function loadWithCache(key, fetchFn, renderFn, skeletonType) {
-            const cached = sessionStorage.getItem(key);
-            if (cached) {
-                try {
-                    renderFn(JSON.parse(cached));
-                } catch (e) {}
+        const CACHE_KEY_STAT = 'statistik_cache';
+        function saveStatCache(data) { if (typeof appStorage !== 'undefined') appStorage.set(CACHE_KEY_STAT, JSON.stringify(data)); }
+        function loadStatCache() { if (typeof appStorage !== 'undefined') { const raw = appStorage.get(CACHE_KEY_STAT); return raw ? JSON.parse(raw) : null; } return null; }
+        function animateValue(el, start, end, duration = 800) { const range = end - start; let startTime; function step(ts) { if (!startTime) startTime = ts; const p = Math.min((ts - startTime) / duration, 1); el.textContent = Math.floor(start + range * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); else el.textContent = end; } requestAnimationFrame(step); }
+        let previousStats = null;
+        function updateStatUI(stats) {
+            const els = { usaha: document.getElementById('totalUsahaStat'), kategori: document.getElementById('totalKategoriStat'), anggota: document.getElementById('totalAnggotaStat'), artikel: document.getElementById('totalArtikelStat') };
+            const old = previousStats || { totalUsaha: 0, totalKategori: 0, totalAnggota: 0, totalArtikel: 0 };
+            if (!previousStats) { els.usaha.textContent = stats.totalUsaha; els.kategori.textContent = stats.totalKategori; els.anggota.textContent = stats.totalAnggota; els.artikel.textContent = stats.totalArtikel; } else {
+                if (old.totalUsaha !== stats.totalUsaha) animateValue(els.usaha, old.totalUsaha, stats.totalUsaha);
+                if (old.totalKategori !== stats.totalKategori) animateValue(els.kategori, old.totalKategori, stats.totalKategori);
+                if (old.totalAnggota !== stats.totalAnggota) animateValue(els.anggota, old.totalAnggota, stats.totalAnggota);
+                if (old.totalArtikel !== stats.totalArtikel) animateValue(els.artikel, old.totalArtikel, stats.totalArtikel);
             }
-            try {
-                const fresh = await fetchFn();
-                const freshStr = JSON.stringify(fresh);
-                if (cached !== freshStr) {
-                    sessionStorage.setItem(key, freshStr);
-                    renderFn(fresh);
-                }
-            } catch (err) {
-                console.error('Gagal fetch data:', err);
-                if (!cached && skeletonType === 'artikel') {
-                    document.getElementById('artikelContainer').innerHTML = '<div class="col-12 text-center text-muted"><p>Gagal memuat artikel. Periksa koneksi Anda.</p></div>';
-                }
-            }
+            previousStats = { ...stats };
         }
-
-        // ================== STATISTIK ==================
         async function fetchStatistik() {
-            const [usahaRes, artikelRes, memberRes] = await Promise.all([
-                apiCall('getAllDataUsahaPublik', {}),
-                apiCall('getAllArtikel', {}),
-                apiCall('getMemberCount', {})
-            ]);
-            let totalUsaha = 0, totalKategori = 0, totalAnggota = 0, totalArtikel = 0;
-            if (usahaRes.success) {
-                totalUsaha = usahaRes.data.length;
-                const kategoriSet = new Set(usahaRes.data.map(u => u.jenisUsaha).filter(Boolean));
-                totalKategori = kategoriSet.size;
-            }
-            if (artikelRes.success) totalArtikel = artikelRes.data.length;
-            if (memberRes.success) totalAnggota = memberRes.count;
-            return { totalUsaha, totalKategori, totalAnggota, totalArtikel };
+            try {
+                const [usahaRes, artikelRes, memberRes] = await Promise.all([apiCall('getAllDataUsahaPublik', {}), apiCall('getAllArtikel', {}), apiCall('getMemberCount', {})]);
+                let totalUsaha = 0, totalKategori = 0, totalAnggota = 0, totalArtikel = 0;
+                if (usahaRes.success) { totalUsaha = usahaRes.data.length; totalKategori = new Set(usahaRes.data.map(u => u.jenisUsaha).filter(Boolean)).size; }
+                if (artikelRes.success) totalArtikel = artikelRes.data.length;
+                if (memberRes.success) totalAnggota = memberRes.count;
+                return { totalUsaha, totalKategori, totalAnggota, totalArtikel };
+            } catch (err) { return null; }
+        }
+        async function initStatistics() {
+            const cached = loadStatCache(); if (cached) updateStatUI(cached);
+            const data = await fetchStatistik(); if (data) { const nh = JSON.stringify(data), oh = JSON.stringify(cached); if (nh !== oh) { saveStatCache(data); updateStatUI(data); } }
+            setInterval(async () => { if (document.hidden) return; const fresh = await fetchStatistik(); if (fresh) { saveStatCache(fresh); updateStatUI(fresh); } }, 60000);
         }
 
-        function animateCounter(el, target) {
-            const start = 0;
-            const duration = 1200;
-            const startTime = performance.now();
-            function update(now) {
-                const elapsed = now - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                const eased = 1 - Math.pow(1 - progress, 3);
-                const current = Math.round(start + (target - start) * eased);
-                el.innerText = current;
-                if (progress < 1) {
-                    requestAnimationFrame(update);
-                } else {
-                    el.innerText = target;
-                }
-            }
-            requestAnimationFrame(update);
-        }
-
-        function renderStatistik(data) {
-            const container = document.getElementById('statContainer');
-            container.innerHTML = `
-                <div class="col-md-3 col-6"><div class="stat-card"><div class="stat-icon"><i class="bi bi-building"></i></div><div class="stat-number" id="totalUsahaStat">${data.totalUsaha}</div><div class="stat-label">Usaha Terdata</div></div></div>
-                <div class="col-md-3 col-6"><div class="stat-card"><div class="stat-icon"><i class="bi bi-grid"></i></div><div class="stat-number" id="totalKategoriStat">${data.totalKategori}</div><div class="stat-label">Kategori Usaha</div></div></div>
-                <div class="col-md-3 col-6"><div class="stat-card"><div class="stat-icon"><i class="bi bi-people"></i></div><div class="stat-number" id="totalAnggotaStat">${data.totalAnggota}</div><div class="stat-label">Anggota Aktif</div></div></div>
-                <div class="col-md-3 col-6"><div class="stat-card"><div class="stat-icon"><i class="bi bi-newspaper"></i></div><div class="stat-number" id="totalArtikelStat">${data.totalArtikel}</div><div class="stat-label">Total Artikel</div></div></div>
-            `;
-            const prevData = JSON.parse(sessionStorage.getItem('statistik_prev') || '{}');
-            if (prevData.totalUsaha !== data.totalUsaha) animateCounter(document.getElementById('totalUsahaStat'), data.totalUsaha);
-            if (prevData.totalKategori !== data.totalKategori) animateCounter(document.getElementById('totalKategoriStat'), data.totalKategori);
-            if (prevData.totalAnggota !== data.totalAnggota) animateCounter(document.getElementById('totalAnggotaStat'), data.totalAnggota);
-            if (prevData.totalArtikel !== data.totalArtikel) animateCounter(document.getElementById('totalArtikelStat'), data.totalArtikel);
-            sessionStorage.setItem('statistik_prev', JSON.stringify(data));
-        }
-
-        // ================== ARTIKEL ==================
+        const CACHE_KEY_ARTIKEL = 'artikel_beranda';
+        function saveArtikelCache(data) { if (typeof appStorage !== 'undefined') appStorage.set(CACHE_KEY_ARTIKEL, JSON.stringify(data)); }
+        function loadArtikelCache() { if (typeof appStorage !== 'undefined') { const raw = appStorage.get(CACHE_KEY_ARTIKEL); return raw ? JSON.parse(raw) : null; } return null; }
         function renderArtikel(data) {
             const container = document.getElementById('artikelContainer');
-            if (!data || data.length === 0) {
-                container.innerHTML = '<div class="col-12 text-center"><div class="p-5 text-muted"><i class="bi bi-newspaper" style="font-size:3rem;"></i><p class="mt-3">Belum ada artikel.</p></div></div>';
-                return;
-            }
-            const sorted = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            const latest = sorted.slice(0, 3);
+            if (!data || !data.length) { container.innerHTML = '<div class="col-12 text-center p-5 text-muted"><i class="bi bi-newspaper" style="font-size:3rem;"></i><p>Belum ada artikel.</p></div>'; return; }
             container.innerHTML = '';
-            latest.forEach(item => {
+            data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 3).forEach(item => {
                 const col = document.createElement('div');
-                col.className = 'col-md-4';
-                const img = item.imageUrl ?
-                    `<img src="${item.imageUrl}" class="card-img-top" alt="">` :
-                    `<div class="card-img-top d-flex align-items-center justify-content-center" style="height:200px;background:linear-gradient(135deg,#e8ecf1,#f0f3f6);"><i class="bi bi-image" style="font-size:3rem;color:#cbd5e1;"></i></div>`;
-                col.innerHTML = `
-                  <div class="card-artikel">
-                    ${img}
-                    <div class="card-body">
-                      <span class="badge-date mb-2 d-inline-block"><i class="bi bi-calendar3 me-1"></i>${new Date(item.createdAt).toLocaleDateString('id-ID')}</span>
-                      <h5 class="card-title">${item.title}</h5>
-                      <p class="card-text">${item.content.substring(0,100)}...</p>
-                      <button class="btn btn-outline-primary btn-sm rounded-pill px-3 mt-2" onclick="viewArtikel('${item.id}')">Baca Selengkapnya <i class="bi bi-arrow-right ms-1"></i></button>
-                    </div>
-                  </div>`;
+                col.className = 'col-12 col-md-4';
+                const img = item.imageUrl ? `<img src="${item.imageUrl}" class="card-img-top" alt="" loading="lazy">` : `<div class="card-img-top d-flex align-items-center justify-content-center" style="height:200px;background:linear-gradient(135deg,#e8ecf1,#f0f3f6);"><i class="bi bi-image" style="font-size:3rem;color:#cbd5e1;"></i></div>`;
+                col.innerHTML = `<div class="card-artikel">${img}<div class="card-body"><span class="badge-date mb-2 d-inline-block"><i class="bi bi-calendar3 me-1"></i>${new Date(item.createdAt).toLocaleDateString('id-ID')}</span><h5 class="card-title">${item.title}</h5><button class="btn btn-outline-primary btn-sm rounded-pill px-3 mt-2" onclick="viewArtikel('${item.id}')">Baca <i class="bi bi-arrow-right ms-1"></i></button></div></div>`;
                 container.appendChild(col);
             });
         }
-
-        async function fetchArtikel() {
-            const res = await apiCall('getAllArtikel', {});
-            return res.success ? res.data : [];
+        async function fetchArtikel() { const res = await apiCall('getAllArtikel', {}); return res.success ? res.data : []; }
+        async function initArtikel() {
+            const cached = loadArtikelCache(); if (cached) renderArtikel(cached);
+            const data = await fetchArtikel(); if (data) { saveArtikelCache(data); renderArtikel(data); }
+            setInterval(async () => { if (document.hidden) return; const fresh = await fetchArtikel(); if (fresh) { saveArtikelCache(fresh); renderArtikel(fresh); } }, 60000);
         }
 
-        // ================== LIHAT ARTIKEL MODAL ==================
+        function tampilkanModalArtikel(item) {
+            document.getElementById('artikelModalLabel').innerText = item.title;
+            document.getElementById('artikelMeta').innerText = `Diposting pada ${new Date(item.createdAt).toLocaleDateString('id-ID')} oleh ${item.authorName}`;
+            document.getElementById('artikelGambar').style.display = 'none';
+            document.getElementById('artikelKontenLengkap').innerHTML = item.content.replace(/\n/g, '<br>');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('artikelModal'));
+            if (modal && !modal._isShown) modal.show();
+            else if (!modal) new bootstrap.Modal(document.getElementById('artikelModal')).show();
+        }
+
         async function viewArtikel(id) {
+            const cacheKey = `artikel_detail_${id}`;
+            let cached = null;
+            try { if (typeof appStorage !== 'undefined') { const raw = appStorage.get(cacheKey); if (raw) cached = JSON.parse(raw); } } catch (e) {}
+            if (cached) { tampilkanModalArtikel(cached); } else {
+                document.getElementById('artikelModalLabel').innerText = 'Memuat...';
+                document.getElementById('artikelMeta').innerText = '';
+                document.getElementById('artikelGambar').style.display = 'none';
+                document.getElementById('artikelKontenLengkap').innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary"></div></div>';
+                new bootstrap.Modal(document.getElementById('artikelModal')).show();
+            }
             try {
                 const res = await apiCall('getArtikelById', { id });
                 if (res.success) {
                     const item = res.data;
-                    document.getElementById('artikelModalLabel').innerText = item.title;
-                    document.getElementById('artikelMeta').innerText = `Diposting pada ${new Date(item.createdAt).toLocaleDateString('id-ID')} oleh ${item.authorName}`;
-                    const img = document.getElementById('artikelGambar');
-                    if (item.imageUrl) { img.src = item.imageUrl; img.style.display = 'block'; } else img.style.display = 'none';
-                    document.getElementById('artikelKontenLengkap').innerHTML = item.content.replace(/\n/g, '<br>');
-                    new bootstrap.Modal(document.getElementById('artikelModal')).show();
-                } else {
-                    alert('Gagal memuat artikel: ' + res.message);
+                    try { if (typeof appStorage !== 'undefined') appStorage.set(cacheKey, JSON.stringify(item)); } catch (e) {}
+                    if (!cached || JSON.stringify(cached) !== JSON.stringify(item)) tampilkanModalArtikel(item);
                 }
-            } catch (err) {
-                alert('Error: ' + err.message);
-            }
+            } catch (e) { if (!cached) { document.getElementById('artikelModalLabel').innerText = 'Error'; document.getElementById('artikelKontenLengkap').innerHTML = '<p>Gagal memuat artikel.</p>'; } }
         }
 
-        // ================== TOAST FAQ ==================
         var faqToast;
-        function toggleFaqToast() {
-            if (!faqToast) {
-                const toastEl = document.getElementById('faqToast');
-                if (toastEl) faqToast = new bootstrap.Toast(toastEl, { autohide: false });
-            }
-            const t = document.getElementById('faqToast');
-            t.classList.contains('show') ? faqToast.hide() : faqToast.show();
-        }
+        function toggleFaqToast() { if (!faqToast) faqToast = new bootstrap.Toast(document.getElementById('faqToast'), { autohide: false }); document.getElementById('faqToast').classList.contains('show') ? faqToast.hide() : faqToast.show(); }
+        function hubungiAdmin() { const nama = document.getElementById('faqNama').value.trim(), asal = document.getElementById('faqAsalPac').value, kendala = document.getElementById('faqKendala').value.trim(); if (!nama || !asal || !kendala) return alert('Lengkapi Nama, Asal PAC dan Kendala.'); window.open(`https://wa.me/6283866675521?text=Halo Admin BUMA,%0A%0ANama : ${encodeURIComponent(nama)}%0AAsal PAC : ${encodeURIComponent(asal)}%0AKendala : ${encodeURIComponent(kendala)}`, '_blank'); }
 
-        // ================== HUBUNGI ADMIN VIA WHATSAPP ==================
-        function hubungiAdmin() {
-            const nama = document.getElementById('faqNama').value.trim();
-            const asalPac = document.getElementById('faqAsalPac').value;
-            const kendala = document.getElementById('faqKendala').value.trim();
-            if (!nama || !asalPac || !kendala) {
-                alert('Harap lengkapi Nama, Asal PAC, dan Kendala terlebih dahulu.');
-                return;
-            }
-            const noWA = '6283866675521';
-            const pesan = `Halo Admin BUMA,%0A%0A` +
-                          `Nama : ${encodeURIComponent(nama)}%0A` +
-                          `Asal PAC : ${encodeURIComponent(asalPac)}%0A` +
-                          `Kendala : ${encodeURIComponent(kendala)}%0A%0A` +
-                          `Mohon bantuannya. Terima kasih.`;
-            window.open(`https://wa.me/${noWA}?text=${pesan}`, '_blank');
-        }
-
-        // ================== KONTAK FORM ==================
-        document.getElementById('kontakForm').addEventListener('submit', async (e) => {
+        document.getElementById('kontakForm').addEventListener('submit', async e => {
             e.preventDefault();
-            if (parseInt(document.getElementById('verifikasi').value) !== 5) {
-                alert('Jawaban verifikasi salah!');
-                return;
-            }
-            const btn = document.getElementById('btnKirim');
-            const originalHTML = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Mengirim...';
+            if (parseInt(document.getElementById('verifikasi').value) !== 5) return alert('Verifikasi salah!');
+            const btn = document.getElementById('btnKirim'), originalHTML = btn.innerHTML;
+            btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Mengirim...';
             try {
-                const res = await apiCall('simpanPesan', {
-                    nama: document.getElementById('nama').value,
-                    email: document.getElementById('email').value,
-                    pesan: document.getElementById('pesan').value
-                });
+                const res = await apiCall('simpanPesan', { nama: document.getElementById('nama').value, email: document.getElementById('email').value, pesan: document.getElementById('pesan').value });
                 const alertBox = document.getElementById('kontakAlert');
-                if (res.success) {
-                    alertBox.className = 'alert alert-success';
-                    alertBox.textContent = 'Pesan berhasil dikirim. Terima kasih!';
-                    document.getElementById('kontakForm').reset();
-                } else {
-                    alertBox.className = 'alert alert-danger';
-                    alertBox.textContent = 'Gagal: ' + res.message;
-                }
+                alertBox.className = `alert ${res.success ? 'alert-success' : 'alert-danger'}`;
+                alertBox.textContent = res.success ? 'Pesan berhasil dikirim!' : 'Gagal: ' + res.message;
                 alertBox.classList.remove('d-none');
+                if (res.success) document.getElementById('kontakForm').reset();
                 setTimeout(() => alertBox.classList.add('d-none'), 5000);
-            } catch (err) {
-                alert('Error: ' + err.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = originalHTML;
-            }
+            } catch (err) { alert('Error: ' + err.message); } finally { btn.disabled = false; btn.innerHTML = originalHTML; }
         });
 
-        // ================== LOGOUT ==================
-        window.logout = async function() {
-            const token = sessionStorage.getItem('token');
-            if (token) {
-                try { await apiCall('logout', { token }); } catch (e) { console.error(e); }
-            }
-            sessionStorage.clear();
-            window.location.href = 'index.html';
-        };
+        async function preloadDashboardData() {
+            const token = (typeof appStorage !== 'undefined') ? appStorage.get('token') : null;
+            const role = (typeof appStorage !== 'undefined') ? appStorage.get('role') : null;
+            if (!token || role !== 'admin') return;
+            try {
+                const [usahaRes, usersRes, artikelRes] = await Promise.all([apiCall('getDataUsaha', { token }), apiCall('getUsers', { token }), apiCall('getAllArtikel', { token })]);
+                const d = {
+                    usaha: usahaRes.success ? usahaRes.data : [],
+                    users: usersRes.success ? usersRes.data : [],
+                    artikel: artikelRes.success ? artikelRes.data : [],
+                    data_usaha: usahaRes.success ? usahaRes.data : [],
+                    pengguna: usersRes.success ? usersRes.data : [],
+                    artikel_list: artikelRes.success ? artikelRes.data : []
+                };
+                if (typeof appStorage !== 'undefined') {
+                    appStorage.set('data_usaha_cache', JSON.stringify(d.data_usaha));
+                    appStorage.set('peta_cache', JSON.stringify(d.data_usaha));
+                    appStorage.set('pengguna_cache', JSON.stringify(d.pengguna));
+                    appStorage.set('artikel_cache', JSON.stringify(d.artikel_list));
+                    appStorage.set('dashboard_cache', JSON.stringify({ usaha: d.usaha, users: d.users, artikel: d.artikel }));
+                }
+                sessionStorage.setItem('dashboard_embedded', JSON.stringify({ usaha: d.usaha, users: d.users, artikel: d.artikel }));
+                sessionStorage.setItem('data_usaha_embedded', JSON.stringify(d.data_usaha));
+                sessionStorage.setItem('peta_embedded', JSON.stringify(d.data_usaha));
+                sessionStorage.setItem('pengguna_embedded', JSON.stringify(d.pengguna));
+                sessionStorage.setItem('artikel_embedded', JSON.stringify(d.artikel_list));
+            } catch (e) { }
+        }
 
-        // ================== UPDATE NAVBAR & HERO BUTTON ==================
         function updateHeroButton() {
-            const token = sessionStorage.getItem('token');
-            const role = sessionStorage.getItem('role');
+            const token = (typeof appStorage !== 'undefined') ? appStorage.get('token') : null;
+            const role = (typeof appStorage !== 'undefined') ? appStorage.get('role') : null;
             const heroBtn = document.getElementById('heroLoginBtn');
             if (token && role) {
                 heroBtn.innerText = 'Dashboard';
                 heroBtn.classList.remove('btn-hero-outline');
                 heroBtn.classList.add('btn-hero-primary');
-                heroBtn.href = role === 'admin' ? 'dashboard-admin.html' : 'dashboard-member.html';
+                heroBtn.removeAttribute('href');
+                heroBtn.onclick = function(e) {
+                    e.preventDefault();
+                    window.location.href = role === 'admin' ? 'admin/dashboard-admin.html' : 'member/dashboard-member.html';
+                };
             } else {
                 heroBtn.innerText = 'Login Admin/Member';
                 heroBtn.classList.remove('btn-hero-primary');
                 heroBtn.classList.add('btn-hero-outline');
                 heroBtn.href = 'login.html';
+                heroBtn.onclick = null;
             }
         }
 
-        function handleNavbarScroll() {
-            const navbar = document.getElementById('navbarNav');
-            if (window.scrollY > 50) navbar.classList.add('scrolled');
-            else navbar.classList.remove('scrolled');
-        }
-
-        // ================== INISIALISASI ==================
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', () => {
             if (typeof updateNavbar === 'function') updateNavbar();
             updateHeroButton();
-
-            const toastEl = document.getElementById('faqToast');
-            if (toastEl) faqToast = new bootstrap.Toast(toastEl, { autohide: false });
-
-            loadWithCache('statistik', fetchStatistik, renderStatistik);
-            loadWithCache('artikel_beranda', fetchArtikel, renderArtikel, 'artikel');
-
-            window.addEventListener('scroll', handleNavbarScroll);
+            preloadDashboardData();
+            initStatistics();
+            initArtikel();
             handleNavbarScroll();
-
-            // Inisialisasi slider tanpa animasi awal
             const activeLink = document.querySelector('#mainNavLinks .nav-link.active[href^="#"]');
             if (activeLink) {
-                const linkRect = activeLink.getBoundingClientRect();
-                const navRect = navbarCollapse.getBoundingClientRect();
+                const lr = activeLink.getBoundingClientRect(), nr = navbarCollapse.getBoundingClientRect();
                 slider.style.transition = 'none';
-                slider.style.left = (linkRect.left - navRect.left) + 'px';
-                slider.style.width = linkRect.width + 'px';
+                slider.style.left = (lr.left - nr.left) + 'px';
+                slider.style.width = lr.width + 'px';
                 slider.style.opacity = '1';
-                // Kembalikan transisi setelah frame
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        slider.style.transition = 'left 0.5s ease, width 0.5s ease, opacity 0.3s ease';
-                    });
-                });
+                requestAnimationFrame(() => requestAnimationFrame(() => { slider.style.transition = 'left 0.5s ease, width 0.5s ease, opacity 0.3s ease'; }));
                 lastActiveId = activeLink.getAttribute('href').substring(1);
             }
         });
