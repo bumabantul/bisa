@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>Manajemen Artikel - BUMA Admin</title>
+  <link rel="icon" type="image/webp" href="../assets/logo buma.webp">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #8b5cf6; --accent: #06b6d4;
+      --dark: #0f172a; --light: #f8fafc; --card-bg: #ffffff; --glass-bg: rgba(255,255,255,0.75);
+      --text: #1e293b; --text-muted: #64748b; --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow: 0 4px 6px rgba(0,0,0,0.05); --shadow-lg: 0 20px 40px rgba(0,0,0,0.08);
+      --radius: 20px; --transition: 0.3s;
+    }
+    * { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: transparent; padding: 0; overflow-y: auto; }
+    #sidebar, #sidebarOverlay, #sidebarToggleBtn { display: none; }
+    .navbar { display: none; }
+    .main-content { padding: 0; }
+    .card {
+      border: 1px solid rgba(0,0,0,0.04); border-radius: var(--radius); box-shadow: var(--shadow-lg);
+      margin-bottom: 25px; background: white;
+    }
+    .card-header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff;
+      font-weight: 600; padding: 18px 25px; border-radius: var(--radius) var(--radius) 0 0 !important;
+    }
+    .table { background: white; border-radius: 15px; overflow: hidden; }
+    .table thead th { background: #f8fafc; font-weight: 600; text-transform: uppercase; }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; border-radius: 50px; padding: 10px 20px; font-weight: 600; color: #fff; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(99,102,241,0.4); }
+    .table-responsive { -webkit-overflow-scrolling: touch; }
+    @media (max-width: 576px) {
+      #artikelTable td:last-child { display: flex; flex-wrap: wrap; gap: 4px; }
+      #artikelTable td:last-child .btn { font-size: 0.75rem; }
+    }
+    #editor-container { height: 300px; margin-bottom: 1rem; }
+    .ql-editor { font-size: 0.95rem; font-family: 'Plus Jakarta Sans', sans-serif; }
+  </style>
+</head>
+<body>
+  <div class="main-content">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-newspaper"></i> Manajemen Artikel</span>
+        <button class="btn btn-light btn-sm rounded-pill" onclick="tambahArtikel()"><i class="bi bi-plus-circle me-1"></i>Tambah Artikel</button>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle" id="artikelTable">
+            <thead><tr><th>ID</th><th>Judul</th><th>Penulis</th><th>Tanggal</th><th>Aksi</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Tambah/Edit Artikel -->
+  <div class="modal fade" id="artikelModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="artikelModalLabel">Tambah Artikel</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="artikelForm" onsubmit="simpanArtikel(event)">
+            <input type="hidden" id="artikelId">
+            <div class="mb-3">
+              <label class="form-label">Judul</label>
+              <input type="text" class="form-control" id="artikelTitle" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Konten</label>
+              <div id="editor-container"></div>
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Batal</button>
+              <button type="submit" class="btn btn-primary rounded-pill">Simpan</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+  <!-- Modul resize gambar untuk Quill -->
+  <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js"></script>
+  <script src="../js/api.js"></script>
+  <script>
+    (function() {
+      const token = (typeof appStorage !== 'undefined' && appStorage.get('token')) || (window.top._authToken) || null;
+      if (!token) { window.top.location.href = '../login.html'; return; }
+      const role = (typeof appStorage !== 'undefined' && appStorage.get('role')) || (window.top._authRole) || null;
+      if (role !== 'admin') { window.top.location.href = '../login.html'; return; }
+
+      let quill;
+      let articles = [];
+      let editingId = null;
+
+      // Ambil dari cache
+      function getCached() {
+        if (typeof getCachedData === 'function') {
+          return getCachedData('artikel_embedded', 'artikel_cache', 'artikel_list');
+        }
+        try {
+          const embedded = sessionStorage.getItem('artikel_embedded');
+          if (embedded) return JSON.parse(embedded);
+        } catch(e) {}
+        return null;
+      }
+
+      const cached = getCached();
+      if (cached) {
+        articles = cached;
+        renderTable();
+      }
+
+      async function loadArticles(force = false) {
+        try {
+          const res = await apiCall('getAllArtikel', { token });
+          if (res.success) {
+            const newData = res.data;
+            if (force || JSON.stringify(newData) !== JSON.stringify(articles)) {
+              articles = newData;
+              if (typeof appStorage !== 'undefined') appStorage.set('artikel_cache', JSON.stringify(newData));
+              sessionStorage.setItem('artikel_embedded', JSON.stringify(newData));
+              renderTable();
+            }
+          }
+        } catch(err) { console.error(err); }
+      }
+
+      function renderTable() {
+        const tbody = document.querySelector('#artikelTable tbody');
+        tbody.innerHTML = '';
+        articles.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        articles.forEach(item => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${item.id}</td>
+            <td><strong>${item.title}</strong></td>
+            <td>${item.authorName || '-'}</td>
+            <td>${new Date(item.createdAt).toLocaleDateString('id-ID')}</td>
+            <td>
+              <button class="btn btn-sm btn-warning" onclick="editArtikel('${item.id}')"><i class="bi bi-pencil"></i> Edit</button>
+              <button class="btn btn-sm btn-danger" onclick="deleteArtikel('${item.id}')"><i class="bi bi-trash"></i> Hapus</button>
+            </td>`;
+          tbody.appendChild(tr);
+        });
+      }
+
+      // Fungsi helper untuk upload gambar
+      function toBase64(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = error => reject(error);
+        });
+      }
+
+      // Inisialisasi Quill dengan modul resize gambar
+      function initQuill() {
+        if (quill) return;
+        quill = new Quill('#editor-container', {
+          theme: 'snow',
+          modules: {
+            toolbar: {
+              container: [
+                ['bold', 'italic', 'underline', 'strike'],
+                ['blockquote', 'code-block'],
+                [{ 'header': 1 }, { 'header': 2 }],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                [{ 'script': 'sub'}, { 'script': 'super' }],
+                [{ 'indent': '-1'}, { 'indent': '+1' }],
+                [{ 'size': ['small', false, 'large', 'huge'] }],
+                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'font': [] }],
+                [{ 'align': [] }],
+                ['clean'],
+                ['link', 'image', 'video']
+              ],
+              handlers: {
+                image: function() {
+                  const input = document.createElement('input');
+                  input.setAttribute('type', 'file');
+                  input.setAttribute('accept', 'image/*');
+                  input.click();
+                  input.onchange = async () => {
+                    const file = input.files[0];
+                    if (!file) return;
+                    try {
+                      const base64 = await toBase64(file);
+                      const res = await apiCall('uploadImage', {
+                        token: token,
+                        image: base64.split(',')[1],
+                        name: file.name,
+                        mimeType: file.type
+                      });
+                      if (res.success && res.url) {
+                        const range = quill.getSelection(true);
+                        // Gunakan preload seperti sebelumnya namun tanpa fallback ke thumbnail
+                        const img = new Image();
+                        img.onload = function() {
+                          quill.insertEmbed(range.index, 'image', res.url);
+                          quill.setSelection(range.index + 1);
+                        };
+                        img.onerror = function() {
+                          const thumbUrl = `https://drive.google.com/thumbnail?sz=w1000&id=${res.fileId}`;
+                          quill.insertEmbed(range.index, 'image', thumbUrl);
+                          quill.setSelection(range.index + 1);
+                        };
+                        img.src = res.url;
+                      } else {
+                        alert('Gagal upload gambar: ' + (res.message || 'error'));
+                      }
+                    } catch (err) {
+                      alert('Error upload gambar: ' + err.message);
+                    }
+                  };
+                }
+              }
+            },
+            imageResize: {
+              modules: ['Resize', 'DisplaySize', 'Toolbar']
+            }
+          }
+        });
+      }
+
+      window.tambahArtikel = function() {
+        editingId = null;
+        document.getElementById('artikelModalLabel').innerText = 'Tambah Artikel';
+        document.getElementById('artikelForm').reset();
+        document.getElementById('artikelId').value = '';
+        if (quill) quill.setContents([]);
+        new bootstrap.Modal(document.getElementById('artikelModal')).show();
+      };
+
+      window.editArtikel = async function(id) {
+        try {
+          const res = await apiCall('getArtikelById', { id });
+          if (res.success) {
+            const item = res.data;
+            editingId = item.id;
+            document.getElementById('artikelModalLabel').innerText = 'Edit Artikel';
+            document.getElementById('artikelId').value = item.id;
+            document.getElementById('artikelTitle').value = item.title;
+            if (quill) {
+              const delta = quill.clipboard.convert(item.content);
+              quill.setContents(delta, 'silent');
+            }
+            new bootstrap.Modal(document.getElementById('artikelModal')).show();
+          }
+        } catch(err) { alert('Error: ' + err.message); }
+      };
+
+      window.simpanArtikel = async function(e) {
+        e.preventDefault();
+        const title = document.getElementById('artikelTitle').value;
+        const contentHTML = quill.root.innerHTML;
+
+        // Ekstrak gambar pertama untuk dijadikan thumbnail
+        let thumbnailUrl = '';
+        const imgMatch = contentHTML.match(/<img[^>]+src="([^">]+)"/);
+        if (imgMatch && imgMatch[1]) {
+          thumbnailUrl = imgMatch[1];
+        }
+
+        const data = { token, title, content: contentHTML, imageUrl: thumbnailUrl };
+        try {
+          const path = editingId ? 'updateArtikel' : 'addArtikel';
+          if (editingId) data.id = editingId;
+          const res = await apiCall(path, data);
+          if (res.success) {
+            alert(editingId ? 'Artikel diperbarui.' : 'Artikel ditambahkan.');
+            bootstrap.Modal.getInstance(document.getElementById('artikelModal')).hide();
+            await loadArticles(true);
+          } else { alert('Gagal: ' + res.message); }
+        } catch(err) { alert('Error: ' + err.message); }
+      };
+
+      window.deleteArtikel = async function(id) {
+        if (!confirm('Hapus artikel ini?')) return;
+        try {
+          const res = await apiCall('deleteArtikel', { token, id });
+          if (res.success) { alert('Artikel dihapus.'); await loadArticles(true); }
+          else alert('Gagal: ' + res.message);
+        } catch(err) { alert('Error: ' + err.message); }
+      };
+
+      window.addEventListener('load', () => {
+        initQuill();
+        if (!cached) loadArticles();
+        setTimeout(() => {
+          if (!document.hidden) loadArticles();
+          setInterval(() => { if (!document.hidden) loadArticles(); }, 60000);
+        }, 60000);
+      });
+    })();
+  </script>
+</body>
+</html>

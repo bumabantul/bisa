@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>Manajemen Pengguna - BUMA Admin</title>
+  <link rel="icon" type="image/webp" href="../assets/logo buma.webp">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #8b5cf6; --accent: #06b6d4;
+      --dark: #0f172a; --light: #f8fafc; --card-bg: #ffffff; --glass-bg: rgba(255,255,255,0.75);
+      --text: #1e293b; --text-muted: #64748b; --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow: 0 4px 6px rgba(0,0,0,0.05); --shadow-lg: 0 20px 40px rgba(0,0,0,0.08);
+      --radius: 20px; --transition: 0.3s;
+    }
+    * { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: transparent; padding: 0; overflow-y: auto; }
+    #sidebar, #sidebarOverlay, #sidebarToggleBtn { display: none; }
+    .navbar { display: none; }
+    .main-content { padding: 0; }
+    .card {
+      border: 1px solid rgba(0,0,0,0.04); border-radius: var(--radius); box-shadow: var(--shadow-lg);
+      margin-bottom: 25px; background: white;
+    }
+    .card-header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff;
+      font-weight: 600; padding: 18px 25px; border-radius: var(--radius) var(--radius) 0 0 !important;
+    }
+    .table { background: white; border-radius: 15px; overflow: hidden; }
+    .table thead th { background: #f8fafc; font-weight: 600; text-transform: uppercase; }
+    .badge-status { padding: 6px 12px; border-radius: 20px; font-weight: 600; font-size: 0.8rem; }
+    .table-responsive { -webkit-overflow-scrolling: touch; }
+    @media (max-width: 576px) {
+      #userTable td:last-child { display: flex; flex-wrap: wrap; gap: 4px; }
+      #userTable td:last-child .btn, #userTable td:last-child select { font-size: 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-content">
+    <div class="card">
+      <div class="card-header"><i class="bi bi-people"></i> Manajemen Pengguna</div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle" id="userTable">
+            <thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Role</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <nav id="userPagination" class="d-flex justify-content-center mt-3"></nav>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/api.js"></script>
+  <script>
+    (function() {
+      // Token fallback: appStorage -> window.top._authToken
+      const token = (typeof appStorage !== 'undefined' && appStorage.get('token')) || (window.top._authToken) || null;
+      if (!token) { window.top.location.href = '../login.html'; return; }
+
+      const role = (typeof appStorage !== 'undefined' && appStorage.get('role')) || (window.top._authRole) || null;
+      if (role !== 'admin') { window.top.location.href = '../login.html'; return; }
+
+      let allUsers = [];
+      let filteredUsers = [];
+      const PAGE_SIZE = 20;
+      let currentPage = 1;
+      const CACHE_KEY = 'pengguna_cache';
+
+      function saveCache(data) {
+        try { if (typeof appStorage !== 'undefined') appStorage.set(CACHE_KEY, JSON.stringify(data)); } catch(e) {}
+      }
+      function loadCache() {
+        // 1. sessionStorage (diisi dashboard-admin.html / index.html) - tidak dihapus
+        try {
+          const embedded = sessionStorage.getItem('pengguna_embedded');
+          if (embedded) return { data: JSON.parse(embedded), _ts: Date.now() };
+        } catch(e) {}
+
+        // 2. appStorage
+        try {
+          if (typeof appStorage !== 'undefined') {
+            const raw = appStorage.get(CACHE_KEY);
+            if (raw) {
+              const parsed = JSON.parse(raw);
+              return parsed.data ? parsed : { data: parsed, _ts: 0 };
+            }
+          }
+        } catch(e) {}
+
+        // 3. Fallback window.top._fallbackCache
+        if (window.top._fallbackCache && window.top._fallbackCache.pengguna) {
+          return { data: window.top._fallbackCache.pengguna, _ts: 0 };
+        }
+        return null;
+      }
+
+      // 1. RENDER CACHE DULU (instant, tanpa fetch)
+      (function renderFromCache() {
+        const cached = loadCache();
+        if (cached && cached.data) {
+          allUsers = cached.data;
+          filteredUsers = [...allUsers];
+          currentPage = Math.min(currentPage, Math.ceil(filteredUsers.length / PAGE_SIZE) || 1);
+          renderTable();
+          updatePagination();
+        }
+      })();
+
+      // 2. FETCH BACKGROUND (hanya setelah 30 detik atau force)
+      async function loadUsers(force = false) {
+        const cache = loadCache();
+        if (!force && cache && cache._ts && (Date.now() - cache._ts) < 30000) return;
+
+        try {
+          const res = await apiCall('getUsers', { token });
+          if (res.success) {
+            const newData = res.data;
+            const oldData = cache?.data || [];
+            if (force || JSON.stringify(oldData) !== JSON.stringify(newData)) {
+              allUsers = newData;
+              filteredUsers = [...allUsers];
+              currentPage = Math.min(currentPage, Math.ceil(filteredUsers.length / PAGE_SIZE) || 1);
+              renderTable();
+              updatePagination();
+              saveCache({ data: newData, _ts: Date.now() });
+            }
+          } else if (force) { alert('Gagal memuat pengguna: ' + res.message); }
+        } catch(err) { if (force) alert('Error: ' + err.message); }
+      }
+
+      function getPagedData() {
+        const start = (currentPage - 1) * PAGE_SIZE;
+        return filteredUsers.slice(start, start + PAGE_SIZE);
+      }
+      function renderTable() {
+        const tbody = document.querySelector('#userTable tbody');
+        const paged = getPagedData();
+        tbody.innerHTML = ''; const frag = document.createDocumentFragment();
+        paged.forEach(user => {
+          const status = user.status || 'active';
+          let badgeClass = '', badgeText = '';
+          if (status === 'pending') { badgeClass = 'bg-warning text-dark'; badgeText = 'Pending'; }
+          else if (status === 'active') { badgeClass = 'bg-success'; badgeText = 'Aktif'; }
+          else if (status === 'rejected') { badgeClass = 'bg-danger'; badgeText = 'Ditolak'; }
+          else { badgeClass = 'bg-secondary'; badgeText = status; }
+
+          let actionHtml = '';
+          if (status === 'pending') {
+            actionHtml = `<button class="btn btn-sm btn-success me-1" onclick="approveUser('${user.id}')"><i class="bi bi-check-lg"></i> Acc</button><button class="btn btn-sm btn-outline-danger" onclick="rejectUser('${user.id}')"><i class="bi bi-x-lg"></i> Tolak</button>`;
+          } else {
+            actionHtml = `<select class="form-select form-select-sm d-inline-block w-auto" onchange="changeUserRole('${user.id}', this.value)"><option value="admin" ${user.role==='admin'?'selected':''}>Admin</option><option value="member" ${user.role==='member'?'selected':''}>Member</option></select><button class="btn btn-sm btn-danger ms-1" onclick="deleteUser('${user.id}')"><i class="bi bi-trash"></i></button>`;
+          }
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${user.id}</td><td><strong>${user.nama}</strong></td><td>${user.email}</td><td>${user.role}</td><td><span class="badge-status ${badgeClass}">${badgeText}</span></td><td>${actionHtml}</td>`;
+          frag.appendChild(tr);
+        });
+        tbody.appendChild(frag);
+      }
+      function updatePagination() {
+        const totalPages = Math.ceil(filteredUsers.length / PAGE_SIZE);
+        const container = document.getElementById('userPagination');
+        if (totalPages <= 1) { container.innerHTML = ''; return; }
+        let html = '<ul class="pagination pagination-sm mb-0">';
+        for (let i = 1; i <= totalPages; i++) html += `<li class="page-item ${i === currentPage ? 'active' : ''}"><a class="page-link" href="#" onclick="goToPage(${i})">${i}</a></li>`;
+        html += '</ul>'; container.innerHTML = html;
+      }
+      function goToPage(page) { currentPage = page; renderTable(); updatePagination(); }
+
+      // Fungsi aksi global
+      window.approveUser = async function(userId) {
+        if (!confirm('Setujui pengguna ini?')) return;
+        const res = await apiCall('approveUser', { token, userId });
+        if (res.success) { alert('Pengguna disetujui.'); await loadUsers(true); } else alert('Gagal: ' + res.message);
+      };
+      window.rejectUser = async function(userId) {
+        if (!confirm('Tolak pengguna ini?')) return;
+        const res = await apiCall('rejectUser', { token, userId });
+        if (res.success) { alert('Pengguna ditolak.'); await loadUsers(true); } else alert('Gagal: ' + res.message);
+      };
+      window.changeUserRole = async function(userId, newRole) {
+        const res = await apiCall('updateUserRole', { token, userId, newRole });
+        if (res.success) { alert('Role diubah.'); await loadUsers(true); } else alert('Gagal: ' + res.message);
+      };
+      window.deleteUser = async function(userId) {
+        if (!confirm('Hapus pengguna ini?')) return;
+        const res = await apiCall('deleteUser', { token, userId });
+        if (res.success) { alert('Pengguna dihapus.'); await loadUsers(true); } else alert('Gagal: ' + res.message);
+      };
+      window.goToPage = goToPage;
+
+      // Background refresh dimulai setelah 30 detik
+      setTimeout(() => {
+        if (!document.hidden) loadUsers();
+        setInterval(() => { if (!document.hidden) loadUsers(); }, 30000);
+      }, 30000);
+    })();
+  </script>
+</body>
+</html>

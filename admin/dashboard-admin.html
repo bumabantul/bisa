@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>Admin Dashboard - BUMA Bantul</title>
+  <link rel="icon" type="image/webp" href="../assets/logo buma.webp">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #8b5cf6; --accent: #06b6d4;
+      --dark: #0f172a; --light: #f8fafc; --card-bg: #ffffff; --glass-bg: rgba(255,255,255,0.75);
+      --text: #1e293b; --text-muted: #64748b; --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow: 0 4px 6px rgba(0,0,0,0.05); --shadow-lg: 0 20px 40px rgba(0,0,0,0.08);
+      --radius: 20px; --transition: 0.3s; --sidebar-width: 280px; --sidebar-mini-width: 70px;
+    }
+    * { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--light); overflow-x: hidden; }
+    #sidebar {
+      min-width: var(--sidebar-width); max-width: var(--sidebar-width);
+      background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%); color: #fff;
+      position: fixed; top: 0; left: 0; height: 100vh; z-index: 1000; box-shadow: var(--shadow-lg);
+      transition: left 0.3s ease, min-width 0.3s ease, max-width 0.3s ease; overflow: hidden;
+    }
+    #sidebar.mini { min-width: var(--sidebar-mini-width); max-width: var(--sidebar-mini-width); }
+    #sidebar.mobile-open { left: 0; }
+    #sidebar .sidebar-header { padding: 30px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); position: relative; }
+    #sidebar .sidebar-header h3 { font-weight: 700; font-size: 1.8rem; margin: 0; transition: opacity 0.2s; }
+    #sidebar .sidebar-header p { color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-top: 5px; transition: opacity 0.2s; }
+    #sidebar.mini .sidebar-header h3, #sidebar.mini .sidebar-header p { opacity: 0; pointer-events: none; }
+    #sidebar ul.components { padding: 20px 0; }
+    #sidebar ul li a {
+      padding: 15px 25px; display: flex; align-items: center; color: rgba(255,255,255,0.7); text-decoration: none;
+      font-weight: 500; transition: all 0.3s; border-left: 4px solid transparent; margin: 5px 10px; border-radius: 10px;
+      white-space: nowrap; overflow: hidden;
+    }
+    #sidebar.mini ul li a { padding: 15px; justify-content: center; }
+    #sidebar ul li a i { margin-right: 15px; width: 24px; font-size: 1.2rem; flex-shrink: 0; }
+    #sidebar.mini ul li a i { margin-right: 0; }
+    #sidebar ul li a .link-text { transition: opacity 0.2s; }
+    #sidebar.mini ul li a .link-text { opacity: 0; pointer-events: none; width: 0; overflow: hidden; }
+    #sidebar ul li a:hover, #sidebar ul li a.active {
+      background: rgba(99,102,241,0.2); color: #fff; border-left-color: var(--primary);
+    }
+    #sidebar #sidebarToggleBtn {
+      position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.15); border: none;
+      color: #fff; border-radius: 50%; width: 30px; height: 30px; font-size: 1.2rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition);
+    }
+    #sidebar #sidebarToggleBtn:hover { background: rgba(255,255,255,0.3); }
+    #sidebarOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; }
+    #content { margin-left: var(--sidebar-width); padding: 20px; transition: margin-left 0.3s ease; }
+    #content.expanded { margin-left: var(--sidebar-mini-width); }
+    @media (max-width: 768px) {
+      #sidebar {
+        left: calc(-1 * var(--sidebar-width));
+        min-width: var(--sidebar-width) !important;
+        max-width: var(--sidebar-width) !important;
+      }
+      #sidebar.mobile-open { left: 0; }
+      #sidebarOverlay { display: none; }
+      #content { margin-left: 0 !important; }
+      #sidebar.mini { min-width: var(--sidebar-mini-width) !important; max-width: var(--sidebar-mini-width) !important; }
+    }
+    .navbar {
+      background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.4);
+      box-shadow: var(--shadow-sm); border-radius: var(--radius); margin-bottom: 25px; padding: 15px 25px;
+    }
+    .iframe-container { position: relative; width: 100%; height: calc(100vh - 120px); }
+    .iframe-container iframe {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      border: none; border-radius: 16px; background: var(--light);
+      display: none;
+    }
+    .iframe-container iframe.active { display: block; }
+    .btn-outline-secondary { border-radius: 50px; }
+  </style>
+</head>
+<body>
+  <div id="sidebarOverlay"></div>
+  <nav id="sidebar">
+    <button id="sidebarToggleBtn" title="Minimize/Maximize Sidebar">☰</button>
+    <div class="sidebar-header">
+      <h3>BUMA Admin</h3>
+      <p>Kabupaten Bantul</p>
+    </div>
+    <ul class="components" id="menuList">
+      <li><a href="#" data-page="dashboard"><i class="bi bi-speedometer2"></i><span class="link-text"> Dashboard</span></a></li>
+      <li><a href="#" data-page="data-anggota"><i class="bi bi-people"></i><span class="link-text"> Data Anggota</span></a></li>
+      <li><a href="#" data-page="peta"><i class="bi bi-map"></i><span class="link-text"> Peta Sebaran</span></a></li>
+      <li><a href="#" data-page="pengguna"><i class="bi bi-person-badge"></i><span class="link-text"> Pengguna</span></a></li>
+      <li><a href="#" data-page="artikel"><i class="bi bi-newspaper"></i><span class="link-text"> Artikel</span></a></li>
+      <li><a href="#" data-page="pengaturan"><i class="bi bi-gear"></i><span class="link-text"> Pengaturan</span></a></li>
+      <li><a href="#" data-page="profil"><i class="bi bi-person-circle"></i><span class="link-text"> Profil</span></a></li>
+      <li><a href="../index.html"><i class="bi bi-house-door"></i><span class="link-text"> Kembali ke Beranda</span></a></li>
+    </ul>
+  </nav>
+
+  <div id="content">
+    <nav class="navbar navbar-expand">
+      <div class="container-fluid">
+        <button type="button" id="sidebarCollapse" class="btn d-md-none"><i class="bi bi-list"></i></button>
+        <div class="ms-auto d-flex align-items-center">
+          <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle rounded-pill" type="button" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle me-1"></i> <span id="userDisplay">Admin</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end"><li><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li></ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="iframe-container">
+      <iframe id="frame-dashboard" src="dashboard-admin-content.html"></iframe>
+      <iframe id="frame-data-anggota" src="data-anggota.html"></iframe>
+      <iframe id="frame-peta" src="peta-sebaran.html"></iframe>
+      <iframe id="frame-pengguna" src="pengguna.html"></iframe>
+      <iframe id="frame-artikel" src="artikel-admin.html"></iframe>
+      <iframe id="frame-pengaturan" src="pengaturan.html"></iframe>
+      <iframe id="frame-profil" src="profile-admin.html"></iframe>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    // ==================== AUTH CHECK ====================
+    if (!checkAuth('admin')) window.location.href = '../login.html';
+    document.getElementById('userDisplay').innerText = (typeof appStorage !== 'undefined' && appStorage.get('nama')) || 'Admin';
+
+    // ==================== RESTORE DATA DARI window.name DAN ISI SESSION STORAGE ====================
+    (function restoreDataAndPushToSession() {
+      if (!window.name) return;
+      try {
+        const preloadData = JSON.parse(window.name);
+        if (preloadData.token) {
+          window._authToken = preloadData.token;
+          window._authRole = preloadData.role;
+          try {
+            if (typeof appStorage !== 'undefined') {
+              appStorage.set('token', preloadData.token);
+              appStorage.set('role', preloadData.role);
+            }
+          } catch(e) {}
+        }
+        // Bangun fallbackCache
+        window._fallbackCache = {
+          usaha: preloadData.usaha || [],
+          users: preloadData.users || [],
+          artikel: preloadData.artikel || [],
+          data_usaha: preloadData.data_usaha || [],
+          pengguna: preloadData.pengguna || [],
+          artikel_list: preloadData.artikel_list || []
+        };
+        // Simpan ke appStorage
+        try {
+          if (typeof appStorage !== 'undefined') {
+            appStorage.set('data_usaha_cache', JSON.stringify(preloadData.data_usaha || []));
+            appStorage.set('peta_cache',           JSON.stringify(preloadData.data_usaha || []));
+            appStorage.set('pengguna_cache',       JSON.stringify(preloadData.pengguna || []));
+            appStorage.set('artikel_cache',        JSON.stringify(preloadData.artikel_list || []));
+            appStorage.set('dashboard_cache',      JSON.stringify({
+              usaha: preloadData.usaha || [],
+              users: preloadData.users || [],
+              artikel: preloadData.artikel || []
+            }));
+          }
+        } catch(e) {}
+        // *** KIRIM KE sessionStorage AGAR IFRAME BISA LANGSUNG BACA ***
+        try {
+          sessionStorage.setItem('dashboard_embedded', JSON.stringify({
+            usaha: preloadData.usaha || [],
+            users: preloadData.users || [],
+            artikel: preloadData.artikel || []
+          }));
+          sessionStorage.setItem('data_usaha_embedded', JSON.stringify(preloadData.data_usaha || []));
+          sessionStorage.setItem('peta_embedded',       JSON.stringify(preloadData.data_usaha || []));
+          sessionStorage.setItem('pengguna_embedded',   JSON.stringify(preloadData.pengguna || []));
+          sessionStorage.setItem('artikel_embedded',    JSON.stringify(preloadData.artikel_list || []));
+        } catch(e) {}
+        // Bersihkan window.name agar tidak terpakai lagi
+        window.name = '';
+      } catch(e) { window.name = ''; }
+    })();
+
+    // ==================== SIDEBAR TOGGLE ====================
+    const sidebar = document.getElementById('sidebar');
+    const content = document.getElementById('content');
+    const toggleBtn = document.getElementById('sidebarToggleBtn');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const sidebarCollapse = document.getElementById('sidebarCollapse');
+
+    function applySidebarState() {
+      const isMini = (typeof appStorage !== 'undefined') ? (appStorage.get('sidebarMini') === 'true') : false;
+      if (isMini) {
+        sidebar.classList.add('mini');
+        content.classList.add('expanded');
+        toggleBtn.innerHTML = '→';
+      } else {
+        sidebar.classList.remove('mini');
+        content.classList.remove('expanded');
+        toggleBtn.innerHTML = '☰';
+      }
+    }
+    applySidebarState();
+
+    toggleBtn.addEventListener('click', () => {
+      const isMini = sidebar.classList.contains('mini');
+      if (isMini) {
+        sidebar.classList.remove('mini'); content.classList.remove('expanded');
+        toggleBtn.innerHTML = '☰';
+        if (typeof appStorage !== 'undefined') appStorage.set('sidebarMini', 'false');
+      } else {
+        sidebar.classList.add('mini'); content.classList.add('expanded');
+        toggleBtn.innerHTML = '→';
+        if (typeof appStorage !== 'undefined') appStorage.set('sidebarMini', 'true');
+      }
+    });
+
+    function openMobileSidebar() { sidebar.classList.add('mobile-open'); sidebarOverlay.style.display = 'block'; }
+    function closeMobileSidebar() { sidebar.classList.remove('mobile-open'); sidebarOverlay.style.display = 'none'; }
+
+    sidebarCollapse.addEventListener('click', () => {
+      sidebar.classList.contains('mobile-open') ? closeMobileSidebar() : openMobileSidebar();
+    });
+    sidebarOverlay.addEventListener('click', closeMobileSidebar);
+    window.addEventListener('resize', () => { if (window.innerWidth > 768) closeMobileSidebar(); });
+
+    // ==================== LOGOUT CEPAT (dari auth.js) ====================
+    // Fungsi logout() sudah didefinisikan di auth.js dan tersedia secara global
+
+    // ==================== NAVIGASI IFRAME TANPA RELOAD ====================
+    const links = document.querySelectorAll('#menuList a[data-page]');
+    const frames = {
+      dashboard: document.getElementById('frame-dashboard'),
+      'data-anggota': document.getElementById('frame-data-anggota'),
+      peta: document.getElementById('frame-peta'),
+      pengguna: document.getElementById('frame-pengguna'),
+      artikel: document.getElementById('frame-artikel'),
+      pengaturan: document.getElementById('frame-pengaturan'),
+      profil: document.getElementById('frame-profil')
+    };
+    const ACTIVE_PAGE_KEY = 'adminActivePage';
+
+    function switchFrame(page) {
+      if (!frames[page]) return;
+      Object.values(frames).forEach(f => f.classList.remove('active'));
+      frames[page].classList.add('active');
+      try {
+        if (typeof appStorage !== 'undefined') appStorage.set(ACTIVE_PAGE_KEY, page);
+        else sessionStorage.setItem(ACTIVE_PAGE_KEY, page);
+      } catch(e) {}
+      links.forEach(l => {
+        l.classList.remove('active');
+        if (l.getAttribute('data-page') === page) l.classList.add('active');
+      });
+      if (window.innerWidth <= 768) closeMobileSidebar();
+    }
+
+    links.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const page = link.getAttribute('data-page');
+        if (page) switchFrame(page);
+      });
+    });
+
+    // ==================== INISIALISASI ====================
+    window.addEventListener('load', () => {
+      let lastPage;
+      try {
+        if (typeof appStorage !== 'undefined') lastPage = appStorage.get(ACTIVE_PAGE_KEY);
+      } catch(e) {}
+      if (!lastPage) lastPage = sessionStorage.getItem(ACTIVE_PAGE_KEY);
+      const defaultPage = 'dashboard';
+      const pageToLoad = (lastPage && frames[lastPage]) ? lastPage : defaultPage;
+      switchFrame(pageToLoad);
+    });
+  </script>
+</body>
+</html>

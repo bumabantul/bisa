@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Admin Content</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- jsPDF dan autotable tidak dimuat di sini, akan di-load on-demand -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #8b5cf6; --accent: #06b6d4;
+      --dark: #0f172a; --light: #f8fafc; --card-bg: #ffffff; --glass-bg: rgba(255,255,255,0.75);
+      --text: #1e293b; --text-muted: #64748b; --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow: 0 4px 6px rgba(0,0,0,0.05); --shadow-lg: 0 20px 40px rgba(0,0,0,0.08);
+      --radius: 20px;
+    }
+    * { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: transparent; padding: 0; overflow-y: auto; }
+    .stat-card {
+      background: white; border-radius: var(--radius); padding: 25px; transition: all 0.3s;
+      border: 1px solid rgba(0,0,0,0.04); box-shadow: var(--shadow); text-align: center;
+    }
+    .stat-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(99,102,241,0.15); }
+    .stat-icon {
+      width: 60px; height: 60px; border-radius: 18px; display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; margin-bottom: 15px;
+    }
+    .stat-icon.primary { background: #e0e7ff; color: var(--primary); }
+    .stat-icon.warning { background: #fff3e0; color: #f8961e; }
+    .stat-icon.success { background: #e0f2fe; color: #4cc9f0; }
+    .stat-icon.info { background: #e0f2fe; color: #4895ef; }
+    .stat-value { font-size: 2.2rem; font-weight: 700; color: var(--text); }
+    .stat-label { color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.85rem; }
+    .card {
+      border: 1px solid rgba(0,0,0,0.04); border-radius: var(--radius); box-shadow: var(--shadow-lg);
+      margin-bottom: 25px; background: white;
+    }
+    .card-header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff;
+      font-weight: 600; padding: 18px 25px; border-radius: var(--radius) var(--radius) 0 0 !important;
+    }
+    .table { background: white; border-radius: 15px; overflow: hidden; }
+    .table thead th { background: #f8fafc; font-weight: 600; text-transform: uppercase; }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; border-radius: 50px; padding: 10px 20px; font-weight: 600; color: #fff; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(99,102,241,0.4); }
+    .btn-outline-primary { border-radius: 50px; }
+    .btn-outline-secondary { border-radius: 50px; }
+    .table-responsive { -webkit-overflow-scrolling: touch; }
+    .badge-status { padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 0.75rem; }
+    .chart-container { position: relative; width: 100%; height: 300px; }
+    @media (max-width: 576px) { .chart-container { height: 250px; } }
+    .pdf-progress-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(255,255,255,0.85); backdrop-filter: blur(4px);
+      z-index: 9999; display: flex; align-items: center; justify-content: center;
+    }
+    .pdf-progress-content { text-align: center; }
+  </style>
+</head>
+<body>
+
+  <!-- STAT CARDS -->
+  <div class="row g-4" id="dashboardStats">
+    <div class="col-md-3 col-6"><div class="stat-card"><div class="stat-icon primary"><i class="bi bi-shop"></i></div><div class="stat-value" id="totalUsaha">--</div><div class="stat-label">Total Usaha</div></div></div>
+    <div class="col-md-3 col-6"><div class="stat-card"><div class="stat-icon warning"><i class="bi bi-tags"></i></div><div class="stat-value" id="totalKategori">--</div><div class="stat-label">Kategori</div></div></div>
+    <div class="col-md-3 col-6"><div class="stat-card"><div class="stat-icon success"><i class="bi bi-people"></i></div><div class="stat-value" id="totalAnggotaAktif">--</div><div class="stat-label">Anggota Aktif</div></div></div>
+    <div class="col-md-3 col-6"><div class="stat-card"><div class="stat-icon info"><i class="bi bi-newspaper"></i></div><div class="stat-value" id="totalArtikel">--</div><div class="stat-label">Artikel</div></div></div>
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div class="quick-actions mt-4 d-flex flex-wrap gap-2">
+    <button class="btn btn-primary" onclick="tambahUsaha()"><i class="bi bi-plus-circle"></i> Tambah Usaha</button>
+    <button class="btn btn-outline-primary rounded-pill" onclick="exportToPDF()"><i class="bi bi-file-earmark-pdf"></i> Ekspor PDF</button>
+    <button class="btn btn-outline-secondary rounded-pill" onclick="loadDashboard(true)"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+  </div>
+
+  <!-- USAHA TERBARU & PIE CHART -->
+  <div class="row mt-4">
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-header"><i class="bi bi-pie-chart"></i> Distribusi Usaha per Kategori</div>
+        <div class="card-body"><div class="chart-container"><canvas id="kategoriChart"></canvas></div></div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-header"><i class="bi bi-clock-history"></i> 5 Data Usaha Terbaru</div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover"><thead><tr><th>Nama</th><th>Pemilik</th><th>Jenis</th><th>Alamat</th></tr></thead><tbody id="recentUsahaTable"></tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEMBER BARU -->
+  <div class="row mt-4">
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-header"><i class="bi bi-person-plus"></i> 5 Member Baru (Pending)</div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead><tr><th>Nama</th><th>Email</th><th>Status</th></tr></thead>
+              <tbody id="recentMemberTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6"></div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script>
+    (function() {
+      const token = (typeof appStorage !== 'undefined' && appStorage.get('token')) || (window.top._authToken) || null;
+      if (!token) { window.top.location.href = '../login.html'; return; }
+
+      let kategoriChart = null;
+      let currentData = { usaha: [], users: [], artikel: [] };
+
+      // --- AMBIL DATA DARI CACHE BERLAPIS (getCachedData dari api.js) ---
+      function ambilData() {
+        if (typeof getCachedData === 'function') {
+          const usaha = getCachedData('data_usaha_embedded', 'data_usaha_cache', 'data_usaha');
+          const users = getCachedData('pengguna_embedded', 'pengguna_cache', 'pengguna');
+          const artikel = getCachedData('artikel_embedded', 'artikel_cache', 'artikel_list');
+          if (usaha && users) {
+            return { usaha, users, artikel: artikel || [] };
+          }
+        }
+        // Fallback jika getCachedData tidak tersedia
+        try {
+          const embedded = sessionStorage.getItem('dashboard_embedded');
+          if (embedded) return JSON.parse(embedded);
+        } catch(e) {}
+        try {
+          if (typeof appStorage !== 'undefined') {
+            const raw = appStorage.get('dashboard_cache');
+            if (raw) return JSON.parse(raw);
+          }
+        } catch(e) {}
+        if (window.top._fallbackCache) {
+          return {
+            usaha: window.top._fallbackCache.usaha || [],
+            users: window.top._fallbackCache.users || [],
+            artikel: window.top._fallbackCache.artikel || []
+          };
+        }
+        return null;
+      }
+
+      // 1. Render dari cache segera
+      const cacheData = ambilData();
+      if (cacheData) {
+        currentData = cacheData;
+        updateUI(cacheData.usaha, cacheData.users, cacheData.artikel);
+      }
+
+      // 2. Fungsi fetch dari server (hanya jika cache kosong atau force refresh)
+      async function loadDashboard(force = false) {
+        try {
+          const [usahaRes, usersRes, artikelRes] = await Promise.all([
+            apiCall('getDataUsaha', { token }),
+            apiCall('getUsers', { token }),
+            apiCall('getAllArtikel', { token })
+          ]);
+          const usaha = usahaRes.success ? usahaRes.data : [];
+          const users = usersRes.success ? usersRes.data : [];
+          const artikel = artikelRes.success ? artikelRes.data : [];
+
+          const newData = { usaha, users, artikel };
+          if (force || JSON.stringify(newData) !== JSON.stringify(currentData)) {
+            currentData = newData;
+            updateUI(usaha, users, artikel);
+            try {
+              if (typeof appStorage !== 'undefined') {
+                appStorage.set('dashboard_cache', JSON.stringify(newData));
+                appStorage.set('data_usaha_cache', JSON.stringify(usaha));
+                appStorage.set('pengguna_cache', JSON.stringify(users));
+                appStorage.set('artikel_cache', JSON.stringify(artikel));
+              }
+              sessionStorage.setItem('dashboard_embedded', JSON.stringify(newData));
+              sessionStorage.setItem('data_usaha_embedded', JSON.stringify(usaha));
+              sessionStorage.setItem('pengguna_embedded', JSON.stringify(users));
+              sessionStorage.setItem('artikel_embedded', JSON.stringify(artikel));
+            } catch(e) {}
+          }
+        } catch(e) { console.warn('Fetch dashboard gagal:', e); }
+      }
+      window.loadDashboard = loadDashboard;
+
+      // 3. Update UI
+      function updateUI(usaha, users, artikel) {
+        document.getElementById('totalUsaha').innerText = usaha.length;
+        document.getElementById('totalKategori').innerText = new Set(usaha.map(u => u.jenisUsaha).filter(Boolean)).size;
+        document.getElementById('totalAnggotaAktif').innerText = users.filter(u => u.role === 'member' && u.status === 'active').length;
+        document.getElementById('totalArtikel').innerText = artikel.length;
+
+        const tbUsaha = document.getElementById('recentUsahaTable');
+        tbUsaha.innerHTML = '';
+        [...usaha].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0,5).forEach(item => {
+          tbUsaha.innerHTML += `<tr><td><strong>${item.namaUsaha}</strong></td><td>${item.pemilik}</td><td><span class="badge bg-primary">${item.jenisUsaha}</span></td><td>${item.alamat ? item.alamat.substring(0,30) : '-'}</td></tr>`;
+        });
+
+        const tbMember = document.getElementById('recentMemberTable');
+        tbMember.innerHTML = '';
+        const pending = users.filter(u => u.role === 'member' && u.status === 'pending');
+        if (pending.length > 0) {
+          [...pending].slice(0,5).forEach(m => {
+            tbMember.innerHTML += `<tr><td><strong>${m.nama}</strong></td><td>${m.email}</td><td><span class="badge-status bg-warning text-dark">Pending</span></td></tr>`;
+          });
+        } else {
+          tbMember.innerHTML = '<tr><td colspan="3" class="text-muted text-center">Tidak ada member yang pending</td></tr>';
+        }
+
+        if (kategoriChart) { kategoriChart.destroy(); kategoriChart = null; }
+        const ctx = document.getElementById('kategoriChart')?.getContext('2d');
+        if (ctx && usaha.length > 0) {
+          const freq = {};
+          usaha.forEach(u => { if(u.jenisUsaha) freq[u.jenisUsaha] = (freq[u.jenisUsaha]||0)+1; });
+          kategoriChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+              labels: Object.keys(freq),
+              datasets: [{ data: Object.values(freq), backgroundColor: ['#6366f1','#8b5cf6','#06b6d4','#4cc9f0','#f72585','#7209b7'] }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'bottom' } } }
+          });
+        }
+      }
+
+      window.addEventListener('resize', () => { if (kategoriChart) kategoriChart.resize(); });
+
+      // 4. Tombol Tambah Usaha (navigasi iframe)
+      window.tambahUsaha = function() {
+        if (window.parent) {
+          const parent = window.parent;
+          const frameAnggota = parent.document.getElementById('frame-data-anggota');
+          const frameDashboard = parent.document.getElementById('frame-dashboard');
+          if (frameAnggota && frameDashboard) {
+            frameAnggota.classList.add('active');
+            frameDashboard.classList.remove('active');
+          }
+          const links = parent.document.querySelectorAll('#menuList a[data-page]');
+          links.forEach(l => l.classList.remove('active'));
+          const target = parent.document.querySelector('#menuList a[data-page="data-anggota"]');
+          if (target) target.classList.add('active');
+        }
+      };
+
+      // 5. ===== ON-DEMAND LOAD JSPDF =====
+      function loadJSPDF() {
+        return new Promise((resolve, reject) => {
+          if (window.jspdf) return resolve();
+          const script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+          script.onload = () => {
+            const autoTableScript = document.createElement('script');
+            autoTableScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js';
+            autoTableScript.onload = resolve;
+            autoTableScript.onerror = reject;
+            document.head.appendChild(autoTableScript);
+          };
+          script.onerror = reject;
+          document.head.appendChild(script);
+        });
+      }
+
+      window.exportToPDF = async function() {
+        await loadJSPDF();
+        const { usaha, users } = currentData;
+        if (!usaha.length && !users.length) return alert('Tidak ada data untuk diekspor.');
+
+        const overlay = document.createElement('div');
+        overlay.className = 'pdf-progress-overlay';
+        overlay.innerHTML = '<div class="pdf-progress-content"><div class="spinner-border text-primary mb-3" style="width:3rem;height:3rem;"></div><p class="fw-semibold">Menyusun PDF ringkasan...</p></div>';
+        document.body.appendChild(overlay);
+
+        try {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF('portrait', 'mm', 'a4');
+          let y = 15;
+          doc.setFontSize(16);
+          doc.text('Ringkasan Dashboard BUMA', 14, y); y += 8;
+          doc.setFontSize(10);
+          doc.text(`Diekspor pada: ${new Date().toLocaleString('id-ID')}`, 14, y); y += 10;
+          doc.setFontSize(12);
+          doc.text(`Total Usaha: ${usaha.length}`, 14, y); y += 6;
+          doc.text(`Anggota Aktif: ${users.filter(u => u.role==='member' && u.status==='active').length}`, 14, y); y += 6;
+          doc.text(`Member Pending: ${users.filter(u => u.role==='member' && u.status==='pending').length}`, 14, y); y += 10;
+
+          if (kategoriChart && usaha.length > 0) {
+            const chartImage = kategoriChart.toBase64Image('image/png', 1.0);
+            doc.addImage(chartImage, 'PNG', 14, y, 100, 80); y += 85;
+          }
+
+          const usahaTerbaru = [...usaha].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0,5);
+          if (usahaTerbaru.length > 0) {
+            doc.setFontSize(13);
+            doc.text('5 Usaha Terbaru', 14, y); y += 6;
+            const usahaRows = usahaTerbaru.map(item => [item.namaUsaha, item.pemilik, item.jenisUsaha, item.alamat?.substring(0,30)]);
+            doc.autoTable({
+              head: [['Nama', 'Pemilik', 'Jenis', 'Alamat']],
+              body: usahaRows,
+              startY: y,
+              styles: { fontSize: 9, cellPadding: 2 },
+              headStyles: { fillColor: [99, 102, 241] }
+            });
+            y = doc.lastAutoTable.finalY + 10;
+          }
+
+          const pending = users.filter(u => u.role === 'member' && u.status === 'pending').slice(0,5);
+          if (pending.length > 0) {
+            doc.setFontSize(13);
+            doc.text('5 Member Baru (Pending)', 14, y); y += 6;
+            const memberRows = pending.map(m => [m.nama, m.email, 'Pending']);
+            doc.autoTable({
+              head: [['Nama', 'Email', 'Status']],
+              body: memberRows,
+              startY: y,
+              styles: { fontSize: 9, cellPadding: 2 },
+              headStyles: { fillColor: [99, 102, 241] }
+            });
+          }
+
+          document.body.removeChild(overlay);
+          doc.save(`ringkasan_dashboard_${new Date().toISOString().slice(0,10)}.pdf`);
+        } catch(e) {
+          const ov = document.querySelector('.pdf-progress-overlay');
+          if (ov) ov.remove();
+          alert('Gagal membuat PDF: ' + e.message);
+        }
+      };
+
+      // 6. BACKGROUND REFRESH (hanya jika cache kosong, fetch langsung; jika ada cache, jadwalkan 60 detik)
+      if (!cacheData) {
+        loadDashboard();
+        setTimeout(() => {
+          if (!document.hidden) loadDashboard();
+          setInterval(() => { if (!document.hidden) loadDashboard(); }, 60000);
+        }, 60000);
+      } else {
+        setTimeout(() => {
+          if (!document.hidden) loadDashboard();
+          setInterval(() => { if (!document.hidden) loadDashboard(); }, 60000);
+        }, 60000);
+      }
+    })();
+  </script>
+</body>
+</html>

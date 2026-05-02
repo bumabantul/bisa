@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>Profil Admin - BUMA</title>
+  <link rel="icon" type="image/webp" href="../assets/logo buma.webp">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #8b5cf6; --accent: #06b6d4;
+      --dark: #0f172a; --light: #f8fafc; --card-bg: #ffffff; --text: #1e293b;
+      --text-muted: #64748b; --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-lg: 0 20px 40px rgba(0,0,0,0.08); --radius: 20px; --transition: 0.3s;
+    }
+    * { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: transparent; padding: 20px; overflow-y: auto; }
+    #sidebar, #sidebarOverlay, #sidebarToggleBtn { display: none; }
+    .navbar { display: none; }
+    .card {
+      border: 1px solid rgba(0,0,0,0.04); border-radius: var(--radius); box-shadow: var(--shadow-lg);
+      margin-bottom: 25px; background: white; max-width: 600px; margin-left: auto; margin-right: auto;
+    }
+    .card-header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff;
+      font-weight: 600; padding: 18px 25px; border-radius: var(--radius) var(--radius) 0 0 !important;
+    }
+    .form-control {
+      border-radius: 14px; padding: 12px 18px; border: 2px solid #e8ecf1;
+      transition: var(--transition); font-size: 0.95rem; background: #fafbfc;
+    }
+    .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99,102,241,0.08); background: #fff; }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none;
+      border-radius: 50px; padding: 10px 20px; font-weight: 600; color: #fff;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(99,102,241,0.4); }
+    .profile-avatar {
+      width: 90px; height: 90px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff; display: flex; align-items: center; justify-content: center; font-size: 2.5rem;
+      margin: 0 auto 20px; font-weight: 700;
+    }
+    .info-group { margin-bottom: 1rem; }
+    .info-group label { font-weight: 600; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; }
+    .info-group p { font-weight: 500; margin-bottom: 0; font-size: 1rem; }
+  </style>
+</head>
+<body>
+
+  <!-- Profil Card -->
+  <div class="card">
+    <div class="card-header text-center">
+      <i class="bi bi-person-circle me-2"></i> Profil Admin
+    </div>
+    <div class="card-body text-center">
+      <div class="profile-avatar" id="avatarInisial"></div>
+      <div class="info-group">
+        <label>Nama</label>
+        <p id="profilNama">-</p>
+      </div>
+      <div class="info-group">
+        <label>Email</label>
+        <p id="profilEmail">-</p>
+      </div>
+      <div class="info-group">
+        <label>Role</label>
+        <p><span class="badge bg-primary">Admin</span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ubah Password Card -->
+  <div class="card">
+    <div class="card-header"><i class="bi bi-lock me-2"></i> Ubah Password</div>
+    <div class="card-body">
+      <form id="changePasswordForm" onsubmit="ubahPassword(event)">
+        <div class="mb-3"><label class="form-label">Password Lama</label><input type="password" class="form-control" id="oldPassword" required></div>
+        <div class="mb-3"><label class="form-label">Password Baru</label><input type="password" class="form-control" id="newPassword" required></div>
+        <div class="mb-3"><label class="form-label">Konfirmasi Password Baru</label><input type="password" class="form-control" id="confirmPassword" required></div>
+        <button type="submit" class="btn btn-primary w-100">Simpan Password Baru</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script>
+    (function() {
+      // Token fallback
+      const token = (typeof appStorage !== 'undefined' && appStorage.get('token')) || (window.top._authToken) || null;
+      if (!token) { window.top.location.href = '../login.html'; return; }
+
+      const role = (typeof appStorage !== 'undefined' && appStorage.get('role')) || (window.top._authRole) || null;
+      if (role !== 'admin') { window.top.location.href = '../login.html'; return; }
+
+      const nama = (typeof appStorage !== 'undefined') ? (appStorage.get('nama') || 'Admin') : 'Admin';
+      const email = (typeof appStorage !== 'undefined') ? (appStorage.get('email') || 'admin@buma.id') : 'admin@buma.id';
+
+      document.getElementById('profilNama').innerText = nama;
+      document.getElementById('profilEmail').innerText = email;
+      document.getElementById('avatarInisial').innerText = nama.charAt(0).toUpperCase();
+
+      window.ubahPassword = async function(e) {
+        e.preventDefault();
+        const oldP = document.getElementById('oldPassword').value;
+        const newP = document.getElementById('newPassword').value;
+        const confirmP = document.getElementById('confirmPassword').value;
+        if (newP !== confirmP) return alert('Password baru dan konfirmasi tidak cocok.');
+        try {
+          const res = await apiCall('changePassword', { token, oldPassword: oldP, newPassword: newP });
+          if (res.success) {
+            alert('Password berhasil diubah.');
+            document.getElementById('changePasswordForm').reset();
+          } else {
+            alert('Gagal: ' + res.message);
+          }
+        } catch (err) { alert('Error: ' + err.message); }
+      };
+    })();
+  </script>
+</body>
+</html>
