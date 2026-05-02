@@ -1,100 +1,121 @@
 # BUMA Web - Badan Usaha Milik Ansor Kabupaten Bantul
 
-Sistem pendataan usaha anggota Ansor se-Kabupaten Bantul. Dibangun dengan **Bootstrap 5**, **Leaflet.js**, dan **Google Apps Script** sebagai backend, di-*hosting* di GitHub Pages.
+Sistem pendataan dan manajemen usaha anggota Ansor se‑Kabupaten Bantul.  
+Dibangun dengan **Bootstrap 5**, **Leaflet.js**, **Quill Editor**, dan **Google Apps Script** sebagai backend, di‑hosting di GitHub Pages.
 
-![Status](https://img.shields.io/badge/version-2.0-blue) ![License](https://img.shields.io/badge/license-MIT-green)
+![Status](https://img.shields.io/badge/version-3.0-blue) ![License](https://img.shields.io/badge/license-MIT-green)
 
-## Fitur Utama
+---
 
-- **Halaman depan** informatif dengan statistik, artikel terbaru, formulir kontak, dan bantuan pop‑up.
-- **Login multi‑level** (admin & member) dengan verifikasi sederhana saat pendaftaran.
-- **Dashboard Admin**:
-  - Ringkasan statistik (total usaha, kategori, anggota, artikel) dan grafik donat.
-  - Manajemen data usaha (CRUD, pencarian, ekspor CSV, hapus massal).
-  - Peta sebaran usaha interaktif dengan *marker cluster* dan pencarian.
-  - Manajemen pengguna (ubah role, hapus).
-  - Manajemen artikel.
-  - Pengaturan sistem (ubah password admin, backup JSON, reset data).
-- **Dashboard Member**:
-  - Data usaha sendiri dalam tabel.
-  - Tambah/edit usaha dengan integrasi peta **OpenStreetMap** (klik atau geser *marker*).
-  - Tombol **Dapatkan Lokasi Saya** untuk mengisi koordinat secara otomatis.
-- **Form pendataan usaha publik** (tanpa login):
-  - Pengisian data usaha lengkap + **upload foto** (base64) yang dikirim via POST.
-  - Peta interaktif untuk penentuan lokasi.
-- **Halaman artikel** dan **kontak** yang responsif.
-- Tema modern dengan **glassmorphism**, warna ungu/biru, dan font `Plus Jakarta Sans`.
+## 🚀 Fitur Utama
 
-## Teknologi
+### Halaman Depan (index.html)
+- **Hero section** dengan dua tombol akses cepat:
+  - **Isi Data Usaha** → `pendataan.html` (publik)
+  - **Dashboard** → otomatis mengarahkan ke dashboard sesuai role jika sudah login (tanpa loading).
+- **Statistik real‑time** (total usaha, kategori, anggota aktif, artikel) – diperbarui setiap 60 detik.
+- **Pratinjau 3 artikel terbaru**:
+  - Hanya menampilkan **thumbnail, tanggal, dan judul** – tanpa cuplikan teks.
+  - Klik **Baca** membuka modal dengan konten artikel lengkap (teks dan gambar dari editor Quill tampil alami).
+- **Form kontak** dengan verifikasi penjumlahan sederhana.
+- **Pusat bantuan pop‑up** – pengunjung dapat langsung kirim pertanyaan ke admin via WhatsApp.
+- **Prefetch data dashboard** di latar belakang saat admin login, sehingga dashboard langsung siap tanpa loading.
 
-| Teknologi            | Kegunaan                                  |
-|----------------------|-------------------------------------------|
-| Bootstrap 5           | Framework CSS, komponen UI                |
-| Bootstrap Icons       | Ikon                                     |
-| Leaflet.js            | Peta interaktif (OpenStreetMap)           |
-| Leaflet.markercluster | Clustering marker di peta admin           |
-| Chart.js              | Grafik donat di dashboard admin           |
-| Google Apps Script    | Backend API & penyimpanan di Google Sheets |
-| GitHub Pages          | Hosting statis                            |
+### Autentikasi
+- **Login multi‑level** (admin & member) dengan sesi token 24 jam (`localStorage` + fallback `cookie`).
+- **Registrasi member** baru → status *pending*, perlu persetujuan admin.
+- Verifikasi penjumlahan sederhana saat registrasi (mencegah spam).
+- **Logout global** – membersihkan semua cache dan selalu kembali ke `../index.html`.
 
-## Persiapan Backend (Google Apps Script)
+### Dashboard Admin
+- **Ringkasan Dashboard** (iframe `dashboard-admin-content.html`):
+  - Kartu statistik (total usaha, kategori, anggota aktif, artikel).
+  - Grafik donat distribusi kategori (Chart.js).
+  - 5 usaha terbaru & 5 member pending.
+  - Tombol cepat: **Tambah Usaha**, **Ekspor PDF**, **Refresh**.
+- **Data Usaha Anggota** (`data-anggota.html`):
+  - Tabel responsif dengan pencarian, pagination, checkbox hapus massal.
+  - CRUD via modal + peta Leaflet untuk lokasi.
+  - Ekspor ke CSV.
+- **Peta Sebaran** (`peta-sebaran.html`):
+  - Cluster marker (Leaflet.markercluster).
+  - Pencarian lokasi.
+- **Manajemen Pengguna** (`pengguna.html`):
+  - Lihat semua user, ubah role, hapus.
+  - Terima/tolak member pending.
+- **Manajemen Artikel** (`artikel-admin.html`):
+  - Editor **Quill.js** lengkap.
+  - **Resize gambar interaktif** – admin bisa menarik sudut gambar untuk atur ukuran (modul `quill-image-resize-module`).
+  - Gambar pertama otomatis jadi thumbnail (`imageUrl`).
+  - Tabel artikel dengan edit/hapus.
+- **Pengaturan** (`pengaturan.html`):
+  - Ubah password.
+  - Backup data JSON.
+  - Reset semua data.
+  - Ekspor ringkasan ke **PDF** (library jsPDF + autotable dimuat hanya saat tombol ditekan – on‑demand).
+- **Profil Admin** (`profile-admin.html`): info akun & ubah password.
 
-1. Buat **Google Sheets** baru dengan sheet berikut (nama *case‑sensitive*):
-   - `Users` – kolom: `id`, `email`, `nama`, `password`, `role`, `token`
-   - `DataUsaha` – kolom: `id`, `userId`, `namaUsaha`, `pemilik`, `jenisUsaha`, `alamat`, `lat`, `lng`, `telepon`, `deskripsi`, `foto`, `email`, `createdAt`
+### Dashboard Member
+- **Dashboard** pribadi (`dashboard-member.html`): statistik jumlah usaha & tabel data.
+- **Tambah / Edit Usaha** (`data-usaha-member.html`):
+  - Form lengkap + peta Leaflet + upload foto.
+  - Mode edit via parameter `?edit=id`.
+  - Opsi jenis usaha kustom ("Lainnya").
+
+### Halaman Publik (Tanpa Login)
+- **Pendataan Usaha** (`pendataan.html`): form + peta + upload foto.
+- **Artikel** (`artikel.html`): daftar semua artikel dengan cache & modal baca.
+- **Kontak** (`kontak.html`): informasi kontak & form kirim pesan.
+
+### Optimasi Kecepatan
+- **Cache berlapis** di seluruh dashboard admin:
+  `sessionStorage` → `localStorage` (via `appStorage`) → `window.top._fallbackCache`.  
+  Data muncul instan saat pindah menu, tanpa fetch ulang.
+- **Background refresh** setiap **60 detik** (tidak lagi 30 detik).
+- **Preload halaman admin** (`admin/preload.html`) – mengisi cache sebelum masuk dashboard.
+- **jsPDF on‑demand** – tidak memblokir rendering awal dashboard.
+
+---
+
+## 🛠️ Teknologi
+
+| Teknologi                     | Kegunaan                                     |
+|-------------------------------|----------------------------------------------|
+| Bootstrap 5                   | Framework CSS, komponen UI                   |
+| Bootstrap Icons               | Ikon                                         |
+| Leaflet.js + MarkerCluster    | Peta interaktif dan clustering marker        |
+| Chart.js                      | Grafik donat di dashboard                    |
+| Quill.js                      | Rich text editor untuk artikel               |
+| quill-image-resize-module     | Resize gambar di editor (drag)               |
+| jsPDF + autotable             | Ekspor PDF (dimuat on‑demand)                |
+| Google Apps Script            | Backend API & penyimpanan di Google Sheets   |
+| GitHub Pages                  | Hosting statis                               |
+
+---
+
+## ⚙️ Persiapan Backend (Google Apps Script)
+
+1. Buat **Google Sheets** baru dengan sheet‑sheet berikut (nama **case‑sensitive**):
+   - `Users` – kolom: `id`, `email`, `nama`, `password`, `role`, `token`, `phone`, `status`
+   - `DataUsaha` – kolom: `id`, `userId`, `namaUsaha`, `pemilik`, `asalPac`, `jenisUsaha`, `alamat`, `lat`, `lng`, `telepon`, `deskripsi`, `foto`, `email`, `createdAt`
    - `Pesan` – kolom: `id`, `nama`, `email`, `pesan`, `createdAt`, `ip`
    - `Artikel` – kolom: `id`, `title`, `content`, `authorId`, `authorName`, `imageUrl`, `createdAt`
    - `Settings` – kolom: `key`, `value`
 
-2. Buka **Extensions > Apps Script**, lalu salin seluruh kode dari file `code.gs` yang telah disediakan.
+2. Buka **Extensions > Apps Script**, salin seluruh isi file **`code.gs`** yang disediakan.
 
-3. Di editor Apps Script, klik **Deploy > New deployment** (atau kelola yang sudah ada). Pilih **Web App**.
-   - *Execute as*: `Me`
-   - *Who has access*: `Anyone` (atau sesuai kebutuhan, tetapi harus bisa diakses publik agar frontend berfungsi).
-   - Klik **Deploy** dan salin URL Web App yang dihasilkan.
+3. Di editor Apps Script, buka **Project Settings** > centang **"Show 'appsscript.json' manifest file in editor"**.  
+   Ganti isi `appsscript.json` dengan:
 
-4. (Opsional) Spreadsheet akan otomatis diisi data contoh (admin, member, beberapa usaha) saat pertama kali diakses. Jika tidak, Anda bisa memanggil path `seedExampleData` melalui API admin.
-
-## Konfigurasi Frontend
-
-1. Buka file **`js/api.js`**.
-2. Ubah nilai `APPS_SCRIPT_URL` dengan URL Web App yang sudah Anda dapatkan.
-3. Jika diperlukan, sesuaikan juga URL di `apiCallPost` (fungsi POST untuk upload gambar) yang dipakai di `pendataan.html`.
-
-## Cara Menjalankan
-
-### Secara lokal
-Cukup buka `index.html` di browser. Semua resource (CSS, JS) akan dimuat dari CDN. Pastikan koneksi internet aktif.
-
-### Hosting di GitHub Pages
-1. Upload semua file proyek ke repository GitHub.
-2. Aktifkan GitHub Pages di pengaturan repository (pilih branch `main` atau `master`, folder root).
-3. Akses website melalui `https://<username>.github.io/<repo>/`.
-
-**Penting:** Karena Apps Script diakses secara publik, tidak diperlukan otentikasi server khusus selain yang sudah diimplementasikan di spreadsheet.
-
-## Akun Default (Contoh)
-
-Data di sheet `Users` otomatis dibuat oleh `ensureDataExists()`. Anda bisa langsung login dengan akun ini:
-
-| Role   | Email            | Password     |
-|--------|------------------|--------------|
-| Admin  | admin@buma.id    | admin123     |
-| Member | member1@buma.id  | member123    |
-| Member | member2@buma.id  | member123    |
-| Member | member3@buma.id  | member123    |
-
-**Untuk keamanan, segera ubah password setelah instalasi.**
-
-## Catatan Penting
-
-- **Upload gambar di form publik (`pendataan.html`)** menggunakan fungsi `apiCallPost` yang mengirim data via **POST body** (tidak lagi JSONP). Hal ini diperlukan karena base64 gambar bisa sangat panjang dan tidak muat di URL GET.
-- **Registrasi member** dilengkapi verifikasi sederhana (soal penjumlahan) untuk mencegah spam.
-- **Backend** (`code.gs`) kini bisa membaca data dari POST body (`e.postData`) secara otomatis. Semua fungsi lama yang menggunakan GET tetap berjalan normal.
-- **Cache** digunakan pada beberapa halaman (index, dashboard) untuk mempercepat loading. Data disimpan di `sessionStorage`.
-- Pastikan browser mengizinkan akses **geolokasi** agar tombol "Dapatkan Lokasi Saya" berfungsi.
-- Jika terjadi error *CORS* pada saat development lokal, gunakan ekstensi browser atau jalankan melalui server lokal (misal Live Server di VS Code).
-
-## Lisensi
-
-MIT © 2026 BUMA Bantul
+   ```json
+   {
+     "timeZone": "Asia/Jakarta",
+     "dependencies": {},
+     "exceptionLogging": "STACKDRIVER",
+     "oauthScopes": [
+       "https://www.googleapis.com/auth/spreadsheets",
+       "https://www.googleapis.com/auth/drive",
+       "https://www.googleapis.com/auth/script.external_request"
+     ],
+     "runtimeVersion": "V8"
+   }
