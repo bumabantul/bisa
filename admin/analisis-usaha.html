@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>Analisis Usaha - BUMA Admin</title>
+  <link rel="icon" type="image/webp" href="../assets/logo buma.webp">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6366f1; --secondary: #8b5cf6; --dark: #0f172a; --light: #f8fafc;
+      --radius: 20px; --transition: 0.3s;
+    }
+    * { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: transparent; padding: 0; overflow-y: auto; }
+    .main-content { padding: 0; }
+    .card {
+      border: 1px solid rgba(0,0,0,0.04); border-radius: var(--radius);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08); margin-bottom: 25px; background: white;
+    }
+    .card-header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff;
+      font-weight: 600; padding: 18px 25px; border-radius: var(--radius) var(--radius) 0 0 !important;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .table { background: white; border-radius: 15px; overflow: hidden; }
+    .table thead th { background: #f8fafc; font-weight: 600; text-transform: uppercase; }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; border-radius: 50px; padding: 10px 20px; font-weight: 600; color: #fff; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(99,102,241,0.4); }
+    .btn-outline-primary, .btn-outline-secondary { border-radius: 50px; }
+    .form-control, .form-select { border-radius: 12px; padding: 10px 15px; border: 2px solid #e8ecf1; }
+    .form-control:focus, .form-select:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99,102,241,0.08); }
+    .metric-card { background: #f8f9ff; border-radius: 16px; padding: 15px; text-align: center; }
+    .metric-value { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+    .badge-success { background: #d4edda; color: #155724; padding: 4px 10px; border-radius: 20px; }
+    .badge-warning { background: #fff3cd; color: #856404; padding: 4px 10px; border-radius: 20px; }
+    .badge-danger { background: #f8d7da; color: #721c24; padding: 4px 10px; border-radius: 20px; }
+    .rekomendasi-box {
+      background: #f0f4ff; border-left: 4px solid var(--primary); border-radius: 12px;
+      padding: 15px 20px; margin-top: 15px; display: flex; gap: 12px; align-items: flex-start;
+    }
+    .rekomendasi-box i { font-size: 1.8rem; color: var(--primary); }
+    .table-responsive { -webkit-overflow-scrolling: touch; }
+    .tutorial-modal .modal-body { font-size: 0.9rem; line-height: 1.7; }
+    .tutorial-modal h6 { color: var(--primary); font-weight: 700; margin-top: 1.2rem; }
+  </style>
+</head>
+<body>
+  <div class="main-content">
+    <div class="card">
+      <div class="card-header">
+        <span><i class="bi bi-graph-up me-2"></i>Analisis Kelayakan Usaha</span>
+        <div>
+          <button class="btn btn-light btn-sm rounded-pill me-1" onclick="tampilkanTutorial()" title="Panduan Pengisian">
+            <i class="bi bi-question-circle"></i>
+          </button>
+          <button class="btn btn-light btn-sm rounded-pill" onclick="modalTambah()"><i class="bi bi-plus-circle"></i> Tambah Analisis</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle" id="analisisTable">
+            <thead><tr><th>Usaha</th><th>HPP/Unit</th><th>Harga Jual</th><th>Laba/Unit</th><th>ROI</th><th>Payback</th><th>IRR</th><th>Aksi</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Tambah/Edit -->
+  <div class="modal fade" id="analisisModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title" id="modalTitle">Tambah Analisis</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+          <form id="analisisForm">
+            <input type="hidden" id="analisisId">
+            <div class="mb-3">
+              <label class="form-label">Pilih Usaha *</label>
+              <select class="form-select" id="usahaId" required></select>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3"><label class="form-label">HPP per Unit (Rp)</label><input type="number" class="form-control" id="hpp" step="0.01" required></div>
+              <div class="col-md-6 mb-3"><label class="form-label">Harga Jual per Unit (Rp)</label><input type="number" class="form-control" id="hargaJual" step="0.01" required></div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3"><label class="form-label">Omset Bulanan (Rp)</label><input type="number" class="form-control" id="omsetBulanan" step="0.01"></div>
+              <div class="col-md-6 mb-3"><label class="form-label">Biaya Operasional Bulanan (Rp)</label><input type="number" class="form-control" id="biayaOperasional" step="0.01"></div>
+            </div>
+            <div class="mb-3"><label class="form-label">Investasi Awal (Rp)</label><input type="number" class="form-control" id="investasiAwal" step="0.01"></div>
+
+            <!-- Hasil Kalkulasi + Rekomendasi -->
+            <div id="kalkulasiSection" style="display:none;">
+              <hr><h6 class="text-primary"><i class="bi bi-calculator me-1"></i>Hasil Perhitungan</h6>
+              <div class="row">
+                <div class="col-md-3 mb-2"><div class="metric-card"><div class="metric-value" id="labaUnit">-</div><small>Laba/Unit</small></div></div>
+                <div class="col-md-3 mb-2"><div class="metric-card"><div class="metric-value" id="margin">-</div><small>Margin (%)</small></div></div>
+                <div class="col-md-3 mb-2"><div class="metric-card"><div class="metric-value" id="roi">-</div><small>ROI (%)</small></div></div>
+                <div class="col-md-3 mb-2"><div class="metric-card"><div class="metric-value" id="payback">-</div><small>Payback (bln)</small></div></div>
+                <div class="col-md-6 mb-2"><div class="metric-card"><div class="metric-value" id="irr">-</div><small>IRR (%)</small></div></div>
+                <div class="col-md-6 mb-2"><div class="metric-card"><div class="metric-value" id="marr">12%</div><small>MARR (asumsi)</small></div></div>
+              </div>
+              <div class="rekomendasi-box" id="rekomendasiBox">
+                <i class="bi bi-lightbulb-fill"></i>
+                <div id="rekomendasiText"></div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-end gap-2 mt-3">
+              <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Batal</button>
+              <button type="button" class="btn btn-outline-primary rounded-pill" onclick="hitungKalkulasi()">Hitung</button>
+              <button type="submit" class="btn btn-primary rounded-pill">Simpan</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Tutorial -->
+  <div class="modal fade tutorial-modal" id="tutorialModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+          <h5 class="modal-title text-white"><i class="bi bi-book me-2"></i>Panduan Lengkap Analisis Usaha</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <h6><i class="bi bi-1-circle-fill text-primary me-2"></i> Apa itu Analisis Kelayakan Usaha?</h6>
+          <p>Fitur ini membantu Anda mengevaluasi potensi keuntungan, waktu balik modal, dan kelayakan investasi dari sebuah usaha. Data yang Anda masukkan akan diolah secara otomatis untuk menghasilkan indikator keuangan utama.</p>
+
+          <h6><i class="bi bi-2-circle-fill text-primary me-2"></i> Cara Mengisi Form</h6>
+          <ul>
+            <li><strong>Pilih Usaha</strong> – Pilih usaha yang sudah terdaftar di sistem.</li>
+            <li><strong>HPP per Unit (Rp)</strong> – Biaya pokok produksi untuk satu satuan produk (bahan baku, kemasan, tenaga kerja langsung per buah).</li>
+            <li><strong>Harga Jual per Unit (Rp)</strong> – Harga yang Anda tetapkan untuk menjual satu satuan produk.</li>
+            <li><strong>Omset Bulanan (Rp)</strong> – Total uang yang masuk dari penjualan dalam sebulan (sebelum dikurangi biaya).</li>
+            <li><strong>Biaya Operasional Bulanan (Rp)</strong> – Pengeluaran rutin bulanan: listrik, air, gaji, transportasi, sewa tempat, dll.</li>
+            <li><strong>Investasi Awal (Rp)</strong> – Total modal yang dikeluarkan di awal usaha (pembelian alat, renovasi, dll).</li>
+          </ul>
+
+          <h6><i class="bi bi-3-circle-fill text-primary me-2"></i> Indikator yang Dihitung</h6>
+          <div class="table-responsive">
+            <table class="table table-sm">
+              <thead><tr><th>Indikator</th><th>Rumus</th><th>Keterangan</th></tr></thead>
+              <tbody>
+                <tr><td>Laba per Unit</td><td>Harga Jual – HPP</td><td>Keuntungan kotor tiap produk.</td></tr>
+                <tr><td>Margin (%)</td><td>(Laba/Unit ÷ Harga Jual) × 100%</td><td>Persentase keuntungan dari harga jual.</td></tr>
+                <tr><td>ROI (%)</td><td>(Laba Bulanan ÷ Investasi Awal) × 100%</td><td>Kemampuan modal menghasilkan laba per bulan.</td></tr>
+                <tr><td>Payback Period</td><td>Investasi Awal ÷ Laba Bulanan</td><td>Waktu (bulan) untuk balik modal.</td></tr>
+                <tr><td>IRR (%)</td><td>Iterasi NPV = 0</td><td>Jika > 12% (MARR), proyek layak secara finansial.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h6><i class="bi bi-4-circle-fill text-primary me-2"></i> Interpretasi Rekomendasi</h6>
+          <p>Sistem memberikan analisis otomatis dengan kode warna dan saran, misalnya:</p>
+          <ul>
+            <li><span class="badge bg-success">✅ Margin sangat sehat</span> – pertahankan.</li>
+            <li><span class="badge bg-warning text-dark">⚠️ Margin cukup</span> – pertimbangkan naikkan harga atau turunkan HPP.</li>
+            <li><span class="badge bg-danger">🔴 ROI rendah</span> – evaluasi strategi pemasaran dan efisiensi.</li>
+          </ul>
+
+          <div class="alert alert-info mt-3"><i class="bi bi-info-circle-fill me-2"></i>Gunakan data seakurat mungkin. Anda dapat mengubah data dan menghitung ulang kapan saja. Data yang sudah disimpan akan muncul di tabel untuk pemantauan berkala.</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary rounded-pill" data-bs-dismiss="modal">Mengerti</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/api.js"></script>
+  <script>
+    (function() {
+      const token = (typeof appStorage !== 'undefined' && appStorage.get('token')) || (window.top._authToken) || null;
+      if (!token) { window.top.location.href = '../login.html'; return; }
+      const role = (typeof appStorage !== 'undefined' && appStorage.get('role')) || (window.top._authRole) || null;
+      if (role !== 'admin') { window.top.location.href = '../login.html'; return; }
+
+      let currentList = [];
+      let usahaList = [];
+
+      async function init() {
+        await loadUsaha();
+        await loadData();
+      }
+
+      async function loadUsaha() {
+        const res = await apiCall('getDataUsaha', { token });
+        usahaList = res.success ? res.data : [];
+        const sel = document.getElementById('usahaId');
+        sel.innerHTML = '<option value="">-- Pilih Usaha --</option>';
+        usahaList.forEach(u => sel.innerHTML += `<option value="${u.id}">${u.namaUsaha} (${u.pemilik})</option>`);
+      }
+
+      async function loadData() {
+        const res = await apiCall('getAnalisisUsaha', { token });
+        currentList = res.success ? res.data : [];
+        renderTable();
+      }
+
+      // Fungsi kalkulasi
+      function kalkulasi(hpp, harga, omset, biayaOp, investasi) {
+        const labaKotorPerUnit = harga - hpp;
+        const margin = harga !== 0 ? (labaKotorPerUnit / harga) * 100 : 0;
+        const labaBulanan = omset - biayaOp;
+        const roi = investasi > 0 ? (labaBulanan / investasi) * 100 : 0;
+        const payback = labaBulanan > 0 ? investasi / labaBulanan : 0;
+        let irr = 0;
+        if (investasi > 0 && labaBulanan > 0) {
+          const npv = (r) => -investasi + labaBulanan * 12 * (1 - Math.pow(1 + r, -5)) / r;
+          let r1 = 0.05, r2 = 0.50;
+          for (let i = 0; i < 20; i++) {
+            const mid = (r1 + r2) / 2;
+            if (npv(mid) > 0) r1 = mid; else r2 = mid;
+          }
+          irr = ((r1 + r2) / 2) * 100;
+        }
+        return { labaKotorPerUnit, margin, roi, payback: payback.toFixed(1), irr: irr.toFixed(1) };
+      }
+
+      // Fungsi rekomendasi
+      function generateRekomendasi(hpp, harga, omset, biayaOp, investasi) {
+        const hasil = kalkulasi(hpp, harga, omset, biayaOp, investasi);
+        const MARR = 12;
+        let rekomendasi = '';
+
+        if (hasil.margin >= 30) {
+          rekomendasi += '✅ Margin sangat sehat (≥30%). Pertahankan kualitas dan fokus pada peningkatan volume penjualan. ';
+        } else if (hasil.margin >= 15) {
+          rekomendasi += '⚠️ Margin cukup (15-30%). Pertimbangkan menaikkan harga jual atau menurunkan HPP. ';
+        } else {
+          rekomendasi += '🔴 Margin rendah (<15%). Evaluasi segera HPP dan harga jual. Cari supplier lebih murah atau efisiensi produksi. ';
+        }
+
+        if (hasil.roi >= 20) {
+          rekomendasi += '✅ ROI sangat menarik (≥20%). Bisnis layak diperluas. ';
+        } else if (hasil.roi >= 10) {
+          rekomendasi += '⚠️ ROI moderat (10-20%). Masih layak, namun perlu optimalisasi biaya operasional. ';
+        } else {
+          rekomendasi += '🔴 ROI rendah (<10%). Evaluasi ulang strategi pemasaran dan efisiensi biaya. ';
+        }
+
+        const paybackNum = parseFloat(hasil.payback);
+        if (paybackNum <= 2) {
+          rekomendasi += '✅ Payback period cepat (≤2 tahun). Investasi sangat likuid. ';
+        } else if (paybackNum <= 4) {
+          rekomendasi += '⚠️ Payback period wajar (2-4 tahun). Masih dapat diterima, namun pertimbangkan akselerasi penjualan. ';
+        } else {
+          rekomendasi += '🔴 Payback period lama (>4 tahun). Risiko tinggi, tinjau kembali rencana bisnis. ';
+        }
+
+        const irrNum = parseFloat(hasil.irr);
+        if (irrNum > MARR) {
+          rekomendasi += `✅ IRR (${hasil.irr}%) > MARR (${MARR}%). Proyek layak secara finansial.`;
+        } else {
+          rekomendasi += `🔴 IRR (${hasil.irr}%) ≤ MARR (${MARR}%). Proyek kurang layak. Pertimbangkan menambah pendapatan atau menekan biaya.`;
+        }
+
+        return rekomendasi;
+      }
+
+      window.hitungKalkulasi = function() {
+        const hpp = parseFloat(document.getElementById('hpp').value) || 0;
+        const harga = parseFloat(document.getElementById('hargaJual').value) || 0;
+        const omset = parseFloat(document.getElementById('omsetBulanan').value) || 0;
+        const biayaOp = parseFloat(document.getElementById('biayaOperasional').value) || 0;
+        const investasi = parseFloat(document.getElementById('investasiAwal').value) || 0;
+
+        const hasil = kalkulasi(hpp, harga, omset, biayaOp, investasi);
+        document.getElementById('labaUnit').innerText = 'Rp ' + hasil.labaKotorPerUnit.toFixed(0);
+        document.getElementById('margin').innerText = hasil.margin.toFixed(1) + '%';
+        document.getElementById('roi').innerText = hasil.roi.toFixed(1) + '%';
+        document.getElementById('payback').innerText = hasil.payback + ' bln';
+        document.getElementById('irr').innerText = hasil.irr + '%';
+
+        const rekomendasi = generateRekomendasi(hpp, harga, omset, biayaOp, investasi);
+        document.getElementById('rekomendasiText').innerText = rekomendasi;
+
+        document.getElementById('kalkulasiSection').style.display = 'block';
+      };
+
+      function renderTable() {
+        const tbody = document.querySelector('#analisisTable tbody');
+        tbody.innerHTML = '';
+        currentList.forEach(item => {
+          const usaha = usahaList.find(u => u.id == item.usahaId);
+          const hasil = kalkulasi(item.hpp, item.hargaJual, item.omsetBulanan, item.biayaOperasional, item.investasiAwal);
+          let roiClass = 'badge-success';
+          if (hasil.roi < 10) roiClass = 'badge-danger';
+          else if (hasil.roi < 20) roiClass = 'badge-warning';
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${usaha ? usaha.namaUsaha : item.usahaId}</td>
+            <td>${item.hpp}</td>
+            <td>${item.hargaJual}</td>
+            <td>Rp ${hasil.labaKotorPerUnit.toFixed(0)}</td>
+            <td><span class="${roiClass}">${hasil.roi.toFixed(1)}%</span></td>
+            <td>${hasil.payback} bln</td>
+            <td>${hasil.irr}%</td>
+            <td>
+              <button class="btn btn-sm btn-warning" onclick="editItem('${item.id}')"><i class="bi bi-pencil"></i></button>
+              <button class="btn btn-sm btn-danger" onclick="deleteItem('${item.id}')"><i class="bi bi-trash"></i></button>
+            </td>`;
+          tbody.appendChild(tr);
+        });
+      }
+
+      window.modalTambah = function() {
+        document.getElementById('analisisId').value = '';
+        document.getElementById('analisisForm').reset();
+        document.getElementById('kalkulasiSection').style.display = 'none';
+        document.getElementById('modalTitle').innerText = 'Tambah Analisis';
+        new bootstrap.Modal(document.getElementById('analisisModal')).show();
+      };
+
+      window.editItem = async function(id) {
+        const item = currentList.find(i => i.id == id);
+        if (!item) return;
+        document.getElementById('analisisId').value = item.id;
+        document.getElementById('usahaId').value = item.usahaId;
+        document.getElementById('hpp').value = item.hpp;
+        document.getElementById('hargaJual').value = item.hargaJual;
+        document.getElementById('omsetBulanan').value = item.omsetBulanan;
+        document.getElementById('biayaOperasional').value = item.biayaOperasional;
+        document.getElementById('investasiAwal').value = item.investasiAwal;
+        document.getElementById('modalTitle').innerText = 'Edit Analisis';
+        window.hitungKalkulasi();
+        new bootstrap.Modal(document.getElementById('analisisModal')).show();
+      };
+
+      window.deleteItem = async function(id) {
+        if (!confirm('Hapus analisis ini?')) return;
+        await apiCall('deleteAnalisisUsaha', { token, id });
+        loadData();
+      };
+
+      document.getElementById('analisisForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const id = document.getElementById('analisisId').value;
+        const data = {
+          usahaId: document.getElementById('usahaId').value,
+          hpp: parseFloat(document.getElementById('hpp').value) || 0,
+          hargaJual: parseFloat(document.getElementById('hargaJual').value) || 0,
+          omsetBulanan: parseFloat(document.getElementById('omsetBulanan').value) || 0,
+          biayaOperasional: parseFloat(document.getElementById('biayaOperasional').value) || 0,
+          investasiAwal: parseFloat(document.getElementById('investasiAwal').value) || 0
+        };
+        if (id) {
+          await apiCall('updateAnalisisUsaha', { token, id, ...data });
+        } else {
+          await apiCall('addAnalisisUsaha', { token, ...data });
+        }
+        bootstrap.Modal.getInstance(document.getElementById('analisisModal')).hide();
+        loadData();
+      });
+
+      window.tampilkanTutorial = function() {
+        new bootstrap.Modal(document.getElementById('tutorialModal')).show();
+      };
+
+      init();
+    })();
+  </script>
+</body>
+</html>

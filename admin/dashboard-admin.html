@@ -92,6 +92,8 @@
       <li><a href="#" data-page="peta"><i class="bi bi-map"></i><span class="link-text"> Peta Sebaran</span></a></li>
       <li><a href="#" data-page="pengguna"><i class="bi bi-person-badge"></i><span class="link-text"> Pengguna</span></a></li>
       <li><a href="#" data-page="artikel"><i class="bi bi-newspaper"></i><span class="link-text"> Artikel</span></a></li>
+      <li><a href="#" data-page="analisis"><i class="bi bi-graph-up"></i><span class="link-text"> Analisis Usaha</span></a></li>
+      <li><a href="#" data-page="challenge-editor"><i class="bi bi-puzzle"></i><span class="link-text"> Challenge Editor</span></a></li>
       <li><a href="#" data-page="pengaturan"><i class="bi bi-gear"></i><span class="link-text"> Pengaturan</span></a></li>
       <li><a href="#" data-page="profil"><i class="bi bi-person-circle"></i><span class="link-text"> Profil</span></a></li>
       <li><a href="../index.html"><i class="bi bi-house-door"></i><span class="link-text"> Kembali ke Beranda</span></a></li>
@@ -119,6 +121,8 @@
       <iframe id="frame-peta" src="peta-sebaran.html"></iframe>
       <iframe id="frame-pengguna" src="pengguna.html"></iframe>
       <iframe id="frame-artikel" src="artikel-admin.html"></iframe>
+      <iframe id="frame-analisis" src="analisis-usaha.html"></iframe>
+      <iframe id="frame-challenge-editor" src="challenge-editor.html"></iframe>
       <iframe id="frame-pengaturan" src="pengaturan.html"></iframe>
       <iframe id="frame-profil" src="profile-admin.html"></iframe>
     </div>
@@ -128,11 +132,11 @@
   <script src="../js/api.js"></script>
   <script src="../js/auth.js"></script>
   <script>
-    // ==================== AUTH CHECK ====================
+    // ==================== AUTH ====================
     if (!checkAuth('admin')) window.location.href = '../login.html';
     document.getElementById('userDisplay').innerText = (typeof appStorage !== 'undefined' && appStorage.get('nama')) || 'Admin';
 
-    // ==================== RESTORE DATA DARI window.name DAN ISI SESSION STORAGE ====================
+    // ==================== RESTORE DATA & ISI SESSION STORAGE ====================
     (function restoreDataAndPushToSession() {
       if (!window.name) return;
       try {
@@ -147,7 +151,6 @@
             }
           } catch(e) {}
         }
-        // Bangun fallbackCache
         window._fallbackCache = {
           usaha: preloadData.usaha || [],
           users: preloadData.users || [],
@@ -156,7 +159,6 @@
           pengguna: preloadData.pengguna || [],
           artikel_list: preloadData.artikel_list || []
         };
-        // Simpan ke appStorage
         try {
           if (typeof appStorage !== 'undefined') {
             appStorage.set('data_usaha_cache', JSON.stringify(preloadData.data_usaha || []));
@@ -170,7 +172,6 @@
             }));
           }
         } catch(e) {}
-        // *** KIRIM KE sessionStorage AGAR IFRAME BISA LANGSUNG BACA ***
         try {
           sessionStorage.setItem('dashboard_embedded', JSON.stringify({
             usaha: preloadData.usaha || [],
@@ -182,7 +183,6 @@
           sessionStorage.setItem('pengguna_embedded',   JSON.stringify(preloadData.pengguna || []));
           sessionStorage.setItem('artikel_embedded',    JSON.stringify(preloadData.artikel_list || []));
         } catch(e) {}
-        // Bersihkan window.name agar tidak terpakai lagi
         window.name = '';
       } catch(e) { window.name = ''; }
     })();
@@ -230,10 +230,7 @@
     sidebarOverlay.addEventListener('click', closeMobileSidebar);
     window.addEventListener('resize', () => { if (window.innerWidth > 768) closeMobileSidebar(); });
 
-    // ==================== LOGOUT CEPAT (dari auth.js) ====================
-    // Fungsi logout() sudah didefinisikan di auth.js dan tersedia secara global
-
-    // ==================== NAVIGASI IFRAME TANPA RELOAD ====================
+    // ==================== NAVIGASI IFRAME ====================
     const links = document.querySelectorAll('#menuList a[data-page]');
     const frames = {
       dashboard: document.getElementById('frame-dashboard'),
@@ -241,6 +238,8 @@
       peta: document.getElementById('frame-peta'),
       pengguna: document.getElementById('frame-pengguna'),
       artikel: document.getElementById('frame-artikel'),
+      analisis: document.getElementById('frame-analisis'),
+      'challenge-editor': document.getElementById('frame-challenge-editor'),
       pengaturan: document.getElementById('frame-pengaturan'),
       profil: document.getElementById('frame-profil')
     };

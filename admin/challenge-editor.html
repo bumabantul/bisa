@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>Challenge Editor - BUMA Admin</title>
+  <link rel="icon" type="image/webp" href="../assets/logo buma.webp">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #8b5cf6;
+      --radius: 20px; --transition: 0.3s;
+    }
+    * { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: transparent; padding: 0; overflow-y: auto; }
+    .card {
+      border: 1px solid rgba(0,0,0,0.04); border-radius: var(--radius);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08); margin-bottom: 25px; background: white;
+    }
+    .card-header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff;
+      font-weight: 600; padding: 18px 25px; border-radius: var(--radius) var(--radius) 0 0 !important;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .badge-level { font-size: 0.75rem; padding: 4px 8px; border-radius: 20px; }
+    .table-responsive { -webkit-overflow-scrolling: touch; }
+    .btn-outline-light { border-radius: 50px; }
+    .btn-outline-primary, .btn-outline-secondary, .btn-outline-danger { border-radius: 50px; }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; border-radius: 50px; font-weight: 600; color: #fff; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(99,102,241,0.4); }
+    .form-control, .form-select { border-radius: 12px; padding: 10px 15px; border: 2px solid #e8ecf1; }
+    .form-control:focus, .form-select:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99,102,241,0.08); }
+  </style>
+</head>
+<body>
+  <div class="main-content">
+    <!-- Soal Challenge -->
+    <div class="card">
+      <div class="card-header">
+        <span><i class="bi bi-puzzle"></i> Kelola Soal Challenge</span>
+        <button class="btn btn-light btn-sm rounded-pill" onclick="tambahSoal()"><i class="bi bi-plus-circle"></i> Tambah Soal</button>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle" id="challengeTable">
+            <thead><tr><th>Level</th><th>Pertanyaan</th><th>Jawaban</th><th>Aksi</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monitoring Member -->
+    <div class="card">
+      <div class="card-header">
+        <span><i class="bi bi-people"></i> Monitoring Progress Member</span>
+        <button class="btn btn-light btn-sm rounded-pill" onclick="loadMemberProgress()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle" id="memberTable">
+            <thead><tr><th>Nama</th><th>L1</th><th>L2</th><th>L3</th><th>L4</th><th>L5</th><th>Aksi</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Soal -->
+  <div class="modal fade" id="soalModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="soalModalTitle">Tambah Soal</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="soalForm">
+            <input type="hidden" id="soalId">
+            <div class="mb-3">
+              <label class="form-label">Level (1-5)</label>
+              <input type="number" class="form-control" id="level" min="1" max="5" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Pertanyaan</label>
+              <textarea class="form-control" id="question" rows="2" required></textarea>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3"><label>Opsi A</label><input type="text" class="form-control" id="optionA" required></div>
+              <div class="col-md-6 mb-3"><label>Opsi B</label><input type="text" class="form-control" id="optionB" required></div>
+              <div class="col-md-6 mb-3"><label>Opsi C</label><input type="text" class="form-control" id="optionC" required></div>
+              <div class="col-md-6 mb-3"><label>Opsi D</label><input type="text" class="form-control" id="optionD" required></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Kunci Jawaban</label>
+              <select class="form-select" id="answer" required>
+                <option value="">Pilih</option>
+                <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+              </select>
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Batal</button>
+              <button type="submit" class="btn btn-primary rounded-pill">Simpan</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/api.js"></script>
+  <script>
+    (function() {
+      // Auth
+      const token = (typeof appStorage !== 'undefined' && appStorage.get('token')) || (window.top._authToken) || null;
+      if (!token) { window.top.location.href = '../login.html'; return; }
+      const role = (typeof appStorage !== 'undefined' && appStorage.get('role')) || (window.top._authRole) || null;
+      if (role !== 'admin') { window.top.location.href = '../login.html'; return; }
+
+      let allSoal = [];
+
+      // ======================== LOAD SOAL ========================
+      async function loadChallenges() {
+        try {
+          const res = await apiCall('getAllChallenges', { token });
+          if (res.success) {
+            allSoal = res.data;
+            renderSoalTable();
+          }
+        } catch(e) { console.error(e); }
+      }
+
+      function renderSoalTable() {
+        const tbody = document.querySelector('#challengeTable tbody');
+        tbody.innerHTML = '';
+        allSoal.forEach(item => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><span class="badge bg-info text-dark">Level ${item.level}</span></td>
+            <td>${item.question}</td>
+            <td><span class="badge bg-success">${item.answer}</span></td>
+            <td>
+              <button class="btn btn-sm btn-warning rounded-pill" onclick="editSoal('${item.id}')"><i class="bi bi-pencil"></i></button>
+              <button class="btn btn-sm btn-danger rounded-pill" onclick="hapusSoal('${item.id}')"><i class="bi bi-trash"></i></button>
+            </td>`;
+          tbody.appendChild(tr);
+        });
+      }
+
+      // ======================== TAMBAH / EDIT SOAL ========================
+      window.tambahSoal = function() {
+        document.getElementById('soalForm').reset();
+        document.getElementById('soalId').value = '';
+        document.getElementById('soalModalTitle').innerText = 'Tambah Soal';
+        new bootstrap.Modal(document.getElementById('soalModal')).show();
+      };
+
+      window.editSoal = async function(id) {
+        const soal = allSoal.find(s => s.id == id);
+        if (!soal) return;
+        document.getElementById('soalId').value = soal.id;
+        document.getElementById('level').value = soal.level;
+        document.getElementById('question').value = soal.question;
+        document.getElementById('optionA').value = soal.optionA;
+        document.getElementById('optionB').value = soal.optionB;
+        document.getElementById('optionC').value = soal.optionC;
+        document.getElementById('optionD').value = soal.optionD;
+        document.getElementById('answer').value = soal.answer;
+        document.getElementById('soalModalTitle').innerText = 'Edit Soal';
+        new bootstrap.Modal(document.getElementById('soalModal')).show();
+      };
+
+      window.hapusSoal = async function(id) {
+        if (!confirm('Hapus soal ini?')) return;
+        try {
+          const res = await apiCall('deleteChallenge', { token, id });
+          if (res.success) { alert('Soal dihapus.'); loadChallenges(); }
+          else alert('Gagal: ' + res.message);
+        } catch(e) { alert('Error: ' + e.message); }
+      };
+
+      document.getElementById('soalForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const id = document.getElementById('soalId').value;
+        const data = {
+          token,
+          level: parseInt(document.getElementById('level').value),
+          question: document.getElementById('question').value,
+          optionA: document.getElementById('optionA').value,
+          optionB: document.getElementById('optionB').value,
+          optionC: document.getElementById('optionC').value,
+          optionD: document.getElementById('optionD').value,
+          answer: document.getElementById('answer').value
+        };
+        if (id) data.id = id;
+        try {
+          const res = await apiCall('createChallenge', data);
+          if (res.success) {
+            alert(id ? 'Soal diperbarui.' : 'Soal ditambahkan.');
+            bootstrap.Modal.getInstance(document.getElementById('soalModal')).hide();
+            loadChallenges();
+          } else alert('Gagal: ' + res.message);
+        } catch(e) { alert('Error: ' + e.message); }
+      });
+
+      // ======================== MONITORING MEMBER ========================
+      async function loadMemberProgress() {
+        try {
+          // Dapatkan daftar member (role = member) saja dari getUsers
+          const usersRes = await apiCall('getUsers', { token });
+          if (!usersRes.success) return alert('Gagal mengambil data pengguna.');
+          const members = usersRes.data.filter(u => u.role === 'member');
+
+          // Dapatkan progress challenge semua member (endpoint baru)
+          const progressRes = await apiCall('getAllMemberProgress', { token });
+          const progressData = progressRes.success ? progressRes.data : [];
+
+          // Gabungkan: untuk setiap member, cari progress-nya
+          const tableBody = document.querySelector('#memberTable tbody');
+          tableBody.innerHTML = '';
+
+          members.forEach(member => {
+            const memberProgress = progressData.find(p => p.userId == member.id)?.progress || {};
+            const tr = document.createElement('tr');
+            let levelCells = '';
+            for (let lv = 1; lv <= 5; lv++) {
+              const stat = memberProgress[lv] ? memberProgress[lv].status : 'locked';
+              let badgeColor = 'bg-secondary';
+              if (stat === 'completed') badgeColor = 'bg-success';
+              else if (stat === 'in_progress') badgeColor = 'bg-warning text-dark';
+              else if (stat === 'available') badgeColor = 'bg-info';
+              else if (stat === 'locked') badgeColor = 'bg-light text-dark';
+              levelCells += `<td><span class="badge ${badgeColor} badge-level">${stat}</span></td>`;
+            }
+            tr.innerHTML = `
+              <td><strong>${member.nama}</strong><br><small class="text-muted">${member.email}</small></td>
+              ${levelCells}
+              <td>
+                <button class="btn btn-sm btn-outline-danger rounded-pill" onclick="resetProgress('${member.id}')" title="Reset semua progress"><i class="bi bi-arrow-repeat"></i> Reset</button>
+              </td>`;
+            tableBody.appendChild(tr);
+          });
+        } catch(e) {
+          console.error(e);
+          alert('Error memuat monitoring: ' + e.message);
+        }
+      }
+
+      window.resetProgress = async function(userId) {
+        if (!confirm('Reset seluruh progress challenge member ini? Tindakan ini tidak dapat dibatalkan.')) return;
+        try {
+          const res = await apiCall('resetMemberProgress', { token, userId });
+          if (res.success) {
+            alert('Progress berhasil direset.');
+            loadMemberProgress();
+          } else {
+            alert('Gagal: ' + res.message);
+          }
+        } catch(e) { alert('Error: ' + e.message); }
+      };
+
+      // ======================== INISIALISASI ========================
+      loadChallenges();
+      loadMemberProgress();
+      // Expose fungsi ke global
+      window.loadChallenges = loadChallenges;
+      window.loadMemberProgress = loadMemberProgress;
+    })();
+  </script>
+</body>
+</html>
