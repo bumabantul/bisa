@@ -1,5 +1,5 @@
 // ======================== KONFIGURASI ========================
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxpAIZG1A8obIe0twSy9S2FYuwWkG37ddnq0e6yya3hafnZkBV41EhQ5RCsHcfRlvtVcw/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx6rawAiv7BQK30UVx-AWklZu-pX5z7ETmu2Om5z8kTOUA1-6m-PHn-0naojOtaPJmugA/exec';
 
 // ======================== STORAGE UNIVERSAL ========================
 const appStorage = {
