@@ -53,32 +53,29 @@
         .navbar-brand:hover img { transform: scale(1.05); }
         .brand-text { line-height: 1.25; font-size: 0.85rem; }
         .brand-text strong { font-size: 1rem; display: block; letter-spacing: -0.5px; }
-        .navbar-nav { position: relative; }
         .nav-link {
             font-weight: 500 !important; color: var(--text) !important; padding: 8px 16px !important;
             border-radius: 30px; transition: color 0.3s ease, background 0.3s ease; font-size: 0.9rem;
-            position: relative; z-index: 1;
+            position: relative;
         }
         .nav-link:hover { color: var(--primary) !important; background: rgba(99, 102, 241, 0.06); }
-        .nav-link.active { color: #fff !important; font-weight: 600 !important; background: transparent !important; }
-
-        .nav-slider {
+        .nav-link.active {
+            color: var(--primary) !important;
+            font-weight: 600 !important;
+            background: transparent !important;
+        }
+        .nav-link.active::after {
+            content: '';
             position: absolute;
             bottom: 2px;
-            height: 40px;
-            background: rgba(99, 102, 241, 0.25);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(99, 102, 241, 0.4);
-            border-radius: 30px;
-            transition: left 0.5s ease, width 0.5s ease, opacity 0.3s ease;
-            z-index: 0;
-            box-shadow: 0 2px 12px rgba(99, 102, 241, 0.25);
-            opacity: 0;
-            pointer-events: none;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 3px;
+            transition: width 0.3s ease;
         }
-        @media (min-width: 992px) { .navbar-expand-lg .navbar-collapse { position: relative; } }
-        @media (max-width: 768px) { .nav-slider { display: none; } }
         .dropdown-menu {
             border: 1px solid rgba(0,0,0,0.06); border-radius: var(--radius); box-shadow: var(--shadow-xl);
             padding: 8px; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px);
@@ -329,7 +326,6 @@
                     </li>
                     <li class="nav-item" id="loginLink"><a class="nav-link" href="login.html"><i class="bi bi-person me-1"></i>Login</a></li>
                 </ul>
-                <div class="nav-slider" id="navSlider"></div>
             </div>
         </div>
     </nav>
@@ -364,7 +360,7 @@
                     </ul>
                 </div>
                 <div class="col-lg-6 text-center">
-                    <img src="assets/buma.webp" alt="BUMA Bantul" class="img-fluid rounded-4 shadow-lg" loading="lazy" style="max-width: 130%; object-fit: contain;">
+                    <img src="assets/buma.webp" alt="Logo BUMA Bantul" class="img-fluid rounded-4 shadow-lg" loading="lazy" style="max-width: 120%; object-fit: contain;">
                 </div>
             </div>
         </div>
@@ -445,7 +441,7 @@
         </div>
     </section>
 
-    <!-- Modal Artikel: konten saja (thubnail sudah di kartu) -->
+    <!-- Modal Artikel -->
     <div class="modal fade" id="artikelModal" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -511,22 +507,17 @@
     <script src="js/api.js"></script>
     <script src="js/auth.js"></script>
     <script>
-        const slider = document.getElementById('navSlider');
-        const navLinks = document.querySelectorAll('#mainNavLinks .nav-link[href^="#"]');
-        const navbarCollapse = document.getElementById('navbarSupportedContent');
-        let lastActiveId = null;
-
-        function moveSlider(link) {
-            if (!link || !slider || !navbarCollapse) return;
-            if (window.innerWidth < 992) { slider.style.opacity = '0'; return; }
-            const linkRect = link.getBoundingClientRect();
-            const navRect = navbarCollapse.getBoundingClientRect();
-            const left = linkRect.left - navRect.left;
-            const width = linkRect.width;
-            slider.style.left = left + 'px';
-            slider.style.width = width + 'px';
-            slider.style.opacity = '1';
+        // ======================== NAVBAR SCROLL EFFECT ========================
+        const navbar = document.getElementById('navbarNav');
+        function handleNavbarScroll() {
+            if (window.scrollY > 50) navbar.classList.add('scrolled');
+            else navbar.classList.remove('scrolled');
         }
+        window.addEventListener('scroll', handleNavbarScroll);
+
+        // ======================== NAVBAR ACTIVE (UNDERLINE) ========================
+        const navLinks = document.querySelectorAll('#mainNavLinks .nav-link[href^="#"]');
+        let lastActiveId = null;
 
         function updateActiveNav() {
             const scrollPos = window.scrollY + 100;
@@ -541,30 +532,40 @@
                 if (lastActiveId !== id) {
                     navLinks.forEach(link => {
                         link.classList.remove('active');
-                        if (link.getAttribute('href') === '#' + id) { link.classList.add('active'); moveSlider(link); }
+                        if (link.getAttribute('href') === '#' + id) link.classList.add('active');
                     });
                     lastActiveId = id;
                 }
             } else {
                 if (lastActiveId !== 'hero') {
+                    navLinks.forEach(l => l.classList.remove('active'));
                     const homeLink = document.querySelector('#mainNavLinks .nav-link[href="#hero"]');
-                    if (homeLink) { navLinks.forEach(l => l.classList.remove('active')); homeLink.classList.add('active'); moveSlider(homeLink); lastActiveId = 'hero'; }
+                    if (homeLink) homeLink.classList.add('active');
+                    lastActiveId = 'hero';
                 }
             }
         }
+        window.addEventListener('scroll', updateActiveNav);
 
-        navLinks.forEach(link => link.addEventListener('click', function() { navLinks.forEach(l => l.classList.remove('active')); this.classList.add('active'); moveSlider(this); lastActiveId = this.getAttribute('href').substring(1); }));
-        window.addEventListener('resize', () => { const activeLink = document.querySelector('#mainNavLinks .nav-link.active[href^="#"]'); if (activeLink) moveSlider(activeLink); });
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                navLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                lastActiveId = this.getAttribute('href').substring(1);
+            });
+        });
 
+        // ======================== SCROLL TO TOP BUTTON ========================
         const btnScrollTop = document.getElementById('btnScrollTop');
         window.addEventListener('scroll', function() {
             handleNavbarScroll();
             updateActiveNav();
-            if (window.scrollY > 500) btnScrollTop.classList.add('visible'); else btnScrollTop.classList.remove('visible');
+            if (window.scrollY > 500) btnScrollTop.classList.add('visible');
+            else btnScrollTop.classList.remove('visible');
         });
         btnScrollTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-        function handleNavbarScroll() { const navbar = document.getElementById('navbarNav'); if (window.scrollY > 50) navbar.classList.add('scrolled'); else navbar.classList.remove('scrolled'); }
 
+        // ======================== STATISTIK ========================
         const CACHE_KEY_STAT = 'statistik_cache';
         function saveStatCache(data) { if (typeof appStorage !== 'undefined') appStorage.set(CACHE_KEY_STAT, JSON.stringify(data)); }
         function loadStatCache() { if (typeof appStorage !== 'undefined') { const raw = appStorage.get(CACHE_KEY_STAT); return raw ? JSON.parse(raw) : null; } return null; }
@@ -597,6 +598,7 @@
             setInterval(async () => { if (document.hidden) return; const fresh = await fetchStatistik(); if (fresh) { saveStatCache(fresh); updateStatUI(fresh); } }, 60000);
         }
 
+        // ======================== ARTIKEL DI BERANDA ========================
         const CACHE_KEY_ARTIKEL = 'artikel_beranda';
         function saveArtikelCache(data) { if (typeof appStorage !== 'undefined') appStorage.set(CACHE_KEY_ARTIKEL, JSON.stringify(data)); }
         function loadArtikelCache() { if (typeof appStorage !== 'undefined') { const raw = appStorage.get(CACHE_KEY_ARTIKEL); return raw ? JSON.parse(raw) : null; } return null; }
@@ -650,10 +652,12 @@
             } catch (e) { if (!cached) { document.getElementById('artikelModalLabel').innerText = 'Error'; document.getElementById('artikelKontenLengkap').innerHTML = '<p>Gagal memuat artikel.</p>'; } }
         }
 
+        // ======================== FAQ TOAST ========================
         var faqToast;
         function toggleFaqToast() { if (!faqToast) faqToast = new bootstrap.Toast(document.getElementById('faqToast'), { autohide: false }); document.getElementById('faqToast').classList.contains('show') ? faqToast.hide() : faqToast.show(); }
         function hubungiAdmin() { const nama = document.getElementById('faqNama').value.trim(), asal = document.getElementById('faqAsalPac').value, kendala = document.getElementById('faqKendala').value.trim(); if (!nama || !asal || !kendala) return alert('Lengkapi Nama, Asal PAC dan Kendala.'); window.open(`https://wa.me/6283866675521?text=Halo Admin BUMA,%0A%0ANama : ${encodeURIComponent(nama)}%0AAsal PAC : ${encodeURIComponent(asal)}%0AKendala : ${encodeURIComponent(kendala)}`, '_blank'); }
 
+        // ======================== FORM KONTAK ========================
         document.getElementById('kontakForm').addEventListener('submit', async e => {
             e.preventDefault();
             if (parseInt(document.getElementById('verifikasi').value) !== 5) return alert('Verifikasi salah!');
@@ -670,35 +674,7 @@
             } catch (err) { alert('Error: ' + err.message); } finally { btn.disabled = false; btn.innerHTML = originalHTML; }
         });
 
-        async function preloadDashboardData() {
-            const token = (typeof appStorage !== 'undefined') ? appStorage.get('token') : null;
-            const role = (typeof appStorage !== 'undefined') ? appStorage.get('role') : null;
-            if (!token || role !== 'admin') return;
-            try {
-                const [usahaRes, usersRes, artikelRes] = await Promise.all([apiCall('getDataUsaha', { token }), apiCall('getUsers', { token }), apiCall('getAllArtikel', { token })]);
-                const d = {
-                    usaha: usahaRes.success ? usahaRes.data : [],
-                    users: usersRes.success ? usersRes.data : [],
-                    artikel: artikelRes.success ? artikelRes.data : [],
-                    data_usaha: usahaRes.success ? usahaRes.data : [],
-                    pengguna: usersRes.success ? usersRes.data : [],
-                    artikel_list: artikelRes.success ? artikelRes.data : []
-                };
-                if (typeof appStorage !== 'undefined') {
-                    appStorage.set('data_usaha_cache', JSON.stringify(d.data_usaha));
-                    appStorage.set('peta_cache', JSON.stringify(d.data_usaha));
-                    appStorage.set('pengguna_cache', JSON.stringify(d.pengguna));
-                    appStorage.set('artikel_cache', JSON.stringify(d.artikel_list));
-                    appStorage.set('dashboard_cache', JSON.stringify({ usaha: d.usaha, users: d.users, artikel: d.artikel }));
-                }
-                sessionStorage.setItem('dashboard_embedded', JSON.stringify({ usaha: d.usaha, users: d.users, artikel: d.artikel }));
-                sessionStorage.setItem('data_usaha_embedded', JSON.stringify(d.data_usaha));
-                sessionStorage.setItem('peta_embedded', JSON.stringify(d.data_usaha));
-                sessionStorage.setItem('pengguna_embedded', JSON.stringify(d.pengguna));
-                sessionStorage.setItem('artikel_embedded', JSON.stringify(d.artikel_list));
-            } catch (e) { }
-        }
-
+        // ======================== TOMBOL HERO (DASHBOARD vs LOGIN) ========================
         function updateHeroButton() {
             const token = (typeof appStorage !== 'undefined') ? appStorage.get('token') : null;
             const role = (typeof appStorage !== 'undefined') ? appStorage.get('role') : null;
@@ -721,6 +697,41 @@
             }
         }
 
+        // ======================== PRELOAD DASHBOARD DATA ========================
+        async function preloadDashboardData() {
+            const token = (typeof appStorage !== 'undefined') ? appStorage.get('token') : null;
+            const role = (typeof appStorage !== 'undefined') ? appStorage.get('role') : null;
+            if (!token || role !== 'admin') return;
+            try {
+                const [usahaRes, usersRes, artikelRes] = await Promise.all([
+                    apiCall('getDataUsaha', { token }),
+                    apiCall('getUsers', { token }),
+                    apiCall('getAllArtikel', { token })
+                ]);
+                const d = {
+                    usaha: usahaRes.success ? usahaRes.data : [],
+                    users: usersRes.success ? usersRes.data : [],
+                    artikel: artikelRes.success ? artikelRes.data : [],
+                    data_usaha: usahaRes.success ? usahaRes.data : [],
+                    pengguna: usersRes.success ? usersRes.data : [],
+                    artikel_list: artikelRes.success ? artikelRes.data : []
+                };
+                if (typeof appStorage !== 'undefined') {
+                    try { appStorage.set('data_usaha_cache', JSON.stringify(d.data_usaha)); } catch(e) {}
+                    try { appStorage.set('peta_cache', JSON.stringify(d.data_usaha)); } catch(e) {}
+                    try { appStorage.set('pengguna_cache', JSON.stringify(d.pengguna)); } catch(e) {}
+                    try { appStorage.set('artikel_cache', JSON.stringify(d.artikel_list)); } catch(e) {}
+                    try { appStorage.set('dashboard_cache', JSON.stringify({ usaha: d.usaha, users: d.users, artikel: d.artikel })); } catch(e) {}
+                }
+                try { sessionStorage.setItem('dashboard_embedded', JSON.stringify({ usaha: d.usaha, users: d.users, artikel: d.artikel })); } catch(e) {}
+                try { sessionStorage.setItem('data_usaha_embedded', JSON.stringify(d.data_usaha)); } catch(e) {}
+                try { sessionStorage.setItem('peta_embedded', JSON.stringify(d.data_usaha)); } catch(e) {}
+                try { sessionStorage.setItem('pengguna_embedded', JSON.stringify(d.pengguna)); } catch(e) {}
+                try { sessionStorage.setItem('artikel_embedded', JSON.stringify(d.artikel_list)); } catch(e) {}
+            } catch (e) { /* silent */ }
+        }
+
+        // ======================== INISIALISASI ========================
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof updateNavbar === 'function') updateNavbar();
             updateHeroButton();
@@ -728,16 +739,7 @@
             initStatistics();
             initArtikel();
             handleNavbarScroll();
-            const activeLink = document.querySelector('#mainNavLinks .nav-link.active[href^="#"]');
-            if (activeLink) {
-                const lr = activeLink.getBoundingClientRect(), nr = navbarCollapse.getBoundingClientRect();
-                slider.style.transition = 'none';
-                slider.style.left = (lr.left - nr.left) + 'px';
-                slider.style.width = lr.width + 'px';
-                slider.style.opacity = '1';
-                requestAnimationFrame(() => requestAnimationFrame(() => { slider.style.transition = 'left 0.5s ease, width 0.5s ease, opacity 0.3s ease'; }));
-                lastActiveId = activeLink.getAttribute('href').substring(1);
-            }
+            updateActiveNav();
         });
     </script>
 </body>

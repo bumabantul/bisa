@@ -53,21 +53,9 @@
       padding: 2rem 1.5rem;
       border-bottom: none;
     }
-    .card-header h3 {
-      margin: 0;
-      font-weight: 700;
-      font-size: 1.5rem;
-      letter-spacing: -0.3px;
-    }
-    .card-header p {
-      opacity: 0.85;
-      margin: 0.5rem 0 0;
-      font-weight: 400;
-      font-size: 0.95rem;
-    }
-    .card-body {
-      padding: 2rem;
-    }
+    .card-header h3 { margin: 0; font-weight: 700; font-size: 1.5rem; letter-spacing: -0.3px; }
+    .card-header p { opacity: 0.85; margin: 0.5rem 0 0; font-weight: 400; font-size: 0.95rem; }
+    .card-body { padding: 2rem; }
     .form-control {
       border-radius: 14px;
       padding: 12px 18px;
@@ -117,21 +105,10 @@
       transform: translateY(-2px);
       box-shadow: 0 12px 30px rgba(16,185,129,0.4);
     }
-    a {
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 500;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .alert {
-      border-radius: var(--radius);
-      font-weight: 500;
-    }
-    hr {
-      border-top: 1px solid #e8ecf1;
-    }
+    a { color: var(--primary); text-decoration: none; font-weight: 500; }
+    a:hover { text-decoration: underline; }
+    .alert { border-radius: var(--radius); font-weight: 500; }
+    hr { border-top: 1px solid #e8ecf1; }
     .modal-content {
       border: none;
       border-radius: var(--radius);
@@ -144,13 +121,8 @@
       border-bottom: none;
       padding: 1.5rem;
     }
-    .modal-title {
-      font-weight: 700;
-      letter-spacing: -0.3px;
-    }
-    .btn-close {
-      filter: brightness(0) invert(1);
-    }
+    .modal-title { font-weight: 700; letter-spacing: -0.3px; }
+    .btn-close { filter: brightness(0) invert(1); }
     .back-link {
       color: rgba(255, 255, 255, 0.8);
       text-decoration: none;
@@ -158,9 +130,20 @@
       transition: var(--transition);
       font-size: 0.95rem;
     }
-    .back-link:hover {
-      color: #fff;
+    .back-link:hover { color: #fff; }
+    .password-toggle {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #64748b;
+      cursor: pointer;
+      z-index: 10;
     }
+    .password-wrapper { position: relative; }
+    .password-wrapper .form-control { padding-right: 45px; }
   </style>
 </head>
 <body>
@@ -180,7 +163,12 @@
         </div>
         <div class="mb-3">
           <label class="form-label fw-semibold">Password</label>
-          <input type="password" class="form-control" id="password" placeholder="******" required>
+          <div class="password-wrapper">
+            <input type="password" class="form-control" id="password" placeholder="******" required>
+            <button type="button" class="password-toggle" onclick="togglePassword('password', this)">
+              <i class="bi bi-eye-slash"></i>
+            </button>
+          </div>
         </div>
         <button type="submit" class="btn btn-primary" id="loginBtn">
           <span class="spinner-border spinner-border-sm d-none" role="status" id="loginSpinner"></span>
@@ -222,7 +210,21 @@
             </div>
             <div class="mb-3">
               <label class="fw-semibold">Password</label>
-              <input type="password" class="form-control" id="regPassword" required>
+              <div class="password-wrapper">
+                <input type="password" class="form-control" id="regPassword" required>
+                <button type="button" class="password-toggle" onclick="togglePassword('regPassword', this)">
+                  <i class="bi bi-eye-slash"></i>
+                </button>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="fw-semibold">Konfirmasi Password</label>
+              <div class="password-wrapper">
+                <input type="password" class="form-control" id="regConfirmPassword" required>
+                <button type="button" class="password-toggle" onclick="togglePassword('regConfirmPassword', this)">
+                  <i class="bi bi-eye-slash"></i>
+                </button>
+              </div>
             </div>
             <div class="mb-3">
               <label class="fw-semibold">Verifikasi: Berapa 2 + 3?</label>
@@ -242,6 +244,22 @@
   <script src="js/api.js"></script>
 
   <script>
+    // Toggle password visibility
+    function togglePassword(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const icon = btn.querySelector('i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+      }
+    }
+
+    // Cek apakah sudah login
     (function() {
       const token = (typeof appStorage !== 'undefined') ? appStorage.get('token') : null;
       const role = (typeof appStorage !== 'undefined') ? appStorage.get('role') : null;
@@ -254,6 +272,7 @@
       }
     })();
 
+    // Login
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('email').value;
@@ -278,7 +297,6 @@
           if (res.role === 'admin') {
             window.location.href = 'admin/preload.html';
           } else {
-            // Member langsung ke dashboard tanpa preload (preload opsional)
             window.location.href = 'member/dashboard-member.html';
           }
         } else {
@@ -297,8 +315,11 @@
       }
     });
 
+    // Registrasi
     document.getElementById('registerForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      // Verifikasi penjumlahan
       const jawaban = parseInt(document.getElementById('regVerifikasi').value);
       if (jawaban !== 5) {
         alert('Jawaban verifikasi salah! Silakan coba lagi.');
@@ -307,11 +328,19 @@
         return;
       }
 
+      // Validasi password dan konfirmasi
+      const password = document.getElementById('regPassword').value;
+      const confirmPassword = document.getElementById('regConfirmPassword').value;
+      if (password !== confirmPassword) {
+        alert('Password dan Konfirmasi Password tidak cocok!');
+        return;
+      }
+
       const data = {
         nama: document.getElementById('regNama').value,
         email: document.getElementById('regEmail').value,
         phone: document.getElementById('regPhone').value,
-        password: document.getElementById('regPassword').value
+        password: password
       };
 
       const registerBtn = document.getElementById('registerBtn');
@@ -342,6 +371,7 @@
       }
     });
 
+    // Reset form saat modal register ditutup
     document.getElementById('registerModal').addEventListener('hidden.bs.modal', function () {
       document.getElementById('registerForm').reset();
     });
