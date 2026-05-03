@@ -31,6 +31,7 @@
     .card-header {
       background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff;
       font-weight: 600; padding: 18px 25px; border-radius: var(--radius) var(--radius) 0 0 !important;
+      display: flex; justify-content: space-between; align-items: center;
     }
     #map { height: 70vh; border-radius: 16px; border: 1px solid rgba(0,0,0,0.1); z-index: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
     @media (max-width: 576px) { #map { height: 60vh; } }
@@ -53,7 +54,13 @@
 <body>
   <div class="main-content">
     <div class="card">
-      <div class="card-header"><i class="bi bi-map"></i> Peta Sebaran Usaha Anggota (Bantul)</div>
+      <div class="card-header">
+        <span><i class="bi bi-map"></i> Peta Sebaran Usaha Anggota (Bantul)</span>
+        <!-- Tombol Refresh Data -->
+        <button class="btn btn-light btn-sm rounded-pill" onclick="loadPeta(true)" title="Segarkan data dari server">
+          <i class="bi bi-arrow-clockwise"></i> Refresh
+        </button>
+      </div>
       <div class="card-body" style="position:relative; padding: 15px;">
         <div id="map"></div>
         <div class="custom-search-container">
@@ -70,10 +77,9 @@
   <script src="../js/api.js"></script>
   <script>
     (function() {
-      // Token fallback
+      // Auth: token fallback dari appStorage atau window.top._authToken
       const token = (typeof appStorage !== 'undefined' && appStorage.get('token')) || (window.top._authToken) || null;
       if (!token) { window.top.location.href = '../login.html'; return; }
-
       const role = (typeof appStorage !== 'undefined' && appStorage.get('role')) || (window.top._authRole) || null;
       if (role !== 'admin') { window.top.location.href = '../login.html'; return; }
 
@@ -81,18 +87,18 @@
       const defaultLat = -7.885, defaultLng = 110.363;
       const CACHE_KEY = 'peta_cache';
 
+      // Fungsi bantu cache
       function saveCache(data) {
         try { if (typeof appStorage !== 'undefined') appStorage.set(CACHE_KEY, JSON.stringify(data)); } catch(e) {}
       }
 
       function loadCache() {
-        // 1. sessionStorage (diisi oleh dashboard-admin.html atau index.html) - TIDAK DIHAPUS
+        // Prioritaskan sessionStorage (diisi oleh dashboard‑admin atau index)
         try {
           const embedded = sessionStorage.getItem('peta_embedded');
           if (embedded) return { data: JSON.parse(embedded), _ts: Date.now() };
         } catch(e) {}
-
-        // 2. appStorage
+        // Lalu appStorage
         try {
           if (typeof appStorage !== 'undefined') {
             const raw = appStorage.get(CACHE_KEY);
@@ -102,15 +108,14 @@
             }
           }
         } catch(e) {}
-
-        // 3. Fallback window.top._fallbackCache
+        // Fallback window.top._fallbackCache
         if (window.top._fallbackCache && window.top._fallbackCache.data_usaha) {
           return { data: window.top._fallbackCache.data_usaha, _ts: 0 };
         }
-
         return null;
       }
 
+      // Inisialisasi peta
       function initMap() {
         if (map) return;
         map = L.map('map').setView([defaultLat, defaultLng], 12);
@@ -122,6 +127,7 @@
         map.addLayer(mcg);
       }
 
+      // Perbarui marker di peta
       function updateMap(data) {
         if (!map || !mcg) initMap();
         mcg.clearLayers();
@@ -164,14 +170,15 @@
         map.invalidateSize();
       }
 
-      // 1. RENDER CACHE (instant, tanpa fetch)
+      // 1. Render dari cache dulu (tampil instan)
       initMap();
       const cached = loadCache();
       if (cached && cached.data) updateMap(cached.data);
 
-      // 2. FETCH BACKGROUND (setelah 30 detik)
+      // 2. Ambil data dari server
       async function loadPeta(force = false) {
         const cache = loadCache();
+        // Jika tidak force dan cache masih segar (<30 detik), lewati
         if (!force && cache && cache._ts && (Date.now() - cache._ts) < 30000) return;
 
         try {
@@ -189,10 +196,15 @@
         }
       }
 
+      // Expose loadPeta ke global untuk tombol Refresh
+      window.loadPeta = loadPeta;
+
+      // Tombol Reset View
       document.getElementById('resetMapView').addEventListener('click', () => {
         if (map) map.setView([defaultLat, defaultLng], 12);
       });
 
+      // Pencarian real‑time
       document.getElementById('searchMap').addEventListener('input', function(e) {
         const txt = e.target.value.toLowerCase().trim();
         if (!txt) return;
@@ -214,7 +226,7 @@
         }
       });
 
-      // Background refresh setelah 30 detik
+      // Background refresh setiap 30 detik
       setTimeout(() => {
         if (!document.hidden) loadPeta();
         setInterval(() => { if (!document.hidden) loadPeta(); }, 30000);

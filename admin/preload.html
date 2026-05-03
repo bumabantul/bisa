@@ -69,13 +69,14 @@
   <script>
     (async function() {
       const token = (typeof appStorage !== 'undefined') ? appStorage.get('token') : null;
-      const role = (typeof appStorage !== 'undefined') ? appStorage.get('role') : null;
+      const role  = (typeof appStorage !== 'undefined') ? appStorage.get('role') : null;
       if (!token || role !== 'admin') {
         window.location.href = '../login.html';
         return;
       }
 
       try {
+        // Ambil tiga endpoint utama secara paralel
         const [usahaRes, usersRes, artikelRes] = await Promise.all([
           apiCall('getDataUsaha', { token }),
           apiCall('getUsers', { token }),
@@ -93,36 +94,38 @@
           artikel_list: artikelRes.success ? artikelRes.data : []
         };
 
-        let cacheOK = true;
+        // Simpan ke appStorage jika memungkinkan
+        let cacheOk = true;
         try {
           if (typeof appStorage !== 'undefined') {
-            appStorage.set('data_usaha_cache', JSON.stringify(dashboardData.data_usaha));
-            appStorage.set('peta_cache',           JSON.stringify(dashboardData.data_usaha));
-            appStorage.set('pengguna_cache',       JSON.stringify(dashboardData.pengguna));
-            appStorage.set('artikel_cache',        JSON.stringify(dashboardData.artikel_list));
-            appStorage.set('dashboard_cache',      JSON.stringify({
+            appStorage.set('data_usaha_cache',  JSON.stringify(dashboardData.data_usaha));
+            appStorage.set('peta_cache',        JSON.stringify(dashboardData.data_usaha));
+            appStorage.set('pengguna_cache',    JSON.stringify(dashboardData.pengguna));
+            appStorage.set('artikel_cache',     JSON.stringify(dashboardData.artikel_list));
+            appStorage.set('dashboard_cache',   JSON.stringify({
               usaha: dashboardData.usaha,
               users: dashboardData.users,
               artikel: dashboardData.artikel
             }));
-            const verify = appStorage.get('dashboard_cache');
-            if (!verify) cacheOK = false;
+            // Pastikan data benar-benar tersimpan
+            if (!appStorage.get('dashboard_cache')) cacheOk = false;
           } else {
-            cacheOK = false;
+            cacheOk = false;
           }
-        } catch (e) { cacheOK = false; }
+        } catch (e) { cacheOk = false; }
 
-        if (!cacheOK) {
+        // Jika appStorage gagal atau tidak ada, gunakan window.name sebagai fallback
+        if (!cacheOk) {
           window.name = JSON.stringify(dashboardData);
         } else {
           window.name = '';
         }
 
       } catch (e) {
-        console.warn('Preload gagal, tetap lanjut ke dashboard.');
+        console.warn('Preload gagal sebagian, tetap lanjut ke dashboard.');
       }
 
-      // Jeda sangat singkat agar pengguna melihat animasi sebentar
+      // Redirect setelah jeda singkat agar animasi terlihat
       setTimeout(() => { window.location.href = 'dashboard-admin.html'; }, 400);
     })();
 
