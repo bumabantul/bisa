@@ -15,16 +15,38 @@
       --dark: #0f172a; --light: #f8fafc; --card-bg: #ffffff; --glass-bg: rgba(255,255,255,0.75);
       --text: #1e293b; --text-muted: #64748b; --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
       --shadow: 0 4px 6px rgba(0,0,0,0.05); --shadow-lg: 0 20px 40px rgba(0,0,0,0.08);
-      --radius: 20px; --transition: 0.3s;
+      --radius: 20px; --transition: 0.3s; --sidebar-width: 260px;
     }
     * { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: var(--light); color: var(--text); padding-bottom: 2rem; }
+    body { background: var(--light); overflow-x: hidden; }
+    #sidebar {
+      width: var(--sidebar-width); background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%);
+      color: #fff; position: fixed; top: 0; left: 0; height: 100vh; z-index: 1000;
+      box-shadow: var(--shadow-lg); display: flex; flex-direction: column;
+    }
+    #sidebar .sidebar-header { padding: 25px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    #sidebar .sidebar-header h4 { font-weight: 700; font-size: 1.5rem; }
+    #sidebar .sidebar-header p { color: rgba(255,255,255,0.6); font-size: 0.85rem; }
+    #sidebar ul.nav { flex: 1; padding: 1rem 0; list-style: none; }
+    #sidebar ul.nav li a {
+      display: flex; align-items: center; padding: 12px 25px; color: rgba(255,255,255,0.7);
+      text-decoration: none; font-weight: 500; transition: all 0.3s;
+      border-left: 4px solid transparent; margin: 4px 10px; border-radius: 10px;
+    }
+    #sidebar ul.nav li a i { margin-right: 15px; width: 22px; font-size: 1.2rem; }
+    #sidebar ul.nav li a:hover, #sidebar ul.nav li a.active {
+      background: rgba(99,102,241,0.2); color: #fff; border-left-color: var(--primary);
+    }
+    #sidebar .sidebar-footer { padding: 1rem; border-top: 1px solid rgba(255,255,255,0.1); }
+    #content { margin-left: var(--sidebar-width); padding: 20px; min-height: 100vh; transition: margin-left 0.3s ease; }
+    @media (max-width: 768px) {
+      #sidebar { display: none; }
+      #content { margin-left: 0 !important; }
+    }
     .navbar {
       background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.4);
-      box-shadow: var(--shadow-sm); border-radius: var(--radius); margin: 20px 20px 25px 20px; padding: 15px 25px;
+      box-shadow: var(--shadow-sm); border-radius: var(--radius); margin-bottom: 25px; padding: 15px 25px;
     }
-    .navbar-brand { font-weight: 700; color: var(--dark) !important; display: flex; align-items: center; gap: 10px; font-size: 1rem; text-decoration: none; }
-    .navbar-brand img { height: 42px; border-radius: 10px; }
     .form-card {
       background: var(--card-bg); border: 1px solid rgba(0,0,0,0.04); border-radius: 28px;
       box-shadow: var(--shadow-lg); overflow: hidden; max-width: 800px; margin: 0 auto;
@@ -54,7 +76,6 @@
     .photo-preview { max-width: 200px; max-height: 200px; margin-top: 10px; border-radius: 12px; border: 2px solid #e8ecf1; padding: 5px; }
     .alert { border-radius: var(--radius); }
     @media (max-width: 768px) {
-      .navbar { margin: 10px; padding: 10px 15px; }
       .form-card .card-body { padding: 1.5rem; }
       #map { height: 250px; }
     }
@@ -65,29 +86,44 @@
   </style>
 </head>
 <body>
-  <!-- Navbar Member -->
-  <nav class="navbar navbar-expand">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="dashboard-member.html">
-        <img src="../assets/logo buma.webp" alt="BUMA Bantul" height="40">
-        <span><strong>BUMA</strong> Member</span>
-      </a>
-      <div class="ms-auto d-flex align-items-center gap-2">
-        <a href="dashboard-member.html" class="btn btn-outline-secondary btn-sm rounded-pill"><i class="bi bi-arrow-left me-1"></i>Kembali</a>
-        <div class="dropdown">
-          <button class="btn btn-outline-secondary dropdown-toggle rounded-pill btn-sm" type="button" data-bs-toggle="dropdown">
-            <i class="bi bi-person-circle"></i> <span id="userDisplay">Member</span>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="../index.html">Beranda</a></li>
-            <li><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li>
-          </ul>
-        </div>
-      </div>
+  <!-- Sidebar -->
+  <nav id="sidebar">
+    <div class="sidebar-header">
+      <h4>BUMA Member</h4>
+      <p>Kabupaten Bantul</p>
+    </div>
+    <ul class="nav flex-column">
+      <li><a href="dashboard-member.html"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+      <li><a href="data-usaha-member.html" class="active"><i class="bi bi-plus-circle"></i> Tambah Usaha</a></li>
+      <li><a href="challenges.html"><i class="bi bi-puzzle"></i> Challenge Quiz</a></li>
+      <li><a href="analisis-usaha.html"><i class="bi bi-graph-up"></i> Analisis Usaha</a></li>
+      <li><a href="profile-member.html"><i class="bi bi-person-circle"></i> Profil</a></li>
+      <li><a href="../index.html"><i class="bi bi-house-door"></i> Beranda</a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <a href="#" onclick="logout()" class="btn btn-outline-light w-100 rounded-pill"><i class="bi bi-box-arrow-right me-1"></i>Logout</a>
     </div>
   </nav>
 
-  <div class="container">
+  <!-- Konten -->
+  <div id="content">
+    <nav class="navbar navbar-expand">
+      <div class="container-fluid">
+        <span class="navbar-brand fw-bold text-dark">Tambah / Edit Usaha</span>
+        <div class="ms-auto">
+          <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle rounded-pill btn-sm" type="button" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle"></i> <span id="userDisplay">Member</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="../index.html">Beranda</a></li>
+              <li><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+
     <div class="form-card">
       <div class="card-header text-center" id="formTitle">
         <i class="bi bi-building me-2"></i> <span id="titleText">Tambah Usaha</span>
@@ -159,17 +195,14 @@
   <script src="../js/auth.js"></script>
   <script>
     (function() {
-      // Auth
+      // Autentikasi
       const token = (typeof appStorage !== 'undefined' && appStorage.get('token')) || (window._authToken) || null;
       const role = (typeof appStorage !== 'undefined' && appStorage.get('role')) || (window._authRole) || null;
-      if (!token || role !== 'member') {
-        window.location.href = '../login.html';
-        return;
-      }
+      if (!token || role !== 'member') { window.location.href = '../login.html'; return; }
 
       document.getElementById('userDisplay').innerText = (typeof appStorage !== 'undefined') ? (appStorage.get('nama') || 'Member') : 'Member';
 
-      // Map
+      // Inisialisasi peta
       const defaultLat = -7.885, defaultLng = 110.363;
       let map, marker;
 
@@ -200,15 +233,14 @@
         document.getElementById('lokasiUsaha').value = `Latitude: ${latFull}, Longitude: ${lngFull}`;
       }
 
+      // Geolokasi
       document.getElementById('getLocationBtn').addEventListener('click', function() {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
             function(position) {
-              const lat = position.coords.latitude;
-              const lng = position.coords.longitude;
-              map.setView([lat, lng], 15);
-              marker.setLatLng([lat, lng]);
-              updateMapInput(lat, lng);
+              map.setView([position.coords.latitude, position.coords.longitude], 15);
+              marker.setLatLng([position.coords.latitude, position.coords.longitude]);
+              updateMapInput(position.coords.latitude, position.coords.longitude);
             },
             function(error) { alert('Tidak dapat mengambil lokasi: ' + error.message); },
             { enableHighAccuracy: true }
@@ -257,9 +289,12 @@
         customContainer.style.display = 'none';
         customInput.removeAttribute('required');
         initMap(defaultLat, defaultLng);
+        document.getElementById('editId').value = '';
+        document.getElementById('titleText').innerText = 'Tambah Usaha';
+        document.getElementById('btnText').innerText = 'Simpan Data Usaha';
       });
 
-      // ======================== MODE EDIT ========================
+      // Cek mode edit
       const urlParams = new URLSearchParams(window.location.search);
       const editId = urlParams.get('edit');
 
@@ -272,22 +307,23 @@
             document.getElementById('namaUsaha').value = item.namaUsaha || '';
             document.getElementById('pemilik').value = item.pemilik || '';
             document.getElementById('asalPac').value = item.asalPac || '';
-            document.getElementById('jenisUsaha').value = item.jenisUsaha || '';
             document.getElementById('alamat').value = item.alamat || '';
             document.getElementById('telepon').value = item.telepon || '';
             document.getElementById('deskripsi').value = item.deskripsi || '';
             document.getElementById('lokasiUsaha').value = item.lat || '';
 
-            // Cek apakah jenisUsaha termasuk dalam opsi, jika tidak tampilkan custom
+            // Jenis usaha
             const jenisOpts = Array.from(document.getElementById('jenisUsaha').options).map(o => o.value);
             if (!jenisOpts.includes(item.jenisUsaha) && item.jenisUsaha) {
               document.getElementById('jenisUsaha').value = 'Lainnya';
               customContainer.style.display = 'block';
               customInput.value = item.jenisUsaha;
               customInput.setAttribute('required', true);
+            } else {
+              document.getElementById('jenisUsaha').value = item.jenisUsaha || '';
             }
 
-            // Parse koordinat dari string lat
+            // Koordinat
             let lat = defaultLat, lng = defaultLng;
             const latRaw = String(item.lat || '');
             if (latRaw.includes('Latitude')) {
@@ -299,11 +335,8 @@
               lng = item.lng && !isNaN(parseFloat(item.lng)) ? parseFloat(item.lng) : defaultLng;
             }
 
-            // Update judul form
             document.getElementById('titleText').innerText = 'Edit Usaha';
             document.getElementById('btnText').innerText = 'Perbarui Data Usaha';
-
-            // Init map dengan koordinat
             initMap(lat, lng);
           } else {
             showAlert('danger', 'Gagal memuat data: ' + res.message);
@@ -319,7 +352,7 @@
         initMap();
       }
 
-      // ======================== SUBMIT FORM ========================
+      // Submit form
       document.getElementById('usahaForm').addEventListener('submit', async function(e) {
         e.preventDefault();
 
@@ -408,6 +441,12 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
         setTimeout(() => alertDiv.classList.add('d-none'), 6000);
       }
+
+      window.logout = function() {
+        if (typeof appStorage !== 'undefined') appStorage.clear();
+        if (token) apiCall('logout', { token }).catch(() => {});
+        window.location.href = '../index.html';
+      };
     })();
   </script>
 </body>

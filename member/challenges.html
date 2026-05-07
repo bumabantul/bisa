@@ -13,16 +13,40 @@
       --primary: #6366f1; --primary-dark: #4f46e5; --secondary: #8b5cf6; --accent: #06b6d4;
       --dark: #0f172a; --light: #f8fafc; --text: #1e293b;
       --shadow: 0 4px 6px rgba(0,0,0,0.05); --shadow-lg: 0 20px 40px rgba(0,0,0,0.08);
-      --radius: 20px; --transition: 0.3s;
+      --radius: 20px; --transition: 0.3s; --sidebar-width: 260px;
     }
     * { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: linear-gradient(135deg, #f5f7fa 0%, #eef0f5 100%); min-height: 100vh; }
+    body { background: var(--light); min-height: 100vh; }
+    #sidebar {
+      width: var(--sidebar-width); background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%);
+      color: #fff; position: fixed; top: 0; left: 0; height: 100vh; z-index: 1000;
+      box-shadow: var(--shadow-lg); display: flex; flex-direction: column;
+    }
+    #sidebar .sidebar-header { padding: 25px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    #sidebar .sidebar-header h4 { font-weight: 700; font-size: 1.5rem; }
+    #sidebar .sidebar-header p { color: rgba(255,255,255,0.6); font-size: 0.85rem; }
+    #sidebar ul.nav { flex: 1; padding: 1rem 0; list-style: none; }
+    #sidebar ul.nav li a {
+      display: flex; align-items: center; padding: 12px 25px; color: rgba(255,255,255,0.7);
+      text-decoration: none; font-weight: 500; transition: all 0.3s;
+      border-left: 4px solid transparent; margin: 4px 10px; border-radius: 10px;
+    }
+    #sidebar ul.nav li a i { margin-right: 15px; width: 22px; font-size: 1.2rem; }
+    #sidebar ul.nav li a:hover, #sidebar ul.nav li a.active {
+      background: rgba(99,102,241,0.2); color: #fff; border-left-color: var(--primary);
+    }
+    #sidebar .sidebar-footer { padding: 1rem; border-top: 1px solid rgba(255,255,255,0.1); }
+    #content { margin-left: var(--sidebar-width); padding: 20px; min-height: 100vh; transition: margin-left 0.3s ease; }
+    @media (max-width: 768px) {
+      #sidebar { display: none; }
+      #content { margin-left: 0 !important; }
+    }
     .navbar {
       background: rgba(255,255,255,0.85); backdrop-filter: blur(20px);
       border: 1px solid rgba(255,255,255,0.6); box-shadow: var(--shadow);
-      border-radius: 0 0 var(--radius) var(--radius);
+      border-radius: var(--radius); margin-bottom: 25px; padding: 15px 25px;
     }
-    .container-main { padding: 2rem 1rem; }
+    .container-main { padding: 1rem 0; }
     .level-card {
       background: white; border-radius: var(--radius); padding: 2rem 1rem; text-align: center;
       transition: var(--transition); box-shadow: var(--shadow); position: relative;
@@ -48,33 +72,59 @@
   </style>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg py-3 px-3">
-    <div class="container-fluid">
-      <a class="navbar-brand fw-bold" href="dashboard-member.html">
-        <i class="bi bi-arrow-left me-2"></i> Dashboard
-      </a>
-      <span class="navbar-text fw-semibold"><i class="bi bi-puzzle-fill me-1"></i> Challenge Quiz</span>
+  <!-- Sidebar -->
+  <nav id="sidebar">
+    <div class="sidebar-header">
+      <h4>BUMA Member</h4>
+      <p>Kabupaten Bantul</p>
+    </div>
+    <ul class="nav flex-column">
+      <li><a href="dashboard-member.html"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+      <li><a href="data-usaha-member.html"><i class="bi bi-plus-circle"></i> Tambah Usaha</a></li>
+      <li><a href="challenges.html" class="active"><i class="bi bi-puzzle"></i> Challenge Quiz</a></li>
+      <li><a href="analisis-usaha.html"><i class="bi bi-graph-up"></i> Analisis Usaha</a></li>
+      <li><a href="profile-member.html"><i class="bi bi-person-circle"></i> Profil</a></li>
+      <li><a href="../index.html"><i class="bi bi-house-door"></i> Beranda</a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <a href="#" onclick="logout()" class="btn btn-outline-light w-100 rounded-pill"><i class="bi bi-box-arrow-right me-1"></i>Logout</a>
     </div>
   </nav>
 
-  <div class="container-main container">
-    <div class="text-center mb-5">
-      <h2 class="fw-bold">Selesaikan 5 Level</h2>
-      <p class="text-muted">Untuk membuka fitur <strong>Analisis Usaha</strong>. Jawab pertanyaan dengan benar di setiap level.</p>
-    </div>
-
-    <div class="row g-4 justify-content-center" id="levelContainer">
-      <!-- Level cards akan di-render oleh JavaScript -->
-    </div>
-
-    <div class="text-center mt-5" id="unlockArea" style="display: none;">
-      <div class="alert alert-success rounded-pill d-inline-block">
-        <i class="bi bi-unlock-fill me-2"></i> Semua level selesai! Anda dapat mengakses <strong>Analisis Usaha</strong>.
+  <!-- Konten -->
+  <div id="content">
+    <nav class="navbar navbar-expand">
+      <div class="container-fluid">
+        <span class="navbar-brand fw-bold text-dark">Challenge Quiz</span>
+        <div class="ms-auto">
+          <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle rounded-pill btn-sm" type="button" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle"></i> <span id="userDisplay">Member</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="../index.html">Beranda</a></li>
+              <li><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li>
+            </ul>
+          </div>
+        </div>
       </div>
-      <br>
-      <a href="analisis-usaha.html" class="btn btn-primary btn-lg rounded-pill mt-3 px-5">
-        <i class="bi bi-graph-up-arrow me-2"></i> Buka Analisis Usaha
-      </a>
+    </nav>
+
+    <div class="container-main">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold">Selesaikan 5 Level</h2>
+        <p class="text-muted">Untuk membuka fitur <strong>Analisis Usaha</strong>. Jawab pertanyaan dengan benar di setiap level.</p>
+      </div>
+      <div class="row g-4 justify-content-center" id="levelContainer"></div>
+      <div class="text-center mt-5" id="unlockArea" style="display: none;">
+        <div class="alert alert-success rounded-pill d-inline-block">
+          <i class="bi bi-unlock-fill me-2"></i> Semua level selesai! Anda dapat mengakses <strong>Analisis Usaha</strong>.
+        </div>
+        <br>
+        <a href="analisis-usaha.html" class="btn btn-primary btn-lg rounded-pill mt-3 px-5">
+          <i class="bi bi-graph-up-arrow me-2"></i> Buka Analisis Usaha
+        </a>
+      </div>
     </div>
   </div>
 
@@ -105,7 +155,7 @@
   <script src="../js/api.js"></script>
   <script src="../js/auth.js"></script>
   <script>
-    // ==================== AUTH ====================
+    // Autentikasi dasar
     if (typeof appStorage === 'undefined') {
       window.location.href = '../login.html';
     }
@@ -115,10 +165,11 @@
       window.location.href = '../login.html';
     }
 
+    document.getElementById('userDisplay').innerText = (typeof appStorage !== 'undefined') ? (appStorage.get('nama') || 'Member') : 'Member';
+
     let quizModal;
     let currentLevel = 0;
     let currentQuestion = null;
-    let allLevelsComplete = false;
     let selectedOption = null;
     let isAnswering = false;
 
@@ -127,7 +178,7 @@
       loadLevels();
     });
 
-    // ==================== LOAD LEVELS ====================
+    // Memuat status level dan soal
     async function loadLevels() {
       try {
         const res = await apiCall('getChallenges', { token });
@@ -150,13 +201,7 @@
       const icons = ['1-circle', '2-circle', '3-circle', '4-circle', '5-circle'];
       for (let lv = 1; lv <= 5; lv++) {
         const status = levels[lv] || 'locked';
-        const hasQuestions = questions[lv] && questions[lv].length > 0;
-        let statusText = '';
-        let iconClass = '';
-        let btnDisabled = false;
-        let btnText = 'Mulai';
-        let cardClass = '';
-
+        let statusText = '', iconClass = '', btnDisabled = false, btnText = 'Mulai', cardClass = '';
         if (status === 'completed') {
           iconClass = 'bi-check-circle-fill text-success';
           statusText = 'Selesai';
@@ -175,7 +220,6 @@
           btnDisabled = true;
           cardClass = 'locked';
         }
-
         container.innerHTML += `
           <div class="col-lg-4 col-md-6 col-sm-12">
             <div class="level-card ${cardClass}">
@@ -189,18 +233,15 @@
     }
 
     function checkAllComplete(levels) {
-      allLevelsComplete = [1,2,3,4,5].every(lv => levels[lv] === 'completed');
-      document.getElementById('unlockArea').style.display = allLevelsComplete ? 'block' : 'none';
+      const all = [1,2,3,4,5].every(lv => levels[lv] === 'completed');
+      document.getElementById('unlockArea').style.display = all ? 'block' : 'none';
     }
 
-    // ==================== START LEVEL ====================
+    // Memulai level
     window.startLevel = async function(level) {
-      // Panggil startLevel untuk mengubah status ke in_progress
-      try {
-        await apiCall('startLevel', { token, level });
-      } catch(e) { console.warn('startLevel error:', e); }
-
-      // Ambil soal terbaru
+      // Coba ubah status menjadi in_progress (fire-and-forget)
+      try { await apiCall('startLevel', { token, level }); } catch(e) {}
+      // Ambil data terbaru
       const res = await apiCall('getChallenges', { token });
       if (!res.success) return alert('Gagal memuat soal.');
       const questions = res.questions[level];
@@ -208,7 +249,6 @@
         alert('Belum ada soal untuk level ini.');
         return;
       }
-      // Ambil soal pertama (bisa di-loop jika banyak, tapi kita asumsikan satu soal per level)
       currentQuestion = questions[0];
       currentLevel = level;
       document.getElementById('quizTitle').innerText = `Level ${level}`;
@@ -236,7 +276,7 @@
       btnEl.classList.add('selected');
     }
 
-    // ==================== SUBMIT ANSWER ====================
+    // Kirim jawaban
     window.submitAnswer = async function() {
       if (!selectedOption) {
         alert('Pilih jawaban terlebih dahulu.');
@@ -246,13 +286,11 @@
       isAnswering = true;
       document.getElementById('submitAnswerBtn').disabled = true;
       const fb = document.getElementById('feedbackArea');
-
       try {
         const res = await apiCall('submitAnswer', { token, level: currentLevel, answer: selectedOption });
         if (res.correct) {
           fb.innerHTML = '<div class="feedback-correct fw-bold fs-5"><i class="bi bi-check-circle-fill me-2"></i>Jawaban Benar!</div>';
           fb.innerHTML += '<p class="text-muted">Level selesai. Kembali ke daftar level...</p>';
-          // delay lalu tutup modal dan refresh
           setTimeout(() => {
             quizModal.hide();
             isAnswering = false;
@@ -274,7 +312,14 @@
 
     window.closeQuiz = function() {
       quizModal.hide();
-      loadLevels(); // refresh status level
+      loadLevels();
+    };
+
+    // Logout
+    window.logout = function() {
+      if (typeof appStorage !== 'undefined') appStorage.clear();
+      if (token) apiCall('logout', { token }).catch(() => {});
+      window.location.href = '../index.html';
     };
   </script>
 </body>

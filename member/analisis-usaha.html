@@ -11,19 +11,39 @@
   <style>
     :root {
       --primary: #6366f1; --secondary: #8b5cf6; --dark: #0f172a; --light: #f8fafc;
-      --radius: 20px; --transition: 0.3s;
+      --radius: 20px; --transition: 0.3s; --sidebar-width: 260px;
     }
     * { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
     body { background: var(--light); min-height: 100vh; }
-    .navbar {
-      background: rgba(255,255,255,0.8); backdrop-filter: blur(20px);
-      border: 1px solid rgba(255,255,255,0.4); box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-      border-radius: var(--radius); margin: 20px 20px 25px 20px; padding: 15px 25px;
-      display: flex; justify-content: space-between; align-items: center;
+    #sidebar {
+      width: var(--sidebar-width); background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%);
+      color: #fff; position: fixed; top: 0; left: 0; height: 100vh; z-index: 1000;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08); display: flex; flex-direction: column;
     }
-    .navbar-brand { font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 10px; font-size: 1rem; text-decoration: none; }
-    .navbar-brand img { height: 42px; border-radius: 10px; }
-    .container-main { padding: 20px; }
+    #sidebar .sidebar-header { padding: 25px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    #sidebar .sidebar-header h4 { font-weight: 700; font-size: 1.5rem; }
+    #sidebar .sidebar-header p { color: rgba(255,255,255,0.6); font-size: 0.85rem; }
+    #sidebar ul.nav { flex: 1; padding: 1rem 0; list-style: none; }
+    #sidebar ul.nav li a {
+      display: flex; align-items: center; padding: 12px 25px; color: rgba(255,255,255,0.7);
+      text-decoration: none; font-weight: 500; transition: all 0.3s;
+      border-left: 4px solid transparent; margin: 4px 10px; border-radius: 10px;
+    }
+    #sidebar ul.nav li a i { margin-right: 15px; width: 22px; font-size: 1.2rem; }
+    #sidebar ul.nav li a:hover, #sidebar ul.nav li a.active {
+      background: rgba(99,102,241,0.2); color: #fff; border-left-color: var(--primary);
+    }
+    #sidebar .sidebar-footer { padding: 1rem; border-top: 1px solid rgba(255,255,255,0.1); }
+    #content { margin-left: var(--sidebar-width); padding: 20px; min-height: 100vh; transition: margin-left 0.3s ease; }
+    @media (max-width: 768px) {
+      #sidebar { display: none; }
+      #content { margin-left: 0 !important; }
+    }
+    .navbar {
+      background: rgba(255,255,255,0.85); backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.6); box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      border-radius: var(--radius); margin-bottom: 25px; padding: 15px 25px;
+    }
     .card {
       border: 1px solid rgba(0,0,0,0.04); border-radius: var(--radius);
       box-shadow: 0 20px 40px rgba(0,0,0,0.08); background: white; margin-bottom: 25px;
@@ -31,13 +51,13 @@
     .card-header {
       background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff;
       font-weight: 600; padding: 18px 25px; border-radius: var(--radius) var(--radius) 0 0 !important;
-      display: flex; justify-content: space-between; align-items: center;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
     }
     .table { background: white; border-radius: 15px; overflow: hidden; }
     .table thead th { background: #f8fafc; font-weight: 600; text-transform: uppercase; }
     .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; border-radius: 50px; padding: 10px 20px; font-weight: 600; color: #fff; }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(99,102,241,0.4); }
-    .btn-outline-primary, .btn-outline-secondary { border-radius: 50px; }
+    .btn-outline-primary, .btn-outline-secondary, .btn-light { border-radius: 50px; }
     .form-control, .form-select { border-radius: 12px; padding: 10px 15px; border: 2px solid #e8ecf1; }
     .form-control:focus, .form-select:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99,102,241,0.08); }
     .metric-card { background: #f8f9ff; border-radius: 16px; padding: 15px; text-align: center; }
@@ -56,35 +76,51 @@
   </style>
 </head>
 <body>
-  <!-- Navbar Member -->
-  <nav class="navbar">
-    <a class="navbar-brand" href="dashboard-member.html">
-      <img src="../assets/logo buma.webp" alt="BUMA Bantul">
-      <span><strong>BUMA</strong> Member</span>
-    </a>
-    <div class="d-flex align-items-center gap-2">
-      <a href="dashboard-member.html" class="btn btn-outline-secondary btn-sm rounded-pill"><i class="bi bi-arrow-left me-1"></i>Kembali</a>
-      <div class="dropdown">
-        <button class="btn btn-outline-secondary dropdown-toggle rounded-pill btn-sm" type="button" data-bs-toggle="dropdown">
-          <i class="bi bi-person-circle"></i> <span id="userDisplay">Member</span>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end">
-          <li><a class="dropdown-item" href="../index.html">Beranda</a></li>
-          <li><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li>
-        </ul>
-      </div>
+  <!-- Sidebar -->
+  <nav id="sidebar">
+    <div class="sidebar-header">
+      <h4>BUMA Member</h4>
+      <p>Kabupaten Bantul</p>
+    </div>
+    <ul class="nav flex-column">
+      <li><a href="dashboard-member.html"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+      <li><a href="data-usaha-member.html"><i class="bi bi-plus-circle"></i> Tambah Usaha</a></li>
+      <li><a href="challenges.html"><i class="bi bi-puzzle"></i> Challenge Quiz</a></li>
+      <li><a href="analisis-usaha.html" class="active"><i class="bi bi-graph-up"></i> Analisis Usaha</a></li>
+      <li><a href="profile-member.html"><i class="bi bi-person-circle"></i> Profil</a></li>
+      <li><a href="../index.html"><i class="bi bi-house-door"></i> Beranda</a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <a href="#" onclick="logout()" class="btn btn-outline-light w-100 rounded-pill"><i class="bi bi-box-arrow-right me-1"></i>Logout</a>
     </div>
   </nav>
 
-  <div class="container-main">
+  <!-- Konten -->
+  <div id="content">
+    <nav class="navbar navbar-expand">
+      <div class="container-fluid">
+        <span class="navbar-brand fw-bold text-dark">Analisis Usaha</span>
+        <div class="ms-auto">
+          <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle rounded-pill btn-sm" type="button" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle"></i> <span id="userDisplay">Member</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="../index.html">Beranda</a></li>
+              <li><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+
     <div class="card">
       <div class="card-header">
         <span><i class="bi bi-graph-up me-2"></i>Analisis Kelayakan Usaha Saya</span>
-        <div>
-          <button class="btn btn-light btn-sm rounded-pill me-1" onclick="tampilkanTutorial()" title="Panduan Pengisian">
-            <i class="bi bi-question-circle"></i>
-          </button>
+        <div class="d-flex gap-2">
+          <button class="btn btn-light btn-sm rounded-pill me-1" onclick="tampilkanTutorial()" title="Panduan"><i class="bi bi-question-circle"></i></button>
           <button class="btn btn-light btn-sm rounded-pill" onclick="modalTambah()"><i class="bi bi-plus-circle"></i> Tambah Analisis</button>
+          <button class="btn btn-light btn-sm rounded-pill" onclick="loadData()" title="Segarkan"><i class="bi bi-arrow-clockwise"></i></button>
         </div>
       </div>
       <div class="card-body">
@@ -123,15 +159,15 @@
             <!-- Hasil Kalkulasi + Rekomendasi -->
             <div id="kalkulasiSection" style="display:none;">
               <hr><h6 class="text-primary"><i class="bi bi-calculator me-1"></i>Hasil Perhitungan</h6>
-              <div class="row">
-                <div class="col-md-3 mb-2"><div class="metric-card"><div class="metric-value" id="labaUnit">-</div><small>Laba/Unit</small></div></div>
-                <div class="col-md-3 mb-2"><div class="metric-card"><div class="metric-value" id="margin">-</div><small>Margin (%)</small></div></div>
-                <div class="col-md-3 mb-2"><div class="metric-card"><div class="metric-value" id="roi">-</div><small>ROI (%)</small></div></div>
-                <div class="col-md-3 mb-2"><div class="metric-card"><div class="metric-value" id="payback">-</div><small>Payback (bln)</small></div></div>
-                <div class="col-md-6 mb-2"><div class="metric-card"><div class="metric-value" id="irr">-</div><small>IRR (%)</small></div></div>
-                <div class="col-md-6 mb-2"><div class="metric-card"><div class="metric-value" id="marr">12%</div><small>MARR (asumsi)</small></div></div>
+              <div class="row g-2">
+                <div class="col-md-3 col-6"><div class="metric-card"><div class="metric-value" id="labaUnit">-</div><small>Laba/Unit</small></div></div>
+                <div class="col-md-3 col-6"><div class="metric-card"><div class="metric-value" id="margin">-</div><small>Margin (%)</small></div></div>
+                <div class="col-md-3 col-6"><div class="metric-card"><div class="metric-value" id="roi">-</div><small>ROI (%)</small></div></div>
+                <div class="col-md-3 col-6"><div class="metric-card"><div class="metric-value" id="payback">-</div><small>Payback (bln)</small></div></div>
+                <div class="col-md-6 col-6"><div class="metric-card"><div class="metric-value" id="irr">-</div><small>IRR (%)</small></div></div>
+                <div class="col-md-6 col-6"><div class="metric-card"><div class="metric-value" id="marr">12%</div><small>MARR (asumsi)</small></div></div>
               </div>
-              <div class="rekomendasi-box" id="rekomendasiBox">
+              <div class="rekomendasi-box mt-3">
                 <i class="bi bi-lightbulb-fill"></i>
                 <div id="rekomendasiText"></div>
               </div>
@@ -152,28 +188,27 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
-          <h5 class="modal-title text-white"><i class="bi bi-book me-2"></i>Panduan Lengkap Analisis Usaha</h5>
+          <h5 class="modal-title text-white"><i class="bi bi-book me-2"></i>Panduan Analisis Usaha</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <!-- tutorial content sama seperti di versi admin -->
           <h6><i class="bi bi-1-circle-fill text-primary me-2"></i> Apa itu Analisis Kelayakan Usaha?</h6>
-          <p>Fitur ini membantu Anda mengevaluasi potensi keuntungan, waktu balik modal, dan kelayakan investasi dari sebuah usaha. Data yang Anda masukkan akan diolah secara otomatis untuk menghasilkan indikator keuangan utama.</p>
-          <h6><i class="bi bi-2-circle-fill text-primary me-2"></i> Cara Mengisi Form</h6>
+          <p>Fitur ini mengevaluasi potensi keuntungan, waktu balik modal, dan kelayakan investasi sebuah usaha berdasarkan data yang Anda masukkan. Indikator dihitung otomatis dan disertai rekomendasi.</p>
+          <h6><i class="bi bi-2-circle-fill text-primary me-2"></i> Cara Mengisi</h6>
           <ul>
-            <li><strong>Pilih Usaha</strong> – Pilih usaha yang sudah terdaftar di sistem.</li>
-            <li><strong>HPP per Unit (Rp)</strong> – Biaya pokok produksi untuk satu satuan produk (bahan baku, kemasan, tenaga kerja langsung per buah).</li>
-            <li><strong>Harga Jual per Unit (Rp)</strong> – Harga yang Anda tetapkan untuk menjual satu satuan produk.</li>
-            <li><strong>Omset Bulanan (Rp)</strong> – Total uang yang masuk dari penjualan dalam sebulan (sebelum dikurangi biaya).</li>
-            <li><strong>Biaya Operasional Bulanan (Rp)</strong> – Pengeluaran rutin bulanan: listrik, air, gaji, transportasi, sewa tempat, dll.</li>
-            <li><strong>Investasi Awal (Rp)</strong> – Total modal yang dikeluarkan di awal usaha (pembelian alat, renovasi, dll).</li>
+            <li><strong>Pilih Usaha</strong> – pilih usaha yang sudah terdaftar.</li>
+            <li><strong>HPP per Unit</strong> – biaya pokok produksi per satuan produk.</li>
+            <li><strong>Harga Jual per Unit</strong> – harga jual satu produk.</li>
+            <li><strong>Omset Bulanan</strong> – total pemasukan per bulan sebelum biaya.</li>
+            <li><strong>Biaya Operasional</strong> – pengeluaran rutin bulanan.</li>
+            <li><strong>Investasi Awal</strong> – total modal awal.</li>
           </ul>
-          <h6><i class="bi bi-3-circle-fill text-primary me-2"></i> Indikator yang Dihitung</h6>
+          <h6><i class="bi bi-3-circle-fill text-primary me-2"></i> Indikator</h6>
           <div class="table-responsive">
             <table class="table table-sm">
               <thead><tr><th>Indikator</th><th>Rumus</th><th>Keterangan</th></tr></thead>
               <tbody>
-                <tr><td>Laba per Unit</td><td>Harga Jual – HPP</td><td>Keuntungan kotor tiap produk.</td></tr>
+                <tr><td>Laba per Unit</td><td>Harga Jual – HPP</td><td>Keuntungan kotor per produk.</td></tr>
                 <tr><td>Margin (%)</td><td>(Laba/Unit ÷ Harga Jual) × 100%</td><td>Persentase keuntungan dari harga jual.</td></tr>
                 <tr><td>ROI (%)</td><td>(Laba Bulanan ÷ Investasi Awal) × 100%</td><td>Kemampuan modal menghasilkan laba per bulan.</td></tr>
                 <tr><td>Payback Period</td><td>Investasi Awal ÷ Laba Bulanan</td><td>Waktu (bulan) untuk balik modal.</td></tr>
@@ -181,14 +216,8 @@
               </tbody>
             </table>
           </div>
-          <h6><i class="bi bi-4-circle-fill text-primary me-2"></i> Interpretasi Rekomendasi</h6>
-          <p>Sistem memberikan analisis otomatis dengan kode warna dan saran, misalnya:</p>
-          <ul>
-            <li><span class="badge bg-success">✅ Margin sangat sehat</span> – pertahankan.</li>
-            <li><span class="badge bg-warning text-dark">⚠️ Margin cukup</span> – pertimbangkan naikkan harga atau turunkan HPP.</li>
-            <li><span class="badge bg-danger">🔴 ROI rendah</span> – evaluasi strategi pemasaran dan efisiensi.</li>
-          </ul>
-          <div class="alert alert-info mt-3"><i class="bi bi-info-circle-fill me-2"></i>Gunakan data seakurat mungkin. Anda dapat mengubah data dan menghitung ulang kapan saja. Data yang sudah disimpan akan muncul di tabel untuk pemantauan berkala.</div>
+          <h6><i class="bi bi-4-circle-fill text-primary me-2"></i> Interpretasi</h6>
+          <p>Sistem memberikan rekomendasi otomatis. contoh: <span class="badge bg-success">✅ Margin sehat</span>, <span class="badge bg-warning text-dark">⚠️ Margin cukup</span>, <span class="badge bg-danger">🔴 ROI rendah</span>.</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary rounded-pill" data-bs-dismiss="modal">Mengerti</button>
@@ -202,17 +231,14 @@
   <script src="../js/auth.js"></script>
   <script>
     (function() {
+      // Autentikasi
       const token = (typeof appStorage !== 'undefined' && appStorage.get('token')) || (window._authToken) || null;
       const role = (typeof appStorage !== 'undefined' && appStorage.get('role')) || (window._authRole) || null;
-
-      if (!token || role !== 'member') {
-        window.location.href = '../login.html';
-        return;
-      }
+      if (!token || role !== 'member') { window.location.href = '../login.html'; return; }
 
       document.getElementById('userDisplay').innerText = (typeof appStorage !== 'undefined') ? (appStorage.get('nama') || 'Member') : 'Member';
 
-      // ===================== PROTEKSI AKSES CHALLENGE =====================
+      // Cek akses: semua level challenge harus completed
       async function checkChallengeAccess() {
         try {
           const res = await apiCall('getChallengeProgress', { token });
@@ -237,22 +263,17 @@
         }
       }
 
-      // Jalankan pengecekan, jika lolos baru jalankan init
+      // Jalankan pengecekan, jika lolos baru init aplikasi
       checkChallengeAccess().then(granted => {
-        if (granted) {
-          initApp();
-        }
+        if (granted) { initApp(); }
       });
 
       function initApp() {
-        let currentList = [];
-        let usahaList = [];
+        let currentList = [], usahaList = [];
 
-        async function init() {
-          await loadUsaha();
-          await loadData();
-        }
+        async function init() { await loadUsaha(); await loadData(); }
 
+        // Ambil daftar usaha milik member
         async function loadUsaha() {
           const res = await apiCall('getDataUsaha', { token });
           const userId = (typeof appStorage !== 'undefined') ? appStorage.get('userId') : null;
@@ -262,12 +283,15 @@
           usahaList.forEach(u => sel.innerHTML += `<option value="${u.id}">${u.namaUsaha} (${u.pemilik})</option>`);
         }
 
+        // Ambil data analisis
         async function loadData() {
           const res = await apiCall('getAnalisisUsaha', { token });
           currentList = res.success ? res.data : [];
           renderTable();
         }
+        window.loadData = loadData;
 
+        // Kalkulasi
         function kalkulasi(hpp, harga, omset, biayaOp, investasi) {
           const labaKotorPerUnit = harga - hpp;
           const margin = harga !== 0 ? (labaKotorPerUnit / harga) * 100 : 0;
@@ -289,39 +313,19 @@
 
         function generateRekomendasi(hpp, harga, omset, biayaOp, investasi) {
           const hasil = kalkulasi(hpp, harga, omset, biayaOp, investasi);
-          const MARR = 12;
           let rekomendasi = '';
-          if (hasil.margin >= 30) {
-            rekomendasi += '✅ Margin sangat sehat (≥30%). Pertahankan kualitas dan fokus pada peningkatan volume penjualan. ';
-          } else if (hasil.margin >= 15) {
-            rekomendasi += '⚠️ Margin cukup (15-30%). Pertimbangkan menaikkan harga jual atau menurunkan HPP. ';
-          } else {
-            rekomendasi += '🔴 Margin rendah (<15%). Evaluasi segera HPP dan harga jual. Cari supplier lebih murah atau efisiensi produksi. ';
-          }
-
-          if (hasil.roi >= 20) {
-            rekomendasi += '✅ ROI sangat menarik (≥20%). Bisnis layak diperluas. ';
-          } else if (hasil.roi >= 10) {
-            rekomendasi += '⚠️ ROI moderat (10-20%). Masih layak, namun perlu optimalisasi biaya operasional. ';
-          } else {
-            rekomendasi += '🔴 ROI rendah (<10%). Evaluasi ulang strategi pemasaran dan efisiensi biaya. ';
-          }
-
+          if (hasil.margin >= 30) rekomendasi += '✅ Margin sangat sehat. Pertahankan! ';
+          else if (hasil.margin >= 15) rekomendasi += '⚠️ Margin cukup. Pertimbangkan menaikkan harga atau menurunkan HPP. ';
+          else rekomendasi += '🔴 Margin rendah. Evaluasi HPP dan harga jual. ';
+          if (hasil.roi >= 20) rekomendasi += '✅ ROI tinggi, bisnis layak diperluas. ';
+          else if (hasil.roi >= 10) rekomendasi += '⚠️ ROI moderat, perlu efisiensi biaya. ';
+          else rekomendasi += '🔴 ROI rendah, tinjau strategi pemasaran. ';
           const paybackNum = parseFloat(hasil.payback);
-          if (paybackNum <= 2) {
-            rekomendasi += '✅ Payback period cepat (≤2 tahun). Investasi sangat likuid. ';
-          } else if (paybackNum <= 4) {
-            rekomendasi += '⚠️ Payback period wajar (2-4 tahun). Masih dapat diterima, namun pertimbangkan akselerasi penjualan. ';
-          } else {
-            rekomendasi += '🔴 Payback period lama (>4 tahun). Risiko tinggi, tinjau kembali rencana bisnis. ';
-          }
-
-          const irrNum = parseFloat(hasil.irr);
-          if (irrNum > MARR) {
-            rekomendasi += `✅ IRR (${hasil.irr}%) > MARR (${MARR}%). Proyek layak secara finansial.`;
-          } else {
-            rekomendasi += `🔴 IRR (${hasil.irr}%) ≤ MARR (${MARR}%). Proyek kurang layak. Pertimbangkan menambah pendapatan atau menekan biaya.`;
-          }
+          if (paybackNum <= 2) rekomendasi += '✅ Payback cepat.';
+          else if (paybackNum <= 4) rekomendasi += '⚠️ Payback wajar.';
+          else rekomendasi += '🔴 Payback lama.';
+          if (parseFloat(hasil.irr) > 12) rekomendasi += ' IRR layak.';
+          else rekomendasi += ' IRR kurang.';
           return rekomendasi;
         }
 
@@ -331,16 +335,13 @@
           const omset = parseFloat(document.getElementById('omsetBulanan').value) || 0;
           const biayaOp = parseFloat(document.getElementById('biayaOperasional').value) || 0;
           const investasi = parseFloat(document.getElementById('investasiAwal').value) || 0;
-
           const hasil = kalkulasi(hpp, harga, omset, biayaOp, investasi);
           document.getElementById('labaUnit').innerText = 'Rp ' + hasil.labaKotorPerUnit.toFixed(0);
           document.getElementById('margin').innerText = hasil.margin.toFixed(1) + '%';
           document.getElementById('roi').innerText = hasil.roi.toFixed(1) + '%';
           document.getElementById('payback').innerText = hasil.payback + ' bln';
           document.getElementById('irr').innerText = hasil.irr + '%';
-
-          const rekomendasi = generateRekomendasi(hpp, harga, omset, biayaOp, investasi);
-          document.getElementById('rekomendasiText').innerText = rekomendasi;
+          document.getElementById('rekomendasiText').innerText = generateRekomendasi(hpp, harga, omset, biayaOp, investasi);
           document.getElementById('kalkulasiSection').style.display = 'block';
         };
 
@@ -356,12 +357,9 @@
             const tr = document.createElement('tr');
             tr.innerHTML = `
               <td>${usaha ? usaha.namaUsaha : item.usahaId}</td>
-              <td>${item.hpp}</td>
-              <td>${item.hargaJual}</td>
-              <td>Rp ${hasil.labaKotorPerUnit.toFixed(0)}</td>
+              <td>${item.hpp}</td><td>${item.hargaJual}</td><td>Rp ${hasil.labaKotorPerUnit.toFixed(0)}</td>
               <td><span class="${roiClass}">${hasil.roi.toFixed(1)}%</span></td>
-              <td>${hasil.payback} bln</td>
-              <td>${hasil.irr}%</td>
+              <td>${hasil.payback} bln</td><td>${hasil.irr}%</td>
               <td>
                 <button class="btn btn-sm btn-warning" onclick="editItem('${item.id}')"><i class="bi bi-pencil"></i></button>
                 <button class="btn btn-sm btn-danger" onclick="deleteItem('${item.id}')"><i class="bi bi-trash"></i></button>
@@ -429,7 +427,7 @@
       // Logout
       window.logout = function() {
         if (typeof appStorage !== 'undefined') appStorage.clear();
-        apiCall('logout', { token }).catch(() => {});
+        if (token) apiCall('logout', { token }).catch(() => {});
         window.location.href = '../index.html';
       };
     })();
