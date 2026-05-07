@@ -1,5 +1,5 @@
 // ======================== KONFIGURASI ========================
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx6rawAiv7BQK30UVx-AWklZu-pX5z7ETmu2Om5z8kTOUA1-6m-PHn-0naojOtaPJmugA/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQ59kh_EPZSgIk_zB6EmtvMth8qLL3PKwZGXehDIxh2xV7Mw6rbqus9e8l-OoDPwtQtw/exec';
 
 // ======================== STORAGE UNIVERSAL ========================
 const appStorage = {
@@ -20,7 +20,6 @@ const appStorage = {
     const now = Date.now();
     const data = JSON.stringify({ v: value, e: now + this._expiryMs });
     this._setRaw(key, data);
-    // Cookie fallback
     document.cookie = `${this._prefix}${key}=${encodeURIComponent(value)};path=/;max-age=${this._expiryMs / 1000};SameSite=Lax`;
   },
 
@@ -55,16 +54,13 @@ const responseCache = {};
 const CACHE_TTL = 30000; // 30 detik
 
 async function apiCall(path, data = {}, retries = 2) {
-  // Buat kunci unik untuk cache
   const cacheKey = path + JSON.stringify(data);
   const cached = responseCache[cacheKey];
-  // Jika ada cache dan masih dalam TTL, gunakan langsung
   if (cached && (Date.now() - cached.time) < CACHE_TTL) {
     return cached.data;
   }
 
   const url = `${APPS_SCRIPT_URL}?path=${encodeURIComponent(path)}`;
-  // Sertakan token jika tidak ada dan tersedia di storage
   if (!data.token) {
     const storedToken = appStorage.get('token');
     if (storedToken) data.token = storedToken;
@@ -73,7 +69,7 @@ async function apiCall(path, data = {}, retries = 2) {
   let lastError;
   for (let attempt = 0; attempt <= retries; attempt++) {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 25000); // 25 detik
+    const timeoutId = setTimeout(() => controller.abort(), 25000);
     try {
       const response = await fetch(url, {
         method: 'POST',
@@ -85,7 +81,6 @@ async function apiCall(path, data = {}, retries = 2) {
       clearTimeout(timeoutId);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const result = await response.json();
-      // Simpan ke cache respons
       responseCache[cacheKey] = { data: result, time: Date.now() };
       return result;
     } catch (error) {
@@ -96,7 +91,6 @@ async function apiCall(path, data = {}, retries = 2) {
       } else {
         if (attempt === retries) throw error;
       }
-      // Tunggu sejenak sebelum retry
       await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
     }
   }
@@ -104,20 +98,11 @@ async function apiCall(path, data = {}, retries = 2) {
 }
 
 // ======================== HELPER GET CACHED DATA (LAPISAN) ========================
-/**
- * Mengambil data dari cache berlapis: sessionStorage -> appStorage -> fallbackCache (window.top)
- * @param {string} sessionKey - key di sessionStorage (ex: 'data_usaha_embedded')
- * @param {string} appKey - key di appStorage (ex: 'data_usaha_cache')
- * @param {string} fallbackProp - properti di window.top._fallbackCache (ex: 'data_usaha')
- * @returns {Array|Object|null}
- */
 function getCachedData(sessionKey, appKey, fallbackProp) {
-  // 1. sessionStorage
   try {
     const sess = sessionStorage.getItem(sessionKey);
     if (sess) return JSON.parse(sess);
   } catch (e) {}
-  // 2. appStorage
   if (typeof appStorage !== 'undefined') {
     try {
       const raw = appStorage.get(appKey);
@@ -127,7 +112,6 @@ function getCachedData(sessionKey, appKey, fallbackProp) {
       }
     } catch (e) {}
   }
-  // 3. fallbackCache di window.top (jika ada)
   if (window.top && window.top._fallbackCache && window.top._fallbackCache[fallbackProp]) {
     return window.top._fallbackCache[fallbackProp];
   }
@@ -143,6 +127,17 @@ function registerUser(nama, email, password, phone) {
 }
 function logoutUser(token) {
   return apiCall('logout', { token });
+}
+
+// SelfRecover (tanpa email)
+function getSecurityQuestion(email) {
+  return apiCall('getSecurityQuestion', { email });
+}
+function verifySecurityAnswer(email, answer) {
+  return apiCall('verifySecurityAnswer', { email, answer });
+}
+function resetPasswordWithToken(resetToken, newPassword) {
+  return apiCall('resetPasswordWithToken', { resetToken, newPassword });
 }
 
 function getDataUsaha(token) {
@@ -236,6 +231,9 @@ window.getCachedData = getCachedData;
 window.loginUser = loginUser;
 window.registerUser = registerUser;
 window.logoutUser = logoutUser;
+window.getSecurityQuestion = getSecurityQuestion;
+window.verifySecurityAnswer = verifySecurityAnswer;
+window.resetPasswordWithToken = resetPasswordWithToken;
 
 window.getDataUsaha = getDataUsaha;
 window.getDataUsahaById = getDataUsahaById;
