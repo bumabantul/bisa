@@ -45,6 +45,7 @@
       -webkit-backdrop-filter: blur(20px);
       width: 100%;
       max-width: 450px;
+      margin-bottom: 1.5rem;
     }
     .card-header {
       background: linear-gradient(135deg, var(--primary), var(--secondary));
@@ -56,7 +57,7 @@
     .card-header h3 { margin: 0; font-weight: 700; font-size: 1.5rem; letter-spacing: -0.3px; }
     .card-header p { opacity: 0.85; margin: 0.5rem 0 0; font-weight: 400; font-size: 0.95rem; }
     .card-body { padding: 2rem; }
-    .form-control {
+    .form-control, .form-select {
       border-radius: 14px;
       padding: 12px 18px;
       border: 2px solid #e8ecf1;
@@ -64,7 +65,7 @@
       font-size: 0.95rem;
       background: #fafbfc;
     }
-    .form-control:focus {
+    .form-control:focus, .form-select:focus {
       border-color: var(--primary);
       box-shadow: 0 0 0 4px rgba(99,102,241,0.08);
       background: #fff;
@@ -131,6 +132,8 @@
       font-size: 0.95rem;
     }
     .back-link:hover { color: #fff; }
+    .password-wrapper { position: relative; }
+    .password-wrapper .form-control { padding-right: 45px; }
     .password-toggle {
       position: absolute;
       right: 15px;
@@ -142,14 +145,27 @@
       cursor: pointer;
       z-index: 10;
     }
-    .password-wrapper { position: relative; }
-    .password-wrapper .form-control { padding-right: 45px; }
+    .step-indicator {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+    .step-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #e8ecf1;
+      transition: var(--transition);
+    }
+    .step-dot.active { background: var(--primary); }
+    .step-dot.done { background: #10b981; }
   </style>
 </head>
 <body>
 
   <!-- Card Login -->
-  <div class="card">
+  <div class="card" id="loginCard">
     <div class="card-header">
       <h3>Selamat Datang Kembali</h3>
       <p>Silakan login ke akun Anda</p>
@@ -170,6 +186,9 @@
             </button>
           </div>
         </div>
+        <p class="text-end mb-3">
+          <a href="#" onclick="showLupaPassword()" class="text-muted small">Lupa Password?</a>
+        </p>
         <button type="submit" class="btn btn-primary" id="loginBtn">
           <span class="spinner-border spinner-border-sm d-none" role="status" id="loginSpinner"></span>
           <span id="loginText">Login</span>
@@ -178,6 +197,73 @@
       <hr class="my-4">
       <p class="text-center mb-0">
         Belum punya akun? <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Daftar sebagai Member</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Card Lupa Password (SelfRecover 3 Langkah) -->
+  <div class="card" id="recoverCard" style="display: none;">
+    <div class="card-header">
+      <h3>Pulihkan Password</h3>
+      <p id="recoverStepText">Langkah 1: Masukkan Email</p>
+    </div>
+    <div class="card-body">
+      <div class="step-indicator">
+        <span class="step-dot active" id="dot1"></span>
+        <span class="step-dot" id="dot2"></span>
+        <span class="step-dot" id="dot3"></span>
+      </div>
+      <div id="recoverAlert" class="alert d-none"></div>
+
+      <!-- Step 1: Input Email -->
+      <div id="step1">
+        <p class="text-muted small">Masukkan email terdaftar untuk memulai pemulihan.</p>
+        <div class="mb-3">
+          <input type="email" class="form-control" id="recoverEmail" placeholder="nama@email.com" required>
+        </div>
+        <button class="btn btn-primary" onclick="checkEmail()">Lanjutkan <i class="bi bi-arrow-right ms-1"></i></button>
+      </div>
+
+      <!-- Step 2: Jawab Pertanyaan Keamanan -->
+      <div id="step2" style="display: none;">
+        <p class="text-muted small">Jawab pertanyaan keamanan yang Anda pilih saat registrasi.</p>
+        <div class="mb-3">
+          <label class="form-label fw-semibold" id="questionLabel"></label>
+          <input type="text" class="form-control" id="securityAnswer" placeholder="Jawaban Anda" required>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-secondary w-50 rounded-pill" onclick="backToStep1()"><i class="bi bi-arrow-left me-1"></i> Kembali</button>
+          <button class="btn btn-primary w-50" onclick="verifyAnswer()">Verifikasi <i class="bi bi-shield-check ms-1"></i></button>
+        </div>
+      </div>
+
+      <!-- Step 3: Reset Password -->
+      <div id="step3" style="display: none;">
+        <p class="text-muted small">Buat password baru untuk akun Anda.</p>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Password Baru</label>
+          <div class="password-wrapper">
+            <input type="password" class="form-control" id="newPassword" placeholder="Min. 6 karakter" required minlength="6">
+            <button type="button" class="password-toggle" onclick="togglePassword('newPassword', this)">
+              <i class="bi bi-eye-slash"></i>
+            </button>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Konfirmasi Password Baru</label>
+          <div class="password-wrapper">
+            <input type="password" class="form-control" id="confirmNewPassword" placeholder="Ulangi password baru" required minlength="6">
+            <button type="button" class="password-toggle" onclick="togglePassword('confirmNewPassword', this)">
+              <i class="bi bi-eye-slash"></i>
+            </button>
+          </div>
+        </div>
+        <button class="btn btn-success" onclick="resetPassword()"><i class="bi bi-check-circle me-1"></i> Simpan Password Baru</button>
+      </div>
+
+      <hr class="my-3">
+      <p class="text-center mb-0">
+        <a href="#" onclick="showLogin()"><i class="bi bi-arrow-left me-1"></i>Kembali ke Login</a>
       </p>
     </div>
   </div>
@@ -207,6 +293,23 @@
             <div class="mb-3">
               <label class="fw-semibold">Nomor HP/WhatsApp</label>
               <input type="tel" class="form-control" id="regPhone" placeholder="0812xxxxxxxx" required>
+            </div>
+            <!-- Security Question -->
+            <div class="mb-3">
+              <label class="fw-semibold">Pertanyaan Keamanan <span class="text-danger">*</span></label>
+              <select class="form-select" id="regSecurityQuestion" required>
+                <option value="">Pilih pertanyaan keamanan</option>
+                <option value="Apa nama ibu kandung Anda?">Apa nama ibu kandung Anda?</option>
+                <option value="Apa nama hewan peliharaan pertama Anda?">Apa nama hewan peliharaan pertama Anda?</option>
+                <option value="Di kota apa Anda lahir?">Di kota apa Anda lahir?</option>
+                <option value="Apa sekolah dasar Anda?">Apa sekolah dasar Anda?</option>
+                <option value="Siapa nama sahabat masa kecil Anda?">Siapa nama sahabat masa kecil Anda?</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="fw-semibold">Jawaban Keamanan <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="regSecurityAnswer" placeholder="Jawaban Anda (rahasia)" required>
+              <small class="text-muted">Simpan baik-baik. Digunakan untuk pemulihan password.</small>
             </div>
             <div class="mb-3">
               <label class="fw-semibold">Password</label>
@@ -244,7 +347,10 @@
   <script src="js/api.js"></script>
 
   <script>
-    // Toggle password visibility
+    // ==================== GLOBAL STATE ====================
+    let resetToken = null;
+
+    // ==================== TOGGLE PASSWORD ====================
     function togglePassword(inputId, btn) {
       const input = document.getElementById(inputId);
       const icon = btn.querySelector('i');
@@ -259,20 +365,20 @@
       }
     }
 
-    // Cek apakah sudah login
+    // ==================== CHECK LOGIN ====================
     (function() {
       const token = (typeof appStorage !== 'undefined') ? appStorage.get('token') : null;
       const role = (typeof appStorage !== 'undefined') ? appStorage.get('role') : null;
       if (token && role) {
         if (role === 'admin') {
-          window.location.href = 'admin/dashboard-admin.html';
+          window.location.href = 'admin/preload.html';
         } else if (role === 'member') {
-          window.location.href = 'member/dashboard-member.html';
+          window.location.href = 'member/preload.html';
         }
       }
     })();
 
-    // Login
+    // ==================== LOGIN ====================
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('email').value;
@@ -297,7 +403,7 @@
           if (res.role === 'admin') {
             window.location.href = 'admin/preload.html';
           } else {
-            window.location.href = 'member/dashboard-member.html';
+            window.location.href = 'member/preload.html';
           }
         } else {
           const alertBox = document.getElementById('loginAlert');
@@ -315,20 +421,16 @@
       }
     });
 
-    // Registrasi
+    // ==================== REGISTRASI ====================
     document.getElementById('registerForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      // Verifikasi penjumlahan
       const jawaban = parseInt(document.getElementById('regVerifikasi').value);
       if (jawaban !== 5) {
         alert('Jawaban verifikasi salah! Silakan coba lagi.');
-        document.getElementById('regVerifikasi').value = '';
-        document.getElementById('regVerifikasi').focus();
         return;
       }
 
-      // Validasi password dan konfirmasi
       const password = document.getElementById('regPassword').value;
       const confirmPassword = document.getElementById('regConfirmPassword').value;
       if (password !== confirmPassword) {
@@ -340,7 +442,9 @@
         nama: document.getElementById('regNama').value,
         email: document.getElementById('regEmail').value,
         phone: document.getElementById('regPhone').value,
-        password: password
+        password: password,
+        securityQuestion: document.getElementById('regSecurityQuestion').value,
+        securityAnswer: document.getElementById('regSecurityAnswer').value
       };
 
       const registerBtn = document.getElementById('registerBtn');
@@ -355,8 +459,7 @@
         const res = await apiCall('register', data);
         if (res.success) {
           alert('Registrasi berhasil, silakan login.');
-          const modalEl = document.getElementById('registerModal');
-          const modal = bootstrap.Modal.getInstance(modalEl);
+          const modal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
           modal.hide();
           document.getElementById('registerForm').reset();
         } else {
@@ -371,9 +474,126 @@
       }
     });
 
-    // Reset form saat modal register ditutup
+    // ==================== SELF RECOVER ====================
+    function showLupaPassword() {
+      document.getElementById('loginCard').style.display = 'none';
+      document.getElementById('recoverCard').style.display = 'block';
+      goToStep(1);
+    }
+
+    function showLogin() {
+      document.getElementById('recoverCard').style.display = 'none';
+      document.getElementById('loginCard').style.display = 'block';
+      document.getElementById('recoverAlert').classList.add('d-none');
+      // Reset form fields
+      document.getElementById('recoverEmail').value = '';
+      document.getElementById('securityAnswer').value = '';
+      document.getElementById('newPassword').value = '';
+      document.getElementById('confirmNewPassword').value = '';
+      resetToken = null;
+    }
+
+    function goToStep(step) {
+      // Hide all steps
+      document.getElementById('step1').style.display = 'none';
+      document.getElementById('step2').style.display = 'none';
+      document.getElementById('step3').style.display = 'none';
+      // Show target step
+      document.getElementById('step' + step).style.display = 'block';
+
+      // Update indicator dots
+      document.querySelectorAll('#recoverCard .step-dot').forEach((dot, i) => {
+        dot.classList.remove('active', 'done');
+        if (i + 1 === step) dot.classList.add('active');
+        if (i + 1 < step) dot.classList.add('done');
+      });
+
+      // Update header text
+      const texts = ['', 'Langkah 1: Masukkan Email', 'Langkah 2: Jawab Pertanyaan Keamanan', 'Langkah 3: Buat Password Baru'];
+      document.getElementById('recoverStepText').innerText = texts[step];
+
+      // Clear alert
+      document.getElementById('recoverAlert').classList.add('d-none');
+    }
+
+    async function checkEmail() {
+      const email = document.getElementById('recoverEmail').value.trim();
+      if (!email) return showRecoverAlert('danger', 'Masukkan email.');
+
+      try {
+        const res = await apiCall('getSecurityQuestion', { email });
+        if (res.success) {
+          document.getElementById('questionLabel').innerText = res.question;
+          goToStep(2);
+        } else {
+          showRecoverAlert('danger', res.message);
+        }
+      } catch (err) {
+        showRecoverAlert('danger', 'Error: ' + err.message);
+      }
+    }
+
+    async function verifyAnswer() {
+      const answer = document.getElementById('securityAnswer').value.trim();
+      if (!answer) return showRecoverAlert('danger', 'Masukkan jawaban Anda.');
+
+      try {
+        const res = await apiCall('verifySecurityAnswer', {
+          email: document.getElementById('recoverEmail').value.trim(),
+          answer: answer
+        });
+        if (res.success) {
+          resetToken = res.resetToken;
+          goToStep(3);
+        } else {
+          showRecoverAlert('danger', res.message);
+        }
+      } catch (err) {
+        showRecoverAlert('danger', 'Error: ' + err.message);
+      }
+    }
+
+    async function resetPassword() {
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmNewPassword').value;
+
+      if (newPassword.length < 6) return showRecoverAlert('danger', 'Password minimal 6 karakter.');
+      if (newPassword !== confirmPassword) return showRecoverAlert('danger', 'Password dan konfirmasi tidak cocok.');
+
+      try {
+        const res = await apiCall('resetPasswordWithToken', {
+          resetToken: resetToken,
+          newPassword: newPassword
+        });
+        if (res.success) {
+          showRecoverAlert('success', res.message + ' Silakan login.');
+          setTimeout(() => {
+            showLogin();
+          }, 2000);
+        } else {
+          showRecoverAlert('danger', res.message);
+          resetToken = null;
+        }
+      } catch (err) {
+        showRecoverAlert('danger', 'Error: ' + err.message);
+      }
+    }
+
+    function backToStep1() {
+      goToStep(1);
+    }
+
+    function showRecoverAlert(type, message) {
+      const alertBox = document.getElementById('recoverAlert');
+      alertBox.className = `alert alert-${type}`;
+      alertBox.textContent = message;
+      alertBox.classList.remove('d-none');
+    }
+
+    // Reset modal register saat ditutup
     document.getElementById('registerModal').addEventListener('hidden.bs.modal', function () {
       document.getElementById('registerForm').reset();
+      // Jika ada spinner aktif, reset (meskipun tidak mungkin saat modal ditutup)
     });
   </script>
 </body>
